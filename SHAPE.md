@@ -85,20 +85,52 @@ hook:
 | 7 | `auxiliary_files` = runtime deps | Files the script loads, not what the harness invokes. Harness-invoked files belong in `scripts`. |
 | 8 | `requires` not `providers` | Capability requirements are stable; provider lists are brittle and don't reflect partial support. Registry computes provider compatibility from its capability matrix. |
 | 9 | `event` is distinct from `display_name` | `event` = WHEN (lifecycle trigger); `display_name` = WHAT (behavior description). A repo can have two hooks on the same event — they need distinct, meaningful names. |
+| 10 | Frontmatter is publisher input; registry-generated sidecar is canonical | Hybrid B/A carrier model. Registries promote frontmatter into sidecars; source files are never modified. Auto-generation is the primary path for existing content. |
+| 11 | Two-section L2 record (`publisher_section` + `registry_section`) | Structure is the provenance. No merge layer, no per-field markers. `publisher_section` = registry's faithful observation of frontmatter; `registry_section` = computed fields. |
+| 12 | `body_hash` is distinct from any external integrity hash | Body hash covers content body bytes only (frontmatter stripped, LF-normalized). An external integrity system may compute its own hash over different bytes. The two are not interchangeable and the spec does not equate them. |
+| 13 | No external system named in spec text | The spec defines a slot (`attestation_hash` in `registry_section`) for an external integrity/attestation hash. What fills that slot is an implementation choice. No specific system is named. |
+| 14 | Sidecar binding by `body_hash` (single-file items) | The sidecar's `body_hash` uniquely identifies the content file it annotates. No naming convention required. Multi-file binding deferred (OQ-2). |
+
+---
+
+## Registry Section Schema
+
+The `registry_section` of every L2 record. Always present; never sourced from publisher frontmatter.
+
+```yaml
+registry_section:
+  body_hash:                          # REQUIRED — SHA-256 over content body, frontmatter stripped, LF-normalized
+    algorithm: sha256                 # single-file items only (see OQ-2)
+    value: "abc123..."
+  metadata_hash:                      # REQUIRED when publisher_section is present
+    algorithm: sha256                 # SHA-256 over canonical frontmatter (keys sorted, comments stripped)
+    value: "def456..."
+  attestation_hash:                   # OPTIONAL — hash from an external integrity/attestation system
+    algorithm: sha256                 # populated by that system; distinct algorithm and byte sequence from body_hash
+    value: "ghi789..."                # what system produced this is an implementation detail, not named here
+  fetched_at: "2026-05-11T18:00:00Z" # REQUIRED — RFC 3339 UTC, set at crawl time (not sidecar generation time)
+  expires: "2026-05-14T18:00:00Z"    # OPTIONAL — default staleness: 72 hours from fetched_at if absent
+  source_uri: "https://..."          # REQUIRED — canonical fetch URL; used to override copy-invalidated frontmatter fields
+  publisher_declared: true           # REQUIRED — true iff publisher_section was populated from observed frontmatter
+  publisher_metadata: "declared"     # OPTIONAL INFORMATIVE — declared | auto-generated | unknown
+                                     # NOTE: "declared" means the registry observed frontmatter at crawl time.
+                                     # It does NOT mean the publisher cryptographically attested these fields.
+```
+
+**Registries MUST NOT write to source files.** All registry-generated metadata lives in sidecars only.
 
 ---
 
 ## Open Questions
 
-Issues the obra exercise surfaced that the spec hasn't resolved yet.
-
-| # | Question | Where it surfaced |
+| # | Status | Question |
 |---|---|---|
-| OQ-1 | **Sidecar binding** — how does a sidecar declare which specific hook it annotates in a multi-hook repo? (naming convention? explicit `annotates:` field? path co-location?) | hook trace |
-| OQ-2 | **Content hash boundary** — which files are included in the hash? The script only? All files in `scripts` + `auxiliary_files`? The whole `hooks/` directory? | hook + skill trace |
-| OQ-3 | **Package/bundle concept** — individual registry entries need a way to reference their parent package so install tools can group them. Not yet modeled. | obra (14 skills + 1 hook in one package) |
-| OQ-4 | **Version inheritance** — when does an item use its own `version` vs. inherit from the package? | obra (package version only; no per-item versions) |
-| OQ-5 | **`publisher_metadata_source`** — registry transparency: was L2 metadata publisher-supplied or auto-generated? Install tools making trust decisions need to know. | registry trace |
-| OQ-6 | **`os`/`arch` defaults** — when `os` is absent from a script entry, does it mean "all OS" or "unspecified"? | `run-hook.cmd` platform handling |
-| OQ-7 | **`requires` vocabulary** — complete canonical list of hook capability keys (from HIF / syllago `recognize_hooks.go`). Not yet formally mapped to the `requires` block. | requires block |
-| OQ-8 | **Skill `supplementary_files`** — skills can cross-reference other files (`@testing-anti-patterns.md` in TDD skill). No mechanism declared yet. | skill trace |
+| OQ-1 | **Resolved (single-file only)** | Sidecar binding uses `body_hash` as the identity key. The sidecar's `body_hash` matches the hash of the content file it annotates — no naming convention required. Two hooks on the same event have different script bodies → different hashes → unambiguous binding. Multi-file binding deferred to OQ-2. |
+| OQ-2 | **Explicitly deferred** | Content hash boundary for multi-file items: which files are in scope for `body_hash`? Until resolved, `body_hash` is normative for single-file items only. Implementations MUST NOT self-derive a multi-file algorithm. |
+| OQ-3 | **Open** | Package/bundle concept — individual registry entries need a way to reference their parent package so install tools can group them. Not yet modeled. |
+| OQ-4 | **Open** | Version inheritance — when does an item use its own `version` vs. inherit from the package? |
+| OQ-5 | **Addressed** | Registry transparency: `publisher_declared` (bool, REQUIRED) + `publisher_metadata` (enum, OPTIONAL INFORMATIVE). See registry section schema above. |
+| OQ-6 | **Open** | `os`/`arch` defaults — when `os` is absent from a script entry, does it mean "all OS" or "unspecified"? |
+| OQ-7 | **Open** | `requires` vocabulary — complete canonical list of hook capability keys. Not yet formally mapped to the `requires` block. |
+| OQ-8 | **Open** | Skill `supplementary_files` — skills can cross-reference other files. No mechanism declared yet. |
+| OQ-9 | **Open** | Two-tier freshness interop — when an external attestation manifest has its own expiry and the sidecar `expires` differ, which takes precedence for staleness determination? |
