@@ -46,7 +46,7 @@ This document extends the [ACIF-CORE] §4 conformance classes with rule-specific
 
 **Conforming canonicalizer** — additionally satisfies §6–§8 (model validation, mode canonicalization and materialization, hash boundary).
 
-**Conforming validator** — additionally satisfies the reject conditions in §6 evaluated over canonical form, without re-applying defaults or translations.
+**Conforming validator** — additionally satisfies the reject conditions in §6 that are evaluable over canonical form, without re-applying defaults or translations. Conditions gated on the source form (`acif.rule.activation_mode_missing`, `acif.rule.activation_mode_unmappable`) bind at ingestion ([ACIF-CORE] §2) and are not re-evaluated by validators — canonical form always carries a materialized `mode`.
 
 **Conforming rule record** — an item with `kind: rule` conforms if it satisfies [ACIF-CORE] §5 and §6 of this document.
 
@@ -77,7 +77,7 @@ rule:
 
 **`activation`** — always present in canonical form; §7 defines materialization from sources that omit it. In a source form, when the block is present, `mode` is REQUIRED: a present block without `mode` MUST be rejected with `acif.rule.activation_mode_missing`. *(Informative: `mode` is the block's primary discriminant; defaulting a present-but-modeless block to `always` would silently mislabel declared glob intent.)*
 
-**`activation.mode`** — in canonical form, MUST be a member of the closed enum in Appendix A.1, matched by exact byte comparison ([ACIF-CORE] §8.3): no trimming, no case folding (`" always"` and `Always` both reject). A value that is neither canonical nor a provider sub-mode appearing in Appendix A.2 MUST be rejected with `acif.rule.activation_mode_invalid`; a provider activation mechanism with no Appendix A.2 mapping row MUST be rejected with `acif.rule.activation_mode_unmappable`.
+**`activation.mode`** — in canonical form, MUST be a member of the closed enum in Appendix A.1, matched by exact byte comparison ([ACIF-CORE] §8.3): no trimming, no case folding (`" always"` and `Always` both reject). The two reject identifiers are discriminated by locus: an unrecognized **value in the `mode` field** (or its provider equivalent) rejects with `acif.rule.activation_mode_invalid`; a provider **structural activation mechanism** — a declaration shape, not a mode value — with no Appendix A.2 mapping row rejects with `acif.rule.activation_mode_unmappable` (§10).
 
 **`activation.globs`** — REQUIRED when `mode: glob`; MUST NOT appear with any other mode. `mode: glob` with `globs` absent or an empty array MUST be rejected with `acif.rule.glob_mode_without_globs`; `globs` present with `mode` ≠ `glob` MUST be rejected with `acif.rule.globs_without_glob_mode`. Each element MUST be a non-empty string ([ACIF-CORE] §8.3). Glob pattern syntax is not pinned in ACIF 0.1: elements are carried as opaque pattern strings and are not validated against any glob dialect.
 

@@ -50,7 +50,7 @@ The test-vector families in Appendix A are normatively authoritative: an impleme
 
 ## 6. The `registry_section` Schema
 
-Every registry-emitted item record carries a `registry_section`; it is never sourced from publisher declarations. Fields:
+Every registry-emitted record carries a `registry_section`; it is never sourced from publisher declarations. Fields, as they apply to the six interchange content types (the pack-record variant follows the schema block):
 
 ```yaml
 registry_section:
@@ -86,6 +86,8 @@ registry_section:
 ```
 
 `publisher_metadata: declared` means the registry observed a declaration surface at crawl time; it does not mean the publisher cryptographically attested anything. Registries MUST NOT write to source files; all registry-generated metadata lives in sidecars, and the root-only sidecar exclusion of [ACIF-CORE] §7.5 governs hashing.
+
+**Pack-record variant.** For `kind: pack` records the schema above is modified: `body_hash` and `body_size_bytes` MUST be absent (packs carry no canonical body, [ACIF-PUBLISHER] §8.2); `metadata_hash` follows [ACIF-PUBLISHER] §8.2 (present for declared packs, absent for inferred packs); and the section additionally carries `items` — the computed member list, one entry per item satisfying the membership predicate ([ACIF-PUBLISHER] §8.3), each entry the member's `id`. `items` is OUTPUT of the predicate, recomputed on every relevant change; publishers never author it. The provenance and freshness fields (`source_uri`, `source_status`, `fetched_at`, `expires`, `publisher_declared`, `generated_at`, `max_staleness`) apply to pack records as to item records.
 
 ## 7. Change-Signal Surfaces
 
@@ -124,7 +126,7 @@ An advisory signal that cannot meet all four constraints MUST NOT be emitted.
 
 ### 8.4 `provider_capability_coverage`
 
-Registries MUST surface, per canonical capability key disposed provider-matrix by an L1 specification, the set of providers supporting it — a shared capability-matrix fact computed once, not per-item. Rows in 0.1: `file_imports`, `hierarchical_loading`, `cross_provider_recognition`, `auto_memory` (rules); `argument_substitution`, `builtin_commands` (commands); per-event provider recognition (`event_provider_coverage`, hooks). Matrix contents are observational data with a provenance the registry MUST be able to state; proxy mechanisms MUST NOT be recorded as support.
+Registries MUST surface, per canonical capability key disposed provider-matrix by an L1 specification, the set of providers supporting it — a shared capability-matrix fact computed once, not per-item. Rows in 0.1: `file_imports`, `hierarchical_loading`, `cross_provider_recognition`, `auto_memory` (rules); `argument_substitution`, `builtin_commands` (commands); per-event provider recognition (`event_provider_coverage`, hooks). Proxy mechanisms MUST NOT be recorded as support. *(Informative: matrix contents are observational snapshot data; registries should publish the matrix's provenance — source and crawl date — alongside the rows so consumers can judge staleness.)*
 
 ### 8.5 `install_scope_capabilities`
 
@@ -219,7 +221,7 @@ No combined effective-staleness scalar exists; attestation validity is never fol
 
 ### 11.2 The staleness predicate
 
-An item is **stale** at consumer time `T` (UTC) iff `T > E_sidecar`, where `E_sidecar = expires` when present, else `fetched_at + 72h`. `fetched_at` is REQUIRED, so the predicate is total. All freshness fields MUST be RFC 3339 timestamps with an explicit offset; an offsetless timestamp is malformed. Clock-skew tolerance, if an implementation applies any, MUST be explicit, bounded, and fail-closed: a borderline instant evaluates stale.
+An item is **stale** at consumer time `T` (UTC) iff `T > E_sidecar`, where `E_sidecar = expires` when present, else `fetched_at + 72h`. `fetched_at` is REQUIRED, so the predicate is total. All freshness fields MUST be RFC 3339 timestamps with an explicit offset; an offsetless timestamp is malformed. Clock-skew tolerance, if an implementation applies any, MUST be explicit, bounded, and fail-closed: a borderline instant evaluates stale. *(Informative: fail-closed is the conformance-tested property of the three — TV-FRESH (g); "explicit" and "bounded" describe how a tolerance must be declared, not independently vectorable behavior.)*
 
 `expires < fetched_at` is a malformed window: `acif.registry.expires_before_fetched_at` (fix-forward). It is distinct from an `expires` legitimately already in the past, which is well-formed, evaluates stale, and is conforming to serve — an honest crawl backlog is not an error.
 

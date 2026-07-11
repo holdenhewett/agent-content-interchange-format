@@ -163,7 +163,7 @@ When a repository contains multiple pack-shaped manifests, the canonical source 
 5. `gemini-extension.json` (top-level `name`)
 6. Directory-adjacency fallback — the repository basename from `repository_url`
 
-When multiple manifests exist with conflicting values, the registry adopts the precedence winner and SHOULD surface a warning to the publisher.
+When multiple manifests exist with conflicting values, the registry adopts the precedence winner and SHOULD emit `acif.publisher.pack_source_conflict` naming the conflicting sources and values, surfaced to the publisher.
 
 ### 9.2 Canonical display name
 
@@ -194,13 +194,14 @@ The namespace constant is spec-pinned for inference algorithm v0.1 and is never 
 
 ### 9.6 Inference version
 
-Every response containing `inferred_pack_id` MUST include `inference_version: "v0.1"` in the same `registry_section`. Consumers detecting inference-version drift between registries SHOULD treat it as a divergence signal, not an error.
+Every response containing `inferred_pack_id` MUST include `inference_version: "v0.1"` in the same `registry_section`. A consumer detecting inference-version drift between registries SHOULD surface the differing `inference_version` values to the operator; drift is a divergence signal, not an error.
 
 ## 10. Error Identifiers
 
 | Identifier | Class | Condition |
 |---|---|---|
 | `acif.publisher.frontmatter_conflict` | diagnostic (CI block by default; logged on overwrite opt-in) | Declared frontmatter value conflicts with the canonical sidecar value for the same ACIF field (§7) |
+| `acif.publisher.pack_source_conflict` | diagnostic (SHOULD-emit) | Multiple pack-shaped manifests carry conflicting values; the precedence winner was adopted (§9.1) |
 
 The `pack_resolution: unresolved` install refusal (§8.3) is a state-vocabulary rule, not an error identifier; the state itself is the signal.
 
@@ -257,4 +258,4 @@ Individual vector IDs are assigned in the conformance suite.
 
 Promoted 2026-07-11 from the ACIF design record: the common envelope, carrier rules, two-section record, pack extension block, registry-section framing, and Decisions #10, #11, #14, #15, #16, #17, #18, and #20 of `SHAPE.md`, with deliberation records in `panel/pack-model-consensus.md` and `panel/carrier-model-consensus.md`.
 
-Newly minted at spec-promotion time (not present in the design record; flagged for review): the §5.2 presence-by-declaration rule and the sidecar-only envelope-only content rule (resolving the design record's tension between "pack_id lives in publisher_section" and the hook exemplar's no-`publisher_section` note — the spec-purist hash-boundary consult's fixes, applied with [ACIF-CORE] §7.8); the §5.3 faithful-observation restatement (declared values as written; canonical form is a distinct view); the §6 preimage framing (RFC 8785 + single trailing LF — the design record's "sorted keys, no whitespace, LF" made byte-precise); the §8.2 pack hashing rule (no body hashes for packs; declared packs get `metadata_hash`, inferred packs get neither — discharging the [ACIF-CORE] §7.8 scope-out); the named identifier `acif.publisher.frontmatter_conflict` and the per-run-opt-in constraint on overwrite; and the TV-L2 vector additions. These items are to be ratified back into the design record at promotion time.
+Newly minted at spec-promotion time (not present in the design record; flagged for review): the §5.2 presence-by-declaration rule and the sidecar-only envelope-only content rule (resolving the design record's tension between "pack_id lives in publisher_section" and the hook exemplar's no-`publisher_section` note — the spec-purist hash-boundary consult's fixes, applied with [ACIF-CORE] §7.8); the §5.3 faithful-observation restatement (declared values as written; canonical form is a distinct view); the §6 preimage framing (RFC 8785 + single trailing LF — the design record's "sorted keys, no whitespace, LF" made byte-precise); the §8.2 pack hashing rule (no body hashes for packs; declared packs get `metadata_hash`, inferred packs get neither — discharging the [ACIF-CORE] §7.8 scope-out); the named identifiers `acif.publisher.frontmatter_conflict` (with the per-run-opt-in constraint on overwrite) and `acif.publisher.pack_source_conflict` (the multi-manifest warning, given an identifier at review); and the TV-L2 vector additions. These items are to be ratified back into the design record at promotion time.

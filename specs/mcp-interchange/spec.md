@@ -153,11 +153,11 @@ The recognized `requires` vocabulary for MCP configurations is **empty** in ACIF
 |---|---|
 | `transport_types` | `∃ s ∈ B.servers . s.type != ""` — constant derivable-true on a conforming record (`type` is REQUIRED in canonical form); the predicate exists as a disposition, not a signal. The set of distinct transport types observed is a registry projection (§11.1), not the predicate output. |
 | `oauth_support` | `∃ s ∈ B.servers . s.oauth present` |
-| `env_var_expansion` | `∃` an occurrence of the `${VAR}` token syntax in any string-typed value of `B.servers.*` (`command`, `args[]`, `env` values, `url`, `headers` values) |
+| `env_var_expansion` | `∃` an occurrence of the `${VAR}` token syntax in a value of the closed field set `{command, args[i], env.<key>, url, headers.<key>}` of any server — exactly these fields; opaque passthrough values are excluded from the scan domain |
 | `tool_filtering` | `∃ s ∈ B.servers . (s.includeTools present ∨ s.excludeTools present ∨ s.disabledTools present)` |
 | `auto_approve` | `∃ s ∈ B.servers . s.autoApprove present` |
 
-Each predicate produces `{derivable-true, derivable-false}` per the boolean discipline. *(Informative)* The `env_var_expansion` predicate scans field **values**, but its domain is the closed set of canonical string-typed wiring fields validated at canonicalization, with an exact token grammar — a derivation over structured wiring, not the prose-scan heuristic the derivation-vs-heuristic rule ([ACIF-CORE] §9.2) bars. The distinction is domain structure, not scan mechanics.
+Each predicate produces `{derivable-true, derivable-false}` per the boolean discipline. *(Informative)* The `env_var_expansion` predicate scans field **values**, but its domain is the pinned closed field set above — canonical wiring fields validated at canonicalization, with an exact token grammar — a derivation over structured wiring, not the prose-scan heuristic the derivation-vs-heuristic rule ([ACIF-CORE] §9.2) bars. The distinction is domain structure, not scan mechanics; the same rule bars the command placeholder scan, whose domain is unstructured body prose ([ACIF-COMMAND] §9.1).
 
 ### 9.2 OUT-OF-SCOPE-AT-L1 keys *(informative rationale)*
 

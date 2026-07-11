@@ -59,7 +59,7 @@ ACIF 0.1 pins no further context inputs. A renderer accepting implementation-spe
 
 ### 6.2 Determinism
 
-Rendering is a function: identical canonical form plus identical render context MUST produce byte-identical output, across invocations and across conforming implementations. Iteration-order-dependent output (map ordering, nondeterministic field sequence) is non-conformant; where the target format does not itself pin an order, the renderer MUST emit object members in a fixed, documented order.
+Rendering is a function: identical canonical form plus identical render context MUST produce byte-identical output, across invocations and across conforming implementations. Iteration-order-dependent output (map ordering, nondeterministic field sequence) is non-conformant. Where the target format does not itself pin an order, the member order MUST come from a source shared by all implementations — the order pinned by the owning L1 render section, or, where none is pinned, the [ACIF-CORE] §8.6 member sorting; a renderer-local "fixed and documented" order cannot satisfy cross-implementation identity and is non-conformant.
 
 ### 6.3 No invention
 

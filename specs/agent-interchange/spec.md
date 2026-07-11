@@ -123,7 +123,7 @@ The recognized `requires` vocabulary for agents is **empty** in ACIF 0.1. Every 
 | `per_agent_mcp` | `len(B.mcp_servers) > 0` |
 | `subagent_spawning` | `contains(B.tools, "agent")` — `agent` is the canonical spawn-subagent name ([ACIF-CORE] Appendix A) |
 
-Each predicate produces `{derivable-true, derivable-false}` per the boolean discipline; each cites a single canonical field. The `tool_restrictions` predicate is the one sanctioned compound form: both conjuncts cite single canonical arrays with pinned absent/empty semantics (absent and `[]` both yield length zero).
+Each predicate produces `{derivable-true, derivable-false}` per the boolean discipline; each cites a single canonical field. The `tool_restrictions` predicate is the one sanctioned compound form: both conjuncts cite single canonical arrays with pinned absent/empty/null semantics — absent, `[]`, and a null-valued field all yield length zero.
 
 ### 9.2 OUT-OF-SCOPE-AT-L1 keys *(informative rationale)*
 

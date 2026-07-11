@@ -48,7 +48,7 @@ This document extends the [ACIF-CORE] §4 conformance classes with skill-specifi
 
 **Conforming canonicalizer** — additionally satisfies §6–§8 (model validation, activation materialization, body classification and hash boundary).
 
-**Conforming validator** — additionally satisfies the reject conditions in §6 evaluated over canonical form, without re-applying defaults.
+**Conforming validator** — additionally satisfies the reject conditions in §6 that are evaluable over canonical form, without re-applying defaults. Conditions gated on the source form (`acif.skill.activation_type_missing`) bind at ingestion ([ACIF-CORE] §2) and are not re-evaluated by validators — canonical form always carries a materialized `type`.
 
 **Conforming skill record** — an item with `kind: skill` conforms if it satisfies [ACIF-CORE] §5 and §6 of this document.
 

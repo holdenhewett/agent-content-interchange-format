@@ -52,7 +52,7 @@ This document extends the [ACIF-CORE] §4 conformance classes with command-speci
 
 **Conforming command record** — an item with `kind: command` conforms if it satisfies [ACIF-CORE] §5 and §6 of this document.
 
-**Conforming install tool** — additionally satisfies the SHOULD-warn obligation in §10.2.
+**Conforming install tool** — carries no command-specific refuse obligation; when it warns per §10.2, it MUST report `acif.command.placeholder_untranslated` verbatim ([ACIF-CORE] §8.7).
 
 **Conforming renderer** — software that emits a provider-native form from canonical form; satisfies §11.
 
@@ -83,7 +83,7 @@ command:
 
 ### 6.2 The passthrough surface
 
-The eight fields above are carried one-to-one as opaque passthrough ([ACIF-CORE] §8.5): no live validation, no value allowlists, no canonical enums. Transport is not promotion — none of these fields is capability vocabulary in ACIF 0.1, and their presence MUST NOT soften the orphan-key reject (§9.3). Their promotion questions are a roadmap item with recorded obligations: `allowed_tools` MUST use the [ACIF-CORE] Appendix A tool vocabulary if promoted (no second tool vocabulary); `agent` is a latent name-based cross-type reference whose promotion requires resolving name-vs-UUID against the [ACIF-CORE] §10 UUID pattern; `effort` needs an owned enum with a total mapping if promoted; `user_invocable`/`disable_model_invocation` MUST be disposed uniformly with the skill equivalents ([ACIF-SKILL] §6.2) when promoted.
+The passthrough fields above are carried one-to-one as opaque passthrough ([ACIF-CORE] §8.5): no live validation, no value allowlists, no canonical enums. Transport is not promotion — none of these fields is capability vocabulary in ACIF 0.1, and their presence MUST NOT soften the orphan-key reject (§9.3). Their promotion questions are a roadmap item with recorded obligations: `allowed_tools` MUST use the [ACIF-CORE] Appendix A tool vocabulary if promoted (no second tool vocabulary); `agent` is a latent name-based cross-type reference whose promotion requires resolving name-vs-UUID against the [ACIF-CORE] §10 UUID pattern; `effort` needs an owned enum with a total mapping if promoted; `user_invocable`/`disable_model_invocation` MUST be disposed uniformly with the skill equivalents ([ACIF-SKILL] §6.2) when promoted.
 
 *(Informative)* The passthrough surface exists because render-back needs these fields for round-trip fidelity; a minimal block would break round-trip. Values stay opaque because live validation of provider-owned values (model IDs, effort levels) is a brittle-list trap.
 
@@ -119,6 +119,8 @@ The recognized `requires` vocabulary for commands is **empty** in ACIF 0.1: **no
 ### 9.1 OUT-OF-SCOPE-AT-L1: `argument_substitution` *(informative rationale)*
 
 The `$ARGUMENTS` token lives in body prose; no canonical field carries it, and under the derivation-vs-heuristic rule ([ACIF-CORE] §9.2) a substring scan over prose is a heuristic regardless of the token being canonicalization-pinned: it false-positives on fenced-code mentions (the token is canonicalizer-*normalized*, not canonicalizer-*validated* — an occurrence in a code fence is canonical, hash-stable, and semantically inert) and false-negatives on positional-only bodies (Appendix A.3). It also derives strictly narrower than the key it would claim to derive, whose definition includes the positional forms. The body signal ships as the §10.1 advisory projection; the provider-support signal ships as a `provider_capability_coverage` row ([ACIF-REGISTRY]). Body-carried, therefore never `requires`-eligible ([ACIF-CORE] §9.3).
+
+The contrast case is [ACIF-MCP] §9.1's `env_var_expansion`, which IS a derivation despite also scanning for a token: its domain is a pinned closed set of structured wiring fields, while this scan's domain is unstructured body prose. The line is domain structure — the same rule disposes both.
 
 ### 9.2 OUT-OF-SCOPE-AT-L1: `builtin_commands` *(informative rationale)*
 
