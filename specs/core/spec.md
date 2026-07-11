@@ -276,6 +276,8 @@ Every interchange content type's extension block carries an OPTIONAL `requires` 
 
 In ACIF 0.1, the recognized `requires` vocabulary of **every** content type is empty: a conforming item's `requires` is empty or absent. The slot is reserved, not vestigial — it exists for genuinely out-of-band environmental requirements (§9.3) that no canonical field can carry.
 
+In canonical form, an empty `requires` map is omitted: empty and absent are one canonical state, and canonicalization normalizes `requires: {}` to absence. *(Informative: without this rule the two spellings would be distinct canonical bytes and, for sidecar-only types, distinct `body_hash` values for semantically identical items.)*
+
 ### 9.2 Three-way disposition and derivation predicates
 
 Every candidate capability key K in a content type's vocabulary is disposed to exactly one of:
