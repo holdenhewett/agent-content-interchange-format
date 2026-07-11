@@ -1,5 +1,23 @@
 # DRAFT
 
+> **Status (2026-05-12):** see `examples/obra/README.md` for trace status notes.
+> The delta below predates SHAPE.md and was written to surface asymmetries
+> between hook and skill traces. Most of those asymmetries are now closed by
+> SHAPE.md decisions:
+>
+> | Asymmetry surfaced here | Status | Resolved by |
+> |---|---|---|
+> | Sidecar-to-item binding mechanism | Resolved | Decision #14 (sidecar binds to content via `body_hash`; no naming convention required). |
+> | Multi-file content hash boundary | Resolved | Decision #19 (MOAT v0.4.0 directory hash for both content types). |
+> | Per-item vs package versioning | Resolved | Decision #16 (no inheritance), Decision #17 (`body_hash` canonical change signal), Decision #20 (SemVer when declared). |
+> | Auxiliary / supplementary files | Partial | Hook side resolved (SHAPE.md hook extension `auxiliary_files`); skill side still open (OQ-8). |
+> | Package / bundle concept | Resolved | Decision #18 (`kind: pack` L2 records with stable UUID identity; pack-less items first-class). |
+> | Discovery mechanism | Resolved for skills | Decision #22 (three-tier skill discovery). Hooks rely on `kind: hook` sidecar + UUIDv4 `id` per the common envelope. |
+> | Overlap with provider plugin manifests | Resolved | Decision #18 + panel/pack-model-consensus §8 (manifests are inference inputs, never canonical). |
+>
+> The "recommendation" in §2 (common envelope + type-specific extension block)
+> is exactly the structure SHAPE.md adopts — that line of thinking landed.
+
 # Delta: Hook Trace vs. Skill Trace
 
 Comparing `hook-session-start.md` and `skill-tdd.md` to surface asymmetries in the

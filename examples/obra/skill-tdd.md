@@ -1,5 +1,23 @@
 # DRAFT
 
+> **Status (2026-05-12):** see `examples/obra/README.md` for trace status notes.
+> The trace body below predates SHAPE.md; this header records which of the
+> "Questions raised" (bottom of file) have since been resolved.
+>
+> | Question | Status | Resolved by |
+> |---|---|---|
+> | Q1 — Content hash boundary for multi-file skills | Resolved | Decision #19 (MOAT v0.4.0 directory hash — all files in the skill directory; symlinks rejected; registry-generated sidecars excluded at root). |
+> | Q2 — `@testing-anti-patterns.md` is Claude Code-specific syntax | Still open | OQ-8 (skill `supplementary_files` declaration mechanism). |
+> | Q3 — Per-item vs package versioning | Resolved | Decision #16 (no inheritance; item `version` literal-or-absent), Decision #20 (SemVer 2.0.0 when declared), Decision #17 (`body_hash` is the canonical change signal; `version` is advisory). |
+> | Q4 — Primary file in a skill directory | Resolved | Decision #22 (`SKILL.md` canonical filename; heuristic + filename fallback for non-canonical layouts; non-conformant layouts out of scope). |
+> | Q5 — How does the registry discover skills | Resolved | Decision #22 (three-tier discovery: publisher-declared `skill_paths` → heuristic + filename fallback → non-conformant). |
+>
+> Where the body sketches an L3 entry as a flat record, the current model is the
+> two-section structure (`publisher_section` + `registry_section`) defined by
+> SHAPE.md Decision #11. UUIDv4 `id` is required per the common envelope and is
+> the load-bearing key for any future cross-content-type reference (e.g.,
+> hook → skill activation per Decision #21).
+
 # Trace: test-driven-development Skill — obra/superpowers
 
 ## Source

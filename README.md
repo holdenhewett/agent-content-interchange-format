@@ -12,6 +12,20 @@ Today, AI agent content is published in provider-native formats. A "hook" for Cl
 
 This project pulls those three concerns apart into independent specs that can be adopted incrementally.
 
+## Not a vendor plugin or marketplace system
+
+ACIF is **not** a plugin format, a marketplace schema, or a distribution mechanism for any single provider. It is a direct, open-source, provider-agnostic alternative to those systems.
+
+Vendor plugin and marketplace systems — Anthropic's `.claude-plugin/plugin.json` and `marketplace.json`, similar formats from other tooling vendors, and the various "install our extension to publish here" registries — are exactly the problem ACIF exists to solve. They tie content authors to one vendor's distribution path. Adopting a vendor's plugin format means accepting that vendor's roadmap, that vendor's discovery surface, that vendor's installation flow, and that vendor's terms. If your skill or rule or agent only ships through one vendor's marketplace, your content lives at that vendor's pleasure.
+
+ACIF treats those systems as the status quo it competes with, not as authoritative inputs to its design:
+
+- ACIF's carrier model, hashing, and discovery rules are designed around the **content itself** — the SKILL.md directory, the `.mdc` rule file, the AGENTS.md marker, the `.mcp.json` runtime wiring — not around any vendor's plugin manifest.
+- Vendor plugin and marketplace manifests are not in ACIF's content-source precedence chain. A repo that ships only a `.claude-plugin/marketplace.json` is treated as a repo with no ACIF pack identity (registry-inferred, per Decision #18) — same treatment as a repo with no manifest at all.
+- ACIF's "publish once, render to N tools" model deliberately routes around vendor distribution lock-in. Publishers describe content in a neutral format; registries serve it without vendor approval; render-back emits provider-native files for whichever tools the consumer actually uses.
+
+The six content types ACIF cares about — **hook, skill, rule, command, agent, mcp_config** — are the units that should be portable. Vendor plugin and marketplace systems are distribution wrappers around those units. ACIF is the alternative wrapper: open, neutral, and not owned by any one vendor.
+
 ## The four layers
 
 ```
@@ -61,8 +75,8 @@ One spec per content type. Each is a standalone document that defines:
 
 | Content type | Canonical format | Spec status |
 |---|---|---|
-| Hooks | HIF v0.1.0 → hooks-interchange | Externalized exemplar |
-| Skills | Implemented in syllago | Not yet externalized |
+| Hooks | HIF in syllago (`docs/provider-formats/*.yaml`, canonical-keys.yaml) | Exemplar — not yet pulled into `specs/hooks-interchange/` |
+| Skills | Implemented in syllago | Draft at `specs/skill-interchange/spec.md` (snapshot 2026-05-11) |
 | MCP configs | Implemented in syllago | Not yet externalized |
 | Commands | Implemented in syllago | Not yet externalized |
 | Sub-agents | Implemented in syllago | Not yet externalized |

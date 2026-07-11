@@ -10,16 +10,19 @@
 Fields shared by all content types. Present in every manifest regardless of `kind`.
 
 ```yaml
-kind: hook | skill | rule | command | agent | mcp_config  # required
+kind: hook | skill | rule | command | agent | mcp_config | pack  # required
 id: "f47ac10b-58cc-4372-a567-0e02b2c3d479"               # required — UUID v4, generated once, never changes
 display_name: "Session Start: Inject Prompt"             # required — human-readable, for display only
-version: "5.1.0"                                         # optional — inherits from package if absent
+version: "5.1.0"                                         # OPTIONAL — literal-or-absent. When declared, MUST be valid SemVer 2.0.0 (Decision #20). NO inheritance (Decision #16). Pack version lives on the pack record only.
 description: "Injects system context at session start."  # optional
 license:                                                 # optional
   spdx: MIT                                              # required if license block present
   file: LICENSE                                          # optional — relative path in repo
   url: https://example.com/license.txt                  # optional — absolute URL (for externally hosted)
+pack_id: "a1b2c3d4-..."                                  # OPTIONAL — UUIDv4 publisher-declared pack membership. See Decision #18. Lives in publisher_section.
 ```
+
+**Forbidden item fields** (Decision #16, enforceable by lint): `effective_version`, `derived_version`, `pack_inherited_version`, `resolved_version`. The presence of any of these on an item record is a conformance error.
 
 ---
 
@@ -67,10 +70,114 @@ hook:
 
   blocking: false               # optional — default false
 
-  requires:                     # optional — capability requirements (replaces provider list)
-    matcher_patterns: [event_name]
-    json_io_protocol: false
+  requires: {}                  # OPTIONAL — empty/absent for v0.1 (Decision #23).
+                                # Of nine Syllago canonical hook capability keys, three are
+                                # DERIVABLE via per-key D_K predicates (handler_types over
+                                # Hooks[*].Type with closed enum {command, http, prompt, agent}
+                                # pinned per Decision #29; matcher_patterns over Matcher with
+                                # canonical event vocab pinned per Decision #29; async_execution
+                                # over Hooks[*].Async). Six are OUT-OF-SCOPE-AT-L1: hook_scopes
+                                # (install-location), and decision_control / input_modification /
+                                # json_io_protocol / context_injection / permission_control (all
+                                # under script-body opacity — capability semantics live in script
+                                # body bytes that the canonical wiring carries opaquely).
+                                # Runtime hints (python, node, powershell) deferred to roadmap.
+                                # See panel/hooks-requires-consensus.md.
+
+  activation_target:            # optional — present when this hook activates a skill (Decision #21)
+    skill:
+      id: "550e8400-..."        # required — item UUIDv4 of the target skill; load-bearing cross-reference key
+      name: "tdd-workflow"      # optional — human-readable advisory only; renames don't break the UUID reference
 ```
+
+---
+
+## Skill Extension Block
+
+Appended below the common envelope when `kind: skill`.
+
+```yaml
+skill:
+  activation:                   # optional — defaults to type: auto when absent (Decision #21)
+    type: manual | auto | hook  # required when activation block present
+                                # manual: user explicitly invokes (e.g., /skillname)
+                                # auto:   model decides based on description (current default behavior)
+                                # hook:   a hook makes the activation decision; see activation_target on hook side
+    hook_ref:                   # required when type: hook; absent for manual/auto
+      id: "f47ac10b-..."        # required — item UUIDv4 of the activating hook
+      name: "skill-activator"   # optional — human-readable advisory only
+```
+
+**Canonical truth for hook → skill activation lives on the hook** (`activation_target`). The skill's `activation.type: hook` is a discovery convenience; the `hook_ref` on the skill is optional (the registry can resolve the reverse mapping from hook records).
+
+**Skill discovery** (Decision #22): publishers SHOULD ship skills as `SKILL.md` inside a skill-named directory. Three discovery tiers apply:
+
+1. **Publisher-declared** — pack manifest declares `skill_paths: ["./skills/", "./advanced/"]`. Registry uses these.
+2. **Heuristic + filename fallback** — registry scans known dirs; accepts `SKILL.md` (canonical), `*.md` with `kind: skill` frontmatter (heuristic), or bare `.md` with filename → `name` (fallback).
+3. **Non-conformant** — arbitrary layouts with no manifest and no frontmatter are out of scope; publisher must conform.
+
+---
+
+## Pack Extension Block
+
+Appended below the common envelope when `kind: pack`. Pack records MAY be publisher-declared (authored sidecar at repo root) or registry-inferred (generated from inference algorithm v0.1).
+
+```yaml
+kind: pack
+id: "f47ac10b-58cc-4372-a567-0e02b2c3d479"   # UUIDv4 if publisher-declared; UUIDv5 if registry-inferred
+display_name: "superpowers"                  # required — mutable; not the stable identifier
+version: "5.1.0"                             # OPTIONAL — pack's own version. Lives ONLY on the pack record, never propagates to items.
+description: "Skills and hooks for AI coding tools"
+license:
+  spdx: MIT
+repository_url: "https://github.com/obra/superpowers"  # required — canonical fetch URL
+
+pack:
+  source_kind: declared | inferred           # required — declared (publisher authored) or inferred (registry computed)
+  canonical_address: "obra/superpowers"      # required — <owner>/<display_name> form for user-facing URLs
+  inference_version: "v0.1"                  # required iff source_kind=inferred — which algorithm produced this record
+```
+
+**Pack `items` list lives in `registry_section`, not here.** The items list is OUTPUT of the pack-membership predicate (Decision #18), computed by the registry on every relevant change. Publishers do not author it.
+
+**Pack-membership predicate:**
+
+```
+item M ∈ pack P  iff
+    M.publisher_section.pack_id == P.id
+  OR
+    (M.publisher_section.pack_id absent AND M.registry_section.inferred_pack_id == P.id)
+```
+
+Declared wins over inferred when both exist and differ.
+
+---
+
+## MCP Extension Block
+
+Appended below the common envelope when `kind: mcp_config`. The block carries the canonical MCP wiring (server definitions) plus any author-declared non-derivable capabilities in `requires`.
+
+```yaml
+mcp:
+  servers:                              # required when block has content — map: server name → wiring
+    figma:
+      command: "npx"                    # stdio transport (mutex with url; see Decision #24)
+      args: ["-y", "@figma/mcp-server"]
+      env: {FIGMA_TOKEN: "${FIGMA_TOKEN}"}
+      type: stdio                       # required in canonical form; materialized at canonicalization (Decision #24)
+                                        # permitted values: stdio | sse | streamable-http
+      # Additional fields per the canonical mcpServerConfig: oauth (opaque), cwd, headers, url,
+      # includeTools, excludeTools, disabledTools, autoApprove, disabled, ...
+      # ACIF carries the canonical envelope 1:1 to preserve round-trip with the canonicalizer.
+
+  requires: {}                          # OPTIONAL — empty/absent for v0.1 (Decision #23).
+                                        # All eight Syllago canonical MCP capability keys are
+                                        # DERIVABLE per per-key predicates D_K over servers.* fields;
+                                        # nothing goes in requires until a key lacks a D_K
+                                        # (empty-as-steady-state, not a gap to fill).
+```
+
+**Server names** are within-item identifiers and SHOULD match `^[a-zA-Z][a-zA-Z0-9_-]*$`. Implementations MUST treat server names as opaque strings for cross-reference resolution within an item. The MCP protocol specification (2025-06-18) is silent on config-level server names; this constraint fills the gap without contradicting future MCP working-group decisions. If a future MCP revision defines server-name constraints at the configuration layer, those constraints take precedence over this recommendation.
 
 ---
 
@@ -89,10 +196,24 @@ hook:
 | 9 | `event` is distinct from `display_name` | `event` = WHEN (lifecycle trigger); `display_name` = WHAT (behavior description). A repo can have two hooks on the same event — they need distinct, meaningful names. |
 | 10 | Sidecar is the universal primary carrier | Sidecar files are generated for every content type without exception. For hooks and mcp_configs the sidecar is the only input surface. For skills, rules, agents, and commands, frontmatter is an optional supplementary layer — hand-authored or CI-populated. The sidecar is always canonical; frontmatter reflects it, not the other way around. Registries MUST NOT write to source files. |
 | 11 | Two-section L2 record (`publisher_section` + `registry_section`) | Structure is the provenance. No merge layer, no per-field markers. `publisher_section` = registry's faithful observation of frontmatter; `registry_section` = computed fields. |
-| 12 | `body_hash` is distinct from any external integrity hash | Body hash covers content body bytes only (frontmatter stripped, LF-normalized). An external integrity system may compute its own hash over different bytes. The two are not interchangeable and the spec does not equate them. |
+| 12 | `body_hash` is distinct from any external integrity hash | Body hash covers content body bytes only (single-file: frontmatter stripped + LF-normalized; multi-file: MOAT v0.4.0 directory hash per Decision #19). An external integrity system may compute its own hash over different bytes. The two are not interchangeable and the spec does not equate them. |
 | 13 | No external system named in spec text | The spec defines a slot (`attestation_hash` in `registry_section`) for an external integrity/attestation hash. What fills that slot is an implementation choice. No specific system is named. |
-| 14 | Sidecar binding by `body_hash` (single-file items) | The sidecar's `body_hash` uniquely identifies the content file it annotates. No naming convention required. Multi-file binding deferred (OQ-2). |
+| 14 | Sidecar binding by `body_hash` | The sidecar's `body_hash` uniquely identifies the content (single file or directory) it annotates. No naming convention required. Multi-file binding resolved via Decision #19 (MOAT directory hash). |
 | 15 | Frontmatter CI reconciliation: block on conflict, overwrite on opt-in | When the frontmatter CI finds an ACIF field already present in a source file that conflicts with the canonical sidecar value, the default behavior is to block the build and surface the conflict — no silent overwrites. Auto-overwrite (with logging) is available via an explicit CI input (`conflict-resolution: overwrite`). Missing ACIF fields are added silently (non-destructive). Non-ACIF fields always pass through untouched regardless of setting. |
+| 16 | No version inheritance into item records | Item `version` is literal-or-absent. Pack `version` lives on the pack record only. Forbidden item fields: `effective_version`, `derived_version`, `pack_inherited_version`, `resolved_version`. Enforceable by lint and conformance test (TV-6, TV-7). Rationale: per-item version inheritance via derived fields is mostly UI text dressed up as a sync primitive — `body_hash` already serves the change-detection use case at zero author cost. Closes the silent-staleness regression path. |
+| 17 | `body_hash` is the canonical per-item change signal, surfaced to all consumers | Sync, update, and discovery tools rely on `body_hash` as the canonical change signal. `version` is advisory; `body_hash` is dispositive. Registries MUST expose `body_hash` in all consumer-facing item responses and MUST provide a per-pack tuple-set endpoint returning `(item_id, body_hash, version_if_declared)` so sync tools poll one pack with one request instead of N item requests. Reinforces Decision #12 with a consumer-surface requirement. |
+| 18 | Pack records are `kind: pack` L2 records with stable UUID identity | Pack membership predicate: an item belongs to pack P iff `publisher_section.pack_id == P.id` OR (`publisher_section.pack_id` absent AND `registry_section.inferred_pack_id == P.id`). `pack.registry_section.items` is OUTPUT of the predicate, not input. `pack_resolution` states: `declared | inferred | unresolved`. `display_name` is mutable; `id` (UUID) is immutable. Two paths: publisher-declared (`pack.id` is UUIDv4) and registry-inferred (`inferred_pack_id` is UUIDv5 over canonicalized `repository_url` + `display_name` with a spec-pinned namespace constant). Declared wins over inferred. Pack-less items are first-class. See `panel/pack-model-consensus.md` and Inference Algorithm v0.1 appendix. |
+| 19 | `body_hash` algorithm is the MOAT v0.4.0 content-hash algorithm | ACIF adopts MOAT v0.4.0's content-hash algorithm verbatim as the canonical `body_hash` algorithm for both single-file and multi-file items. Key properties: per-file text/binary classification (closed `TEXT_EXTENSIONS` set + 8KB NUL-byte scan), UTF-8 BOM strip + CRLF→LF normalization for text files, raw bytes for binary, directory-level combine, VCS directories excluded, symlinks rejected at ingestion. **ACIF analog of MOAT's `moat-attestation.json` exclusion:** any registry-generated sidecar file stored inside the content directory is excluded from `body_hash` at root-only (circular-dependency guard). **Spec text:** the algorithm is defined inline (or by reference to a published algorithm document); MOAT is credited in informative text only — Decision #13's no-naming rule applies to the `attestation_hash` slot, not to ACIF's own `body_hash` algorithm. **Resolves OQ-2.** Reference impl: `../moat/reference/moat_hash.py`. Test vector generator: `../moat/reference/generate_test_vectors.py` (the test vectors are normatively authoritative; the reference script is informative). |
+| 20 | When `version` is declared, it MUST be valid SemVer 2.0.0 | Item `version` remains literal-or-absent (Decision #16). When present, the value MUST conform to SemVer 2.0.0. Patch level is permitted but not required — publishers MAY bump minor for any meaningful content change and effectively leave patch as `0`. Rationale: SemVer is the convention the surrounding tooling ecosystem already speaks (npm-style ranges, dependabot-style alerts). CalVer's same-day-edit ambiguity and MAJOR.MINOR's lack of independent value over "SemVer with patch unused" tip the balance. `body_hash` (Decision #17) remains the canonical change signal; `version` is the optional semantic-ordering and human-readability layer. Empirical grounding: [`research/repo-survey/round2-findings.md`](research/repo-survey/round2-findings.md) Versioning section. |
+| 21 | Hook → skill activation cross-references use item UUIDv4 | A hook MAY declare `activation_target.skill.id` (UUIDv4 from SHAPE.md line 14) pointing to a skill whose injection it controls. A skill MAY declare `activation.type: manual | auto | hook` with an optional `hook_ref.id` when type is `hook`. Canonical truth lives on the hook (`activation_target`); the skill's `activation` block is a discovery convenience. Cross-references use item UUIDv4 — not `(pack_id, name)` — because UUIDv4 is globally unique by construction, renames don't break references, and no name-stability lint check is required. The `name` field on both sides is human-readable advisory only. This is the first cross-content-type relationship in ACIF; resolving it cleanly with item UUIDs sets the pattern for any future cross-references. Empirical grounding: `diet103/claude-code-infrastructure-showcase` `skill-rules.json` pattern. |
+| 22 | Three-tier skill discovery: publisher-declared > heuristic+frontmatter > non-conformant | Registries discover skill items via three tiers, in order: (1) **Publisher-declared** — pack manifest declares `skill_paths: ["./skills/", "./advanced/"]`; registry uses those. (2) **Heuristic + filename fallback** — registry scans known directories; accepts `SKILL.md` (canonical filename), any `*.md` with `kind: skill` frontmatter (heuristic), or bare `.md` with the filename used as `name` (fallback). (3) **Non-conformant** — arbitrary layouts with no manifest and no frontmatter are out of scope; publisher action required. Round 1 finding #8 showed ~⅓ of high-star repos ship no manifest at all — tier 2 is essential for adoption. Tier 1 is the "manual pointer" mechanism for publishers with non-standard layouts. Empirical grounding: [`research/repo-survey/round2-findings.md`](research/repo-survey/round2-findings.md) finding #17. |
+| 23 | `requires` vocabulary is per-content-type; derivability via predicate `D_K` is the gating test | The `requires` block declares **author-declared capabilities** the harness must support to run the content. **Three-way disposition** for each candidate `requires` key K in a content type's canonical vocabulary: **DERIVABLE** — the spec specifies an explicit derivation predicate `D_K` over the canonical body; a conformance test applies `D_K` directly and asserts the result is one of `{derivable-true, derivable-false}`; K is dropped from `requires` because the predicate provides the signal. **D_K boolean discipline:** set-valued projections (e.g., the distinct values produced by a key, such as the set of transport types or hook event names) are NOT `D_K` outputs; they are computed projections surfaced via Decision #26's `derived_capabilities`. **OUT-OF-SCOPE-AT-L1** — K names a capability concern not author-declared at the L1 canonical layer (harness UX, install-context, meta-property, or **script-body opacity** — where the canonical wiring carries the capability-bearing artifact as opaque bytes, so the field-presence tiebreaker degenerates); recorded in informative rationale; NOT validator-testable. **`requires`-ELIGIBLE** — no `D_K` exists AND the capability IS author-declared; K is admitted to the content type's `requires` vocabulary. **Tiebreaker rule:** canonical field present → DERIVABLE (cite the field). Canonical field absent + capability would be authored if present → spec gap (add the field or admit to `requires`). Canonical field absent + capability is harness-decided or install-context-determined → OUT-OF-SCOPE-AT-L1. **Empty-as-steady-state:** the structural slot exists per content type (preserves cross-type uniformity), but empty `requires` is the EXPECTED steady state when canonical wiring fully exposes capability. Empty slots are NOT gaps to fill; the slot exists for the unauthored-but-required case (runtime hints, version pins, capabilities not yet expressed in any canonical field). **MCP application:** all eight Syllago canonical capability keys (`transport_types`, `oauth_support`, `env_var_expansion`, `tool_filtering`, `auto_approve`, `marketplace`, `enterprise_management`, `resource_referencing`) are DERIVABLE per per-key predicates over `servers.*` fields. `mcp.requires` is therefore empty/absent for v0.1. **Agents application:** all seven Syllago canonical agent capability keys resolve to DERIVABLE — `tool_restrictions` (`D_K: len(B.Tools)>0 OR len(B.DisallowedTools)>0`); `model_selection` (`D_K: B.Model != ""`); `per_agent_mcp` (`D_K: len(B.MCPServers)>0`); `subagent_spawning` (`D_K: contains(B.Tools, "agent")` — depends on Decision #25 canonical-tool-name pinning) — or OUT-OF-SCOPE-AT-L1 — `definition_format` (meta-property: canonical body IS the format); `invocation_patterns` (harness UX picker concern); `agent_scopes` (install-location-determined at L3/L4). `agents.requires` is therefore empty/absent for v0.1. **Hooks application:** Of nine Syllago canonical hook capability keys, three resolve to DERIVABLE — `handler_types` (`D_K: exists i. B.Hooks[i].Type != ""` with closed enum `{command, http, prompt, agent}` pinned per Decision #29; the set of distinct types is registry-projected to `derived_capabilities`); `matcher_patterns` (`D_K: B.Matcher != ""` with canonical event vocabulary pinned per Decision #29); `async_execution` (`D_K: exists i. B.Hooks[i].Async == true`). Six resolve to OUT-OF-SCOPE-AT-L1 — `hook_scopes` (install-location, parallel to agents' `agent_scopes`); `decision_control`, `input_modification`, `json_io_protocol`, `context_injection`, `permission_control` (all under script-body opacity — capability semantics live in script body bytes that the canonical wiring carries opaquely). Runtime hints (`python: ">=3.10"`, `node: ">=18"`, `powershell: true`) deferred to the ACIF roadmap. `hooks.requires` is therefore empty/absent for v0.1; three content types now resolve empty under Decision #23 (empty-as-steady-state holds three-for-three). **Three-valued unknown-key logic:** when a `requires` key exists but the consumer doesn't recognize it, the evaluation is `unknown` — distinct from `satisfied` and `unsatisfied`. Two-valued semantics (silent fail-open or silent fail-closed on unknown keys) are non-conformant; installers MUST refuse items with `unknown` capability status unless the operator has explicitly opted into ignore-unknown semantics. **Cross-content-type scoping:** each content type defines its own recognized `requires` vocabulary; an item with a `requires.<key>` not defined for its content type is non-conformant (orphan-key reject). **Sub-blocks rejected by panel review** (MCP walk): `marketplace_listings` (publisher is wrong source of truth — aggregator-pulls-not-publisher-pushes), `enterprise` (no honest equilibrium for `managed_default_candidate`; `notes` is unmoderable free-text at registry scale), `advisory` (silent-failure shape; works-fine-without-it test fails). **Misclassified candidates dropped** (MCP walk): `sandbox` and `interactive_inputs` are harness UX/policy (runtime/IDE concerns), not author-declared capabilities — they do not belong in `requires` regardless of adoption. **Roadmap entries:** `env_file_reference`, `path_variable_expansion` as candidate MCP `requires` keys if they ever become genuinely non-derivable (today both are observable in `servers.*` string values via predicate). Panel: Remy / Karpathy / spec-purist / registry-operator (see `panel/mcp-requires-consensus.md` for the MCP deliberation, `panel/agents-requires-consensus.md` for the agents deliberation and the three-way-disposition amendment, and `panel/hooks-requires-consensus.md` for the hooks deliberation including the script-body opacity sub-rationale, D_K boolean discipline, and the 3:1 Position A selection). **Resolves the principle layer of OQ-7;** per-content-type vocabulary walks (hooks, skills, rules, commands) apply the same derivability test under the three-way disposition. |
+| 24 | MCP wiring canonicalization: defaults at canonicalization, ambiguous and undetermined rejected | The canonicalizer MUST materialize the explicit `type` field on each MCP server before `body_hash` is computed. Default application rules: `type` absent + `command` present + `url` absent → materialize `type: stdio`; `type` absent + `url` present + `command` absent → materialize `type: streamable-http`; `type` absent + both `command` and `url` present → REJECT (`acif.mcp.transport_default_ambiguous`); `type` absent + neither → REJECT (`acif.mcp.transport_default_undetermined`). `body_hash` is computed over the post-default canonical form. Renderers to provider-specific formats MAY strip explicit `type` for ergonomic output; round-trip back to canonical form is deterministic via the same single-source default rule. **Rationale:** prevents drift between the canonicalizer's default application and any consumer's default application — one rule, one place to update. Validators consume the post-default canonical form and MUST NOT re-apply defaults at validation time. Test vectors TV-MCP-* exercise the default-application boundary; the ambiguous and undetermined cases produce conformance errors with named error codes for tooling interop. |
+| 25 | Canonical neutral tool vocabulary anchored to Syllago | ACIF pins canonical neutral tool names by frozen-snapshot reference to Syllago's `cli/internal/converter/toolmap.go` vocabulary. The spawn-subagent tool is the canonical neutral name `agent` (mapping at render-back to provider-specific `Agent` / `task` / `spawn_agent` / `use_subagent` / `Task`). `body_hash` (Decision #19) is computed over the post-translation canonical form — canonicalization rewrites provider-specific tool names to canonical neutral names before hashing. Snapshot pinning protects against downstream churn in Syllago's vocab. **Required by:** Decision #23 agents application — the `subagent_spawning` derivability predicate `D_K: contains(B.Tools, "agent")` is unfulfillable without canonical-name pinning. **Test vectors:** TV-AGENT-derivability-subagent-spawning and TV-AGENT-tool-name-canonicalization (Appendix B). See `panel/agents-requires-consensus.md` §3. |
+| 26 | Registry-computed `derived_capabilities` projection | Every conforming registry MUST compute a `derived_capabilities` projection on each item at ingest, applying each DERIVABLE key's predicate `D_K` (Decision #23) over the canonical body. Projection is registry-computed; NOT carried in the L2 `publisher_section` (zero author burden). Exposed on registry-surface item responses for installer-side capability filtering. Exact on-the-wire format deferred until registry implementation needs are observed; the compute requirement is normative now. See `panel/agents-requires-consensus.md` §6a. |
+| 27 | `body_size_bytes` registry field — addendum to Decision #19 | Every conforming registry MUST expose `body_size_bytes` (uint, byte count of the canonical body input to the `body_hash` algorithm) alongside `body_hash` on item responses. Supports content-moderation cost-bounding at serve time without re-fetching the body. **Motivation:** agent and skill prose bodies become system prompts at runtime — injection content there is load-bearing, and registries need a cheap pre-filter signal to bound moderation scan cost. Cheap registry-compute hook already present at ingest (the body bytes are already in hand to compute `body_hash`). See `panel/agents-requires-consensus.md` §6b. |
+| 28 | Cross-content-type reference resolution enum | For cross-content-type references carried on items (e.g., `agent.MCPServers []string` referencing `mcp_config` items; `agent.Skills []string` referencing `skill` items), every conforming registry MUST resolve each reference at compute time into one of four states: `declared | resolved | unresolved | revoked`. Each resolved reference exposes the resolved target's UUIDv4; `unresolved` and `revoked` references MUST emit diagnostics naming the missing or revoked target. Install tools MUST refuse items with any `unresolved` or `revoked` reference unless the operator has explicitly opted in (parallel to Decision #18's `pack_resolution: unresolved` install-refuse rule). Parallel in shape to Decision #18's `pack_resolution` enum, but per-reference rather than per-item. See `panel/agents-requires-consensus.md` §6c. |
+| 29 | Canonical hook event vocabulary + handler-type enum pinning | ACIF pins two canonical hook vocabularies by frozen-snapshot reference to Syllago. (a) **Canonical hook event vocabulary** — approximately 30 canonical event names (`before_tool_execute`, `session_start`, `permission_request`, etc.) drawn from Syllago's `cli/internal/converter/toolmap.go` HookEvents map. (b) **Handler-type closed enum** — `HookEntry.Type ∈ {command, http, prompt, agent}` drawn from Syllago's `cli/internal/converter/hooks.go` `HookEntry.Type` field. Canonicalization rewrites provider-specific event names and handler-type names to the pinned canonical vocabulary before `body_hash` (Decision #19) is computed. Renderers MAY translate to provider-specific names at render-back. Snapshot pinning protects against downstream churn in Syllago's vocab; long-tail provider coverage (~16 events have single-provider coverage in current empirical data) is observational, not a relaxation of the canonical vocabulary. **Required by:** Decision #23 hooks application — the `D_K: handler_types` predicate over `Hooks[*].Type` and the canonical event-name round-trip conformance test are unfulfillable without pinned closed-enum vocabularies. **Test vectors:** TV-HOOK-canonical-event-name and TV-HOOK-canonical-handler-type (Appendix B). Parallel structure to Decision #25. See `panel/hooks-requires-consensus.md` §5. |
 
 ---
 
@@ -102,15 +223,68 @@ The `registry_section` of every L2 record. Always present; never sourced from pu
 
 ```yaml
 registry_section:
-  body_hash:                          # REQUIRED — SHA-256 over content body, frontmatter stripped, LF-normalized
-    algorithm: sha256                 # single-file items only (see OQ-2)
-    value: "abc123..."
+  body_hash:                          # REQUIRED — per Decision #19, computed by the MOAT v0.4.0 content-hash algorithm
+    algorithm: sha256                 # Single-file items: SHA-256 over content body, frontmatter stripped, LF-normalized.
+    value: "abc123..."                # Multi-file items: MOAT directory hash — per-file text/binary classification,
+                                      # UTF-8 BOM strip + CRLF→LF for text, raw bytes for binary, VCS dirs excluded,
+                                      # symlinks rejected. Registry-generated sidecars inside the content dir are
+                                      # excluded at root only (circular-dependency guard).
+                                      # NOTE: body_hash MUST be surfaced to ALL consumer-facing responses (Decision #17).
+                                      # It is the canonical per-item change signal — not gated behind attestation.
+  body_size_bytes: 4096               # REQUIRED — uint, byte count of the canonical body input to the body_hash
+                                      # algorithm. Per Decision #27 (addendum to Decision #19). Cost-bounds
+                                      # content-moderation scans at serve time without re-fetching the body.
   metadata_hash:                      # REQUIRED when publisher_section is present
-    algorithm: sha256                 # SHA-256 over canonical frontmatter (keys sorted, comments stripped)
-    value: "def456..."
+    algorithm: sha256                 # SHA-256 over canonical publisher_section bytes (UTF-8 JSON, sorted keys, no whitespace, LF)
+    value: "def456..."                # PATH α: over publisher_section bytes ONLY. Invariant under pack-context changes.
   attestation_hash:                   # OPTIONAL — hash from an external integrity/attestation system
     algorithm: sha256                 # populated by that system; distinct algorithm and byte sequence from body_hash
     value: "ghi789..."                # what system produced this is an implementation detail, not named here
+  cross_references:                   # OPTIONAL — present when the canonical body declares cross-content-type refs.
+                                      # Registry-computed per Decision #28. One entry per declared reference.
+    - source_path: "agent.MCPServers[0]"  # JSON path into the canonical body identifying the reference site
+      declared_name: "figma"              # the bare string the publisher wrote at source_path
+      target_kind: mcp_config             # the content type expected at the target
+      target_id: "a1b2c3d4-..."           # REQUIRED iff resolution=resolved; UUIDv4 of the resolved target item
+      resolution: resolved                # declared | resolved | unresolved | revoked
+      diagnostic: ""                      # REQUIRED for unresolved | revoked; names the missing/revoked target.
+                                          # Install tools MUST refuse items with any unresolved/revoked entry
+                                          # unless the operator has explicitly opted in.
+  derived_capabilities:               # OPTIONAL — registry-computed projection per Decision #26.
+                                      # Output of each DERIVABLE key's predicate D_K applied to the
+                                      # canonical body. Not stored in publisher_section (zero author
+                                      # burden). Exposed for installer-side capability filtering.
+                                      # D_K outputs are boolean per Decision #23; set-valued
+                                      # projections (e.g., distinct handler types observed) live
+                                      # under from_canonical alongside the boolean output.
+    from_canonical:                   # sub-projection: predicate output + canonical-set projections.
+      # Per-content-type entries; example shows hooks-shape:
+      handler_types:
+        derivable: true               # boolean D_K output (Decision #23 D_K boolean discipline)
+        set: ["command", "http"]      # distinct values observed in canonical body
+      matcher_patterns:
+        derivable: true
+      async_execution:
+        derivable: false
+      event_provider_coverage:        # registry-computed map: canonical event → providers recognizing it
+        session_start: ["claude-code", "cursor", "copilot-cli"]
+        # Decision #29 anchors the event-name vocabulary by frozen snapshot.
+        # Supports installer-side event-coverage filtering.
+  install_scope_capabilities:         # OPTIONAL — registry-computed projection. Distinct provenance
+                                      # from derived_capabilities: publisher-blind, install-context-
+                                      # aware. Surfaces install-scope compatibility (e.g., hook_scopes
+                                      # OOS-L1 disposition rendered as an install-scope projection
+                                      # for enterprise/personal install-path filtering).
+    global: true
+    user: true
+    project: true
+    managed: false
+  inferred_pack_id: "b2c3d4e5-..."   # OPTIONAL — UUIDv5 registry-computed pack association (Decision #18).
+                                      # Present iff publisher_section.pack_id is absent AND registry inferred a pack.
+  pack_resolution: "inferred"        # OPTIONAL — declared | inferred | unresolved
+                                      # unresolved: publisher_section.pack_id present but pack record missing.
+                                      # Install tools MUST refuse unresolved items.
+  inference_version: "v0.1"          # REQUIRED when inferred_pack_id present — declares which inference algorithm produced it
   fetched_at: "2026-05-11T18:00:00Z" # REQUIRED — RFC 3339 UTC, set at crawl time (not sidecar generation time)
   expires: "2026-05-14T18:00:00Z"    # OPTIONAL — default staleness: 72 hours from fetched_at if absent
   source_uri: "https://..."          # REQUIRED — canonical fetch URL; used to override copy-invalidated frontmatter fields
@@ -118,9 +292,13 @@ registry_section:
   publisher_metadata: "declared"     # OPTIONAL INFORMATIVE — declared | auto-generated | unknown
                                      # NOTE: "declared" means the registry observed frontmatter at crawl time.
                                      # It does NOT mean the publisher cryptographically attested these fields.
+  generated_at: "2026-05-11T18:00:00Z"  # OPTIONAL (v0.1) — when this response was assembled by the registry
+  max_staleness: "PT1H"              # OPTIONAL (v0.1) — registry's advertised freshness contract (ISO 8601 duration)
 ```
 
 **Registries MUST NOT write to source files.** All registry-generated metadata lives in sidecars only.
+
+**Forbidden item-record fields** (Decision #16): `effective_version`, `derived_version`, `pack_inherited_version`, `resolved_version`. These MUST NOT appear in either `publisher_section` or `registry_section` on item records. They MAY appear on pack records under the appropriate semantics (a pack's `version` is its own, not inherited).
 
 ---
 
@@ -128,12 +306,95 @@ registry_section:
 
 | # | Status | Question |
 |---|---|---|
-| OQ-1 | **Resolved (single-file only)** | Sidecar binding uses `body_hash` as the identity key. The sidecar's `body_hash` matches the hash of the content file it annotates — no naming convention required. Two hooks on the same event have different script bodies → different hashes → unambiguous binding. Multi-file binding deferred to OQ-2. |
-| OQ-2 | **Explicitly deferred** | Content hash boundary for multi-file items: which files are in scope for `body_hash`? Until resolved, `body_hash` is normative for single-file items only. Implementations MUST NOT self-derive a multi-file algorithm. |
-| OQ-3 | **Open** | Package/bundle concept — individual registry entries need a way to reference their parent package so install tools can group them. Not yet modeled. |
-| OQ-4 | **Open** | Version inheritance — when does an item use its own `version` vs. inherit from the package? |
+| OQ-1 | **Resolved** | Sidecar binding uses `body_hash` as the identity key. Single-file items: hash of the content file. Multi-file items: MOAT directory hash (Decision #19). Two hooks on the same event have different script bodies → different hashes → unambiguous binding. |
+| OQ-2 | **Resolved** | Content hash boundary for multi-file items: ACIF adopts the MOAT v0.4.0 content-hash algorithm verbatim. Closed `TEXT_EXTENSIONS` set, NUL-byte binary detection, BOM/CRLF normalization for text, VCS directories excluded, symlinks rejected at ingestion. Registry-generated sidecar files inside the content directory are excluded at root only (circular-dependency guard, analog of MOAT's `moat-attestation.json` rule). See Decision #19. |
+| OQ-3 | **Resolved** | Pack model — `kind: pack` L2 record with stable UUID identity. Two paths: registry-inferred (Option C primary, via v0.1 inference algorithm) and publisher-declared (Option A opt-in). Declared wins on conflict. Pack-less items are first-class. See Decision #18 and `panel/pack-model-consensus.md`. |
+| OQ-4 | **Resolved** | No version inheritance into item records. Item `version` is literal-or-absent. Pack `version` lives on pack record only. `body_hash` is the canonical per-item change signal, surfaced normatively to all consumers. See Decisions #16, #17 and `panel/pack-model-consensus.md`. |
 | OQ-5 | **Addressed** | Registry transparency: `publisher_declared` (bool, REQUIRED) + `publisher_metadata` (enum, OPTIONAL INFORMATIVE). See registry section schema above. |
 | OQ-6 | **Open** | `os`/`arch` defaults — when `os` is absent from a script entry, does it mean "all OS" or "unspecified"? |
-| OQ-7 | **Open** | `requires` vocabulary — complete canonical list of hook capability keys. Not yet formally mapped to the `requires` block. |
+| OQ-7 | **Principle resolved; per-type walks in progress** | `requires` vocabulary — Decision #23 establishes the principle (three-way disposition: DERIVABLE / OUT-OF-SCOPE-AT-L1 / `requires`-ELIGIBLE; predicate-explicit derivability `D_K`; tiebreaker rule; empty-as-steady-state; three-valued unknown-key logic; orphan-key reject for cross-type scoping). **MCP slice resolved:** `mcp.requires` empty/absent for v0.1 (all 8 Syllago canonical keys DERIVABLE by `D_K` over `servers.*`). **Agents slice resolved:** `agents.requires` empty/absent for v0.1 (5 of 7 Syllago canonical keys DERIVABLE, 2 OUT-OF-SCOPE-AT-L1). **Hooks slice resolved:** `hooks.requires` empty/absent for v0.1 (3 of 9 Syllago canonical keys DERIVABLE — `handler_types`, `matcher_patterns`, `async_execution`; 6 OUT-OF-SCOPE-AT-L1 — `hook_scopes` install-location plus five script-runtime keys under the new script-body opacity sub-rationale; runtime hints deferred to roadmap). First non-unanimous panel (3:1); Position A — empty-`requires` for v0.1 — adopted. New normative scaffolding from hooks walk: Decision #29 (canonical hook event vocab + handler-type enum pinning), D_K boolean discipline normative in Decision #23, two new registry projections (`event_provider_coverage`, `install_scope_capabilities`). Per-content-type vocabulary walks remaining for skills, rules, commands — each applies the same derivability test under the three-way disposition. Empirical grounding: round 2 found hook libraries in six runtimes (TS, Ruby, Go, Rust, Python daemon, PowerShell). |
 | OQ-8 | **Open** | Skill `supplementary_files` — skills can cross-reference other files. No mechanism declared yet. |
 | OQ-9 | **Open** | Two-tier freshness interop — when an external attestation manifest has its own expiry and the sidecar `expires` differ, which takes precedence for staleness determination? |
+
+---
+
+## Appendix A — Inference Algorithm v0.1 (normative)
+
+Registries that emit `registry_section.inferred_pack_id` MUST follow this algorithm. Half-normative inference ("MAY infer however documented") is explicitly rejected — either implement v0.1 exactly, or omit `inferred_pack_id` entirely.
+
+### A.1 — Canonical source precedence
+
+When a repo contains multiple pack-shaped manifests, registries select the canonical source by this precedence:
+
+1. `package.json` (top-level `name` field)
+2. `.claude-plugin/plugin.json` (top-level `name` field)
+3. `.cursor-plugin/plugin.json` (top-level `name` field)
+4. `.codex-plugin/plugin.json` (top-level `name` field)
+5. `gemini-extension.json` (top-level `name` field)
+6. **Directory-adjacency fallback** — repo's basename from `repository_url`
+
+The first present source wins. When multiple manifests exist, conflicting values produce a registry warning (surfaced to the publisher); the precedence chain resolves which value the registry adopts as canonical.
+
+### A.2 — Canonical `display_name`
+
+`canonical_display_name = trim(source.name)` from the highest-precedence source. No case-folding, no whitespace collapsing beyond a single leading/trailing trim. If the source's `name` field is absent or empty, fall back to the next source.
+
+### A.3 — Canonical `repository_url`
+
+`canonical_repository_url` is the lowercased, https-normalized, trailing-slash-stripped, `.git`-suffix-stripped form of the repo's fetch URL. Examples:
+
+- `git@github.com:obra/superpowers.git` → `https://github.com/obra/superpowers`
+- `https://github.com/obra/superpowers/` → `https://github.com/obra/superpowers`
+
+### A.4 — `inferred_pack_id` derivation
+
+```
+inferred_pack_id = UUIDv5(
+  namespace = ACIF_PACK_NAMESPACE,
+  name      = canonical_repository_url + "\n" + canonical_display_name
+)
+```
+
+Where `ACIF_PACK_NAMESPACE` is the spec-pinned literal UUID:
+
+```
+ACIF_PACK_NAMESPACE = "TBD-LITERAL-UUID-v5-NAMESPACE-FOR-ACIF-v0.1"
+```
+
+> **NOTE FOR SPEC AUTHORS:** the literal namespace constant MUST be chosen and pinned in the v0.1 spec text before publication. Registry-operator's OP-COND-1 makes this non-negotiable. Suggested format: a fresh UUIDv4 generated by the spec authors, documented as the canonical ACIF v0.1 namespace, never reused for other algorithm versions.
+
+### A.5 — Canonical address derivation
+
+`canonical_address = <owner>/<canonical_display_name>` where `owner` is extracted from `canonical_repository_url`:
+
+- **github.com:** `owner = path segment after host`
+- **gitlab.com:** `owner = path segment after host` (may be a group; full group path joined with `/`)
+- **bitbucket.org:** `owner = path segment after host`
+- **git.sr.ht:** `owner = first path segment, with leading `~` stripped`
+- **Other hosts:** `owner = first path segment of canonical_repository_url`
+
+### A.6 — Inference version field
+
+Every registry response containing `inferred_pack_id` MUST include `inference_version: "v0.1"` in the same `registry_section`. Consumers detecting inference-version drift between registries SHOULD treat it as a divergence signal.
+
+---
+
+## Appendix B — Conformance Test Vectors (required for v0.1 ship)
+
+The spec MUST publish these test vectors in a `conformance/` directory. Two implementations agreeing in prose but diverging in bytes is the failure mode these vectors prevent.
+
+| ID | Tests | Description |
+|---|---|---|
+| TV-1 | `body_hash` stability across pack context | Same skill body bytes, three pack contexts (pack-less / pack-A / pack-B) → identical `body_hash.value` |
+| TV-2 | `metadata_hash` invariance under PATH α | Same publisher frontmatter, different inferred pack contexts → identical `metadata_hash.value` |
+| TV-3 | `inferred_pack_id` determinism | `repository_url=https://github.com/obra/superpowers` + `display_name=superpowers` → published reference UUIDv5 |
+| TV-4 | Declared wins over inferred | Item with `publisher_section.pack_id=X` + `registry_section.inferred_pack_id=Y` (X≠Y) → consumer resolves via X |
+| TV-5 | Unresolvable `pack_id` semantics | Item with `publisher_section.pack_id=Z` where Z does not exist → `pack_resolution="unresolved"`; install MUST refuse |
+| TV-6 | Forbidden field set | Sidecar with `effective_version` on an item → conformance error |
+| TV-7 | Literal version preserved through pack context | Item declares `version=2.0.0`, pack declares `version=5.1.0` → `publisher_section.version=2.0.0` (literal, unchanged); no item-level field reflects 5.1.0 |
+| TV-8 | Pack-less item is first-class | Item with no `pack_id` and no `inferred_pack_id` → valid sidecar, installable |
+| TV-9 | Canonical `metadata_hash` byte string | Given a `publisher_section` JSON, canonical serialization (UTF-8 JSON, sorted keys, no whitespace, LF) matches published byte string → `metadata_hash` matches published reference hash |
+| TV-10 | Pack rename preserves identity (should-have) | Pack with `id=UUID` renamed `display_name` → `id` unchanged; existing item references via `pack_id` continue to resolve |
+| TV-MCP-* | MCP canonicalization & requires-emptiness family (Decision #23, #24) | Family covers: (a) default `type` materialization — stdio when only `command`, streamable-http when only `url`; (b) ambiguous rejection (both `command` and `url` with no `type`) → `acif.mcp.transport_default_ambiguous`; (c) undetermined rejection (neither) → `acif.mcp.transport_default_undetermined`; (d) `body_hash` stability across no-type/explicit-type round-trips; (e) `mcp.requires` empty-or-absent is conformant; (f) unknown `requires.<key>` → three-valued `unknown` evaluation; (g) `requires.transport_types` (or any other derivable key) appearing on an `mcp_config` item → non-conformant (orphan-key reject under per-content-type vocab scoping). Individual TV IDs to be enumerated when the conformance suite is authored. |
+| TV-AGENT-* | Agents `requires` empty-state + derivability predicate family (Decision #23, #25) | Family covers: (a) `agents.requires` empty-or-absent is conformant (empty-as-steady-state, Decision #23); (b) unknown `requires.<key>` on an agent item → three-valued `unknown` evaluation; (c) any DERIVABLE key (e.g., `requires.tool_restrictions`) appearing on an `agents` item → non-conformant (orphan-key reject under per-content-type vocab scoping); (d) `D_K: tool_restrictions` — canonical body with `Tools: [Read]` produces derivable-true; empty `Tools` + empty `DisallowedTools` produces derivable-false; (e) `D_K: model_selection` over `Model` — non-empty → derivable-true; empty → derivable-false; (f) `D_K: per_agent_mcp` over `MCPServers` — same shape; (g) `D_K: subagent_spawning` over `Tools` — `Tools: ["agent"]` produces derivable-true; `Tools: ["Read", "Edit"]` produces derivable-false (exercises Decision #25 canonical-tool-name pinning); (h) canonical `Tools` array contains spec-pinned neutral names (`agent`, not `Agent`/`Task`/`spawn_agent`); `body_hash` is computed post-translation; renderers MAY translate to provider-specific names at render time. Individual TV IDs to be enumerated when the conformance suite is authored. |
+| TV-HOOK-* | Hooks `requires` empty-state + derivability predicate family (Decision #23, #29) | Family covers: (a) `hooks.requires` empty-or-absent is conformant (empty-as-steady-state, Decision #23); (b) any key (e.g., `requires.handler_types`) appearing on a `hooks` item → non-conformant (orphan-key reject under per-content-type vocab scoping); (c) unknown `requires.<key>` on a hook item → three-valued `unknown` evaluation; (d) `D_K: handler_types` — canonical body with `Hooks: [{Type: "command", Command: "..."}]` produces derivable-true; empty `Hooks` produces derivable-false; closed enum `{command, http, prompt, agent}` is normative per Decision #29; (e) `D_K: matcher_patterns` over `Matcher` — non-empty → derivable-true; empty → derivable-false; (f) `D_K: async_execution` over `Hooks[*].Async` — at least one `Async: true` → derivable-true; all `Async: false` (or absent) → derivable-false; (g) canonical event-name round-trip — provider-specific event names are translated to the pinned canonical vocabulary at canonicalize time; `body_hash` is computed post-translation (exercises Decision #29); (h) canonical handler-type round-trip — provider-specific handler-type names are translated to the pinned canonical enum at canonicalize time (exercises Decision #29). Individual TV IDs to be enumerated when the conformance suite is authored. |

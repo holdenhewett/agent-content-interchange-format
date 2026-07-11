@@ -52,7 +52,7 @@ A canonical skill is represented as YAML frontmatter embedded in a Markdown file
   [other files]     # Optional. Supporting scripts, templates, configs.
 ```
 
-The directory name is the skill's identity. When `display_name` is absent from frontmatter, implementations SHOULD use the directory name as the display name.
+The directory name is the skill's **discovery handle** — what registries scan for and what `@`-style file references use. The skill's stable **identity** is its item UUIDv4 (SHAPE.md common envelope line 14, Decision #2), which is invariant across directory renames. When `display_name` is absent from frontmatter, implementations SHOULD use the directory name as the display name.
 
 ### 2.2 Frontmatter structure
 
@@ -80,7 +80,7 @@ All fields are OPTIONAL unless noted. The Markdown body follows the closing `---
 |-------|------|-------------|
 | `name` | string | Human-readable display name. If absent, directory name is used. |
 | `description` | string | What the skill does. Shown in listings; drives auto-invocation matching. |
-| `version` | string | Semantic version string for update detection and compatibility checks. |
+| `version` | string | Optional. When declared, MUST be valid SemVer 2.0.0 (SHAPE.md Decision #20). Literal-or-absent per Decision #16; the registry MUST NOT synthesize, inherit, or derive a value when the publisher omits it. `body_hash` is the canonical per-item change signal (Decision #17); `version` is advisory. |
 | `license` | string | SPDX license identifier (e.g., `MIT`, `Apache-2.0`). |
 | `auto_invocable` | bool | Whether the model can auto-invoke this skill without explicit user syntax. Default: `true` when description is present. |
 | `disable-model-invocation` | bool | When `true`, prevents model from auto-invoking. Supersedes `auto_invocable`. Default: `false`. |
@@ -106,7 +106,7 @@ These are the keys defined in syllago's `CanonicalSkillsKeys` and `canonical-key
 | `auto_invocable` | bool | Model can auto-invoke without explicit user syntax | Equivalent to presence of description + absence of disable flag |
 | `disable_model_invocation` | bool | Opt-out from model auto-invocation | Frontmatter key `disable-model-invocation` (hyphenated) in provider files |
 | `user_invocable` | bool | Skill appears in user-facing menus | Frontmatter key `user-invocable` (hyphenated); default true |
-| `version` | string | Semantic version for update detection | Optional; not widely supported yet |
+| `version` | string | Optional semantic version. When declared, MUST be valid SemVer 2.0.0 (SHAPE.md Decision #20). | Literal-or-absent per Decision #16; `body_hash` (Decision #17) is the canonical change signal. |
 | `project_scope` | bool | Can be installed at project scope (committed to repo) | Structural: presence of `.xxx/skills/` directory convention |
 | `global_scope` | bool | Can be installed at user/personal scope (home directory) | Structural: presence of `~/.xxx/skills/` path |
 | `shared_scope` | bool | Can be installed at enterprise/shared scope | Structural: organization-level distribution path |
@@ -261,7 +261,7 @@ The `openai.yaml` companion file used by codex is a provider-specific extension 
 
 ### 5.3 Directory structure is normative
 
-The skill's directory name is its identity. Implementations MUST NOT rename the directory during installation. The canonical form of a skill's identity is `<directory-name>`, and `display_name` frontmatter is a human-readable override, not the primary identity.
+The skill's directory name is its **discovery handle and install path**: implementations MUST NOT rename the directory during installation, because cross-content `@`-style file references and the heuristic discovery tier (§5.6) both resolve through it. The skill's stable **identity** is the item UUIDv4 in the sidecar (SHAPE.md common envelope line 14, Decision #2), which survives directory renames and is the load-bearing key for any cross-content-type reference (e.g., hook → skill activation per Decision #21). `display_name` frontmatter is a human-readable override of neither the directory handle nor the UUID identity.
 
 ### 5.4 Supporting files are non-normative
 
@@ -287,6 +287,56 @@ When a skill is installed for a specific provider, the target provider is indica
 | `pi` | Pi (badlogic) | |
 | `roo-code` | Roo Code | |
 | `windsurf` | Windsurf (Codeium) | |
+
+### 5.6 Skill discovery (three-tier)
+
+Per SHAPE.md Decision #22, registries discover skill items via three tiers, applied in order. The first tier that produces a result wins; subsequent tiers are not consulted for the same publisher.
+
+1. **Publisher-declared.** If the pack manifest declares `skill_paths: ["./skills/", "./advanced/"]`, the registry uses those paths. This is the explicit "manual pointer" mechanism for publishers with non-standard layouts.
+2. **Heuristic + filename fallback.** The registry scans known directories (`.agents/skills/`, `.<provider>/skills/`, `~/.agents/skills/`, etc. — see §4.2) and recognizes:
+   - `SKILL.md` (canonical filename) inside a skill-named directory — recognized unconditionally.
+   - Any `*.md` file with `kind: skill` frontmatter — heuristic recognition for non-canonical filenames.
+   - A bare `.md` file at a known discovery path with no frontmatter — filename (sans extension) is used as the skill `name`.
+3. **Non-conformant.** Arbitrary layouts with no pack manifest, no canonical filename, and no `kind: skill` frontmatter are out of scope. The publisher must adopt one of the conformant patterns.
+
+Notes:
+- Tier 2 is essential for adoption — round 1 of the repo survey found ~⅓ of high-star repos ship no manifest at all. The heuristic + filename fallback covers this corpus without forcing those publishers to author a manifest.
+- The `.agents/skills/` cross-provider convention (see Appendix B) is the recommended discovery path when no pack manifest is present.
+- Discovery only locates skills; it does not assign identity. Each discovered skill receives an item UUIDv4 (per SHAPE.md common envelope line 14) when first registered. Renaming a skill directory does not change its identity.
+
+### 5.7 Activation cross-references (hook → skill)
+
+Per SHAPE.md Decision #21, a skill MAY declare its activation mechanism, and a hook MAY declare that it activates a specific skill. This is the first cross-content-type relationship in ACIF; it is defined here so render-back and registry tooling can resolve the link.
+
+**Skill side** (in the skill extension block defined in SHAPE.md):
+
+```yaml
+skill:
+  activation:                   # optional — defaults to type: auto when absent
+    type: manual | auto | hook  # required when activation block present
+    hook_ref:                   # required when type: hook
+      id: "f47ac10b-..."        # UUIDv4 of the activating hook (load-bearing)
+      name: "skill-activator"   # advisory only; renames don't break the reference
+```
+
+**Hook side** (in the hook extension block):
+
+```yaml
+hook:
+  activation_target:
+    skill:
+      id: "550e8400-..."        # UUIDv4 of the target skill (load-bearing)
+      name: "tdd-workflow"      # advisory only
+```
+
+**Canonical truth lives on the hook** (`activation_target`). The skill's `activation` block is a discovery convenience — a registry MAY compute the reverse mapping from hook records and omit `hook_ref` on the skill side without loss of information.
+
+**Cross-references use item UUIDv4, not `(pack_id, name)`.** UUIDv4 (SHAPE.md common envelope line 14) is globally unique by construction. The `name` field on either side is human-readable advisory only and MUST NOT be relied on for resolution. A skill rename, a directory rename, or a pack reorganization does not break the activation link.
+
+The three activation types:
+- **`manual`** — user explicitly invokes the skill (e.g., `/skillname`).
+- **`auto`** — model decides whether to invoke based on `description` matching. This is the default when the `activation` block is absent.
+- **`hook`** — a hook makes the activation decision at runtime. The hook's `activation_target.skill.id` identifies the target; the skill's optional `hook_ref` is a discovery convenience pointing back.
 
 ---
 
@@ -325,8 +375,8 @@ Kiro calls skills "powers" and uses `POWER.md` as the canonical filename. Its au
 **OQ-4: `displayName` vs `name` in kiro**
 Kiro uses `name` as a slug identifier and `displayName` as a separate human-readable label. Most providers collapse both into `name`. Should `display_name` (the canonical key) map to kiro's `displayName` or `name`? If kiro's `name` is a slug-style identifier and `displayName` is the human-readable label, then the canonical `display_name` maps to `displayName` and the slug identity maps to directory name — but that creates an inconsistency with all other providers where `name` is both the slug and display name.
 
-**OQ-5: `version` key — frontmatter or out-of-band?**
-The `version` canonical key is defined but no provider currently maps a native frontmatter field to it. This is likely an L2 publisher metadata field rather than a skill-identity field. Should `version` be in this spec (L1 canonical format) or deferred to the publisher metadata spec (L2)? The L1/L2 split suggests it belongs in L2.
+**OQ-5: `version` key — frontmatter or out-of-band? (RESOLVED)**
+Resolved by SHAPE.md Decisions #16 and #20. `version` is an L2 publisher metadata field that lives in `publisher_section`. It is literal-or-absent (Decision #16; no inheritance, no derivation, no registry synthesis) and, when declared, MUST be valid SemVer 2.0.0 (Decision #20). The frontmatter path is permitted as a supplementary carrier under SHAPE.md Decision #10 — when present, the value is carried verbatim into `publisher_section.version`. When absent, `body_hash` (Decision #17) serves as the canonical per-item change signal; consumers MUST NOT fall back to a synthesized version.
 
 **OQ-6: `license` and `compatibility` field schemas**
 Both are declared as `type: object` in canonical-keys.yaml but no provider defines a normative schema for either. The `compatibility` field in pi has a max 500 char constraint (suggesting it's a string, not an object), while opencode and cursor accept arbitrary object maps. The canonical type needs to be settled.
