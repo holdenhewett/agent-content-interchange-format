@@ -253,7 +253,7 @@ body_hash.algorithm = sha256
 
 Consequences (normative in effect, stated for clarity): re-targeting an `os` tag with script bytes unchanged moves `body_hash`; flipping an opaque interpreter-selection value moves `body_hash`; re-pointing `event` or `activation_target` moves `body_hash`; editing any referenced file moves `body_hash`. The registry change signal ([ACIF-CORE] §6.2) therefore covers routing, not only content.
 
-*(Informative)* The common envelope (`display_name`, `description`, `version`, `license`) is not part of the preimage: envelope fields are metadata, and hooks have no `metadata_hash` because no `publisher_section` exists for sidecar-only types. A display-name edit moves no hash; everything executable or routing-relevant moves `body_hash`.
+*(Informative)* The common envelope (`display_name`, `description`, `version`, `license`) is not part of the preimage: envelope fields are metadata. A hook crawled from provider-native configuration has no `publisher_section` and no `metadata_hash`; when a publisher-authored sidecar declares envelope metadata, an envelope-only `publisher_section` and its `metadata_hash` exist per [ACIF-CORE] §7.8 and [ACIF-PUBLISHER] — the hook extension block is never duplicated there. A display-name edit moves at most `metadata_hash`; everything executable or routing-relevant moves `body_hash`.
 
 ## 10. Capability Dispositions and Derivation Predicates
 

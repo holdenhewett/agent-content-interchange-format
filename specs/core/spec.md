@@ -220,6 +220,17 @@ Any registry-generated sidecar file stored inside the content directory is exclu
 
 For sidecar-only content types, the executable wiring carried in the sidecar (e.g., a hook's script routing) is part of the item's semantics but is not file bytes. For these types, the `body_hash` preimage is the §7.4 construction over the item's referenced files **plus a canonical serialization of the canonical wiring**, in a combination pinned exactly by the applicable L1 specification. Re-targeting any wiring value (an OS tag, an interpreter flag, an event name) MUST move `body_hash`. See [ACIF-HOOK] §9 for the hook instantiation.
 
+### 7.8 Hash coverage of canonical metadata (single-coverage)
+
+The hash home of an item's canonical extension block follows its carrier:
+
+- For **sidecar-only** content types, the extension block is executable wiring and enters the `body_hash` preimage (§7.7). It MUST NOT be duplicated into `publisher_section`: when a publisher-authored sidecar for a sidecar-only item yields a `publisher_section` ([ACIF-PUBLISHER]), that section carries envelope-level fields only.
+- For **frontmatter-bearing** content types, the declared extension-block values are publisher-declared metadata: they are observed faithfully into `publisher_section` and covered by `metadata_hash` ([ACIF-PUBLISHER]), and they MUST NOT enter the `body_hash` preimage.
+
+Default values materialized at canonicalization (§8.1) are deterministic functions of declared absence. They are part of canonical form — derivation predicates (§9.2) and registry projections read them — but they are not publisher-declared: they MUST NOT be written into `publisher_section`, and for frontmatter-bearing types they enter no hash preimage. *(Informative: this is not a coverage hole — a materialized value cannot be re-targeted without declaring it, and declaring it moves `metadata_hash`.)*
+
+Consequently `body_hash` and `metadata_hash` jointly cover an item's entire publisher-declared surface, each byte under exactly one hash; `body_hash` remains the dispositive content change signal (§6.2). Pack records carry no canonical body; their hashing is defined in [ACIF-PUBLISHER] and is outside this section's scope.
+
 ## 8. Canonicalization Disciplines
 
 The disciplines in this section are normative for every canonicalizer and every L1–L4 document.
