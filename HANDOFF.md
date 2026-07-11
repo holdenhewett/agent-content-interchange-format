@@ -45,14 +45,16 @@ See the panel consensus docs and SHAPE.md's OQ-7 row for the full record.
   mini-review (spec-purist + registry-operator). Post-redirect final-URL
   recording was rejected on scale evidence; TV-11+ is unblocked. See
   `panel/source-uri-consensus.md`.
-- **`platform_commands` batched panel** (queued since May). Reviewer set:
-  registry-operator + spec-purist + valsorda + enterprise-security. Gather
-  context first: grep capmon + provider-capabilities for what platform_commands
-  means post-extraction (it was a HIF-era question).
+- **`platform_commands` batched panel — DONE** (run 2026-07-10, resolved
+  2026-07-11): Decision #33 (per-OS script selection + canonicalization, third
+  ACIF-owned vocabulary), Decisions #6/#19 amended (closed OS enum; hook wiring
+  folded into the body_hash preimage — the panel's ship-blocker find), OQ-6
+  resolved (absent = all). provider_capability_coverage row deferred, gated on
+  capmon data. See `panel/platform-commands-consensus.md`.
 
 ### Step 3 — Close the open questions
 
-- OQ-6: `os`/`arch` absence semantics ("all" vs "unspecified").
+- OQ-6: DONE — resolved by Decision #33 (absent = all; platform_commands panel).
 - OQ-8: body-content derivation generally (extended twice — now spans @-refs,
   placeholder tokens, injection directives; structured-record bar recorded;
   the never-parse branch MUST re-hear spec-purist's preserved rules dissent).
