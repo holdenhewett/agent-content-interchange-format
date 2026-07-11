@@ -40,11 +40,11 @@ See the panel consensus docs and SHAPE.md's OQ-7 row for the full record.
 
 ### Queued design items (before or alongside Step 3)
 
-- **OQ-11 — `source_uri` normative tightening** (filed 2026-07-10). Substance:
-  RFC 3986, https-only, post-redirect, percent-encoding per §6.2.2, fragment
-  stripped, last-path-segment normative for direct file URLs. Must land before
-  TV-11+ vectors (Step 6 dependency). Likely shape: targeted mini-review
-  (spec-purist ± registry-operator), not a full panel.
+- **OQ-11 — `source_uri` normative tightening — DONE** (resolved 2026-07-10,
+  same day it was filed): Decision #32 via the project's first two-reviewer
+  mini-review (spec-purist + registry-operator). Post-redirect final-URL
+  recording was rejected on scale evidence; TV-11+ is unblocked. See
+  `panel/source-uri-consensus.md`.
 - **`platform_commands` batched panel** (queued since May). Reviewer set:
   registry-operator + spec-purist + valsorda + enterprise-security. Gather
   context first: grep capmon + provider-capabilities for what platform_commands
@@ -58,7 +58,6 @@ See the panel consensus docs and SHAPE.md's OQ-7 row for the full record.
   the never-parse branch MUST re-hear spec-purist's preserved rules dissent).
 - OQ-9: two-tier freshness precedence (sidecar `expires` vs external attestation).
 - OQ-10: latent-field promotion (SkillMeta + CommandMeta; uniformity constraint).
-- OQ-11: source_uri tightening (above).
 - Pin the literal `ACIF_PACK_NAMESPACE` UUIDv5 constant (registry-operator's
   OP-COND-1: non-negotiable before v0.1 publication).
 
@@ -97,7 +96,8 @@ files once stable." After Steps 3–4 it is stable. Ship order:
 TV-AGENT-*, TV-HOOK-*, TV-SKILL-*, TV-RULE-*, TV-COMMAND-*). Appendix B is
 explicit: the vectors are normatively authoritative; reference scripts are
 informative. Reference impls for `body_hash` already exist in
-`../moat/reference/`. TV-11+ vectors are gated on OQ-11.
+`../moat/reference/`. The TV-11+ slot is occupied by TV-URI-* (Decision #32);
+its OQ-11 gate is resolved.
 
 ## Definition of done (v0.1)
 
