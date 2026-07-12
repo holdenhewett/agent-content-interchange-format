@@ -38,7 +38,7 @@ Dependency direction: every other ACIF document depends normatively on this one.
 
 **canonical form** — the provider-neutral representation of an item after canonicalization: provider-specific names rewritten to canonical vocabularies, defaults materialized, and rejects applied.
 
-**canonicalization** — the deterministic transformation from a source form (provider-native or ACIF-authored) to canonical form.
+**canonicalization** — the deterministic transformation from a source form (provider-native or ACIF-authored) to canonical form. The source provider's identity is an input to canonicalization, supplied by the ingestion context (the discovery location or an explicit declaration); vocabulary translation (§8.2) is defined relative to it.
 
 **canonicalizer** — software that performs canonicalization.
 
@@ -48,7 +48,7 @@ Dependency direction: every other ACIF document depends normatively on this one.
 
 **sidecar** — a generated file carrying an item's canonical metadata, separate from the item's source file(s).
 
-**frontmatter** — a YAML metadata block at the top of a Markdown source file, delimited by `---` lines.
+**frontmatter** — a YAML metadata block at the top of a Markdown source file, delimited by `---` lines. Frontmatter is interpreted per the YAML 1.2 core schema; a block whose top level is not a map, or that repeats a key, is malformed and MUST be rejected at ingestion.
 
 **publisher** — the party that authors and hosts an item's source.
 
@@ -162,6 +162,8 @@ An item's canonical body is classified before hashing.
 
 For content types with a frontmatter surface: the body is **multi-file** if and only if, after excluding files matching `LICENSE*` or `README*` at the body root, version-control metadata directories (§7.4), and registry-generated sidecar files at the body root (§7.5), the body directory contains at least one content file beyond the canonical entry file (e.g., `SKILL.md`). Otherwise the body is **single-file**.
 
+`LICENSE*` / `README*` matching is a case-insensitive prefix match on the filename (`Readme.md` and `license.txt` are both excluded), applied to regular files at the body root only; a directory is never excluded by name.
+
 This predicate is content-type-general: co-located resources of any kind — a skill's bundled scripts, templates, or data files — make the body multi-file. Without a pinned predicate, two conforming implementations could disagree on the hash input boundary and produce divergent `body_hash` values for identical content.
 
 For sidecar-only content types, the body boundary is defined by the applicable L1 specification (see §7.7).
@@ -192,25 +194,27 @@ Each file in the body is classified **text** or **binary**:
 
 *(Informative)* The text/binary classification exists solely to make hashing stable; it is not a security classification. Some plain-text script extensions (e.g., `.ps1`, `.cmd`, `.bat`) are outside `TEXT_EXTENSIONS` and hash as raw bytes, so a line-ending-only edit moves their hash where it would not move a `.sh` file's. Moderation logic distinguishing source scripts from opaque compiled artifacts must not key on this flag. The set is closed at this value because the algorithm is adopted verbatim from its provenance (§7.1) together with its published test vectors; revising the set is a hash-breaking change reserved for a future algorithm version.
 
-**Single-file bodies** with a frontmatter surface are hashed as SHA-256 over the canonical text form of the content with the frontmatter block stripped. The frontmatter block is delimited in the canonical text form by a leading line consisting of `---` and the next subsequent line consisting of `---`, where the closing line is terminated by LF or by end of input; the block, both delimiter lines included, is removed. A change confined to frontmatter does not move `body_hash`; it moves `metadata_hash` ([ACIF-PUBLISHER]).
+**Entry-file frontmatter strip.** For content types with a frontmatter surface, the canonical entry file's hash input is the canonical text form of its content with the frontmatter block stripped. In a single-file body, this stripped form is the entire `body_hash` input; in a multi-file body, it is the entry file's per-file hash input in the §7.4 manifest. The frontmatter block is delimited in the canonical text form by a leading line consisting of `---` and the next subsequent line consisting of `---`, where the closing line is terminated by LF or by end of input; the block, both delimiter lines included, is removed. A change confined to frontmatter therefore never moves `body_hash`; it moves `metadata_hash` ([ACIF-PUBLISHER]). *(Informative: the strip is an ACIF extension at the input boundary of the §7.1 algorithm — it keeps every publisher-declared byte under `metadata_hash` alone (§7.8), whether or not the item bundles resources. Test vector TV-SKILL (n) pins the multi-file case in bytes.)*
 
 ### 7.4 Directory combine (multi-file bodies)
 
 1. Enumerate all regular files under the body root, excluding any path containing a version-control metadata directory component: `.git`, `.svn`, `.hg`, `.bzr`, `_darcs`, `.fossil`.
-2. Symbolic links anywhere in the body MUST be rejected at ingestion.
-3. For each file, compute the relative path from the body root in POSIX form (`/` separators), normalized to Unicode NFC.
-4. Compute each file's per-file hash per §7.3.
+2. Symbolic links anywhere in the body MUST be rejected at ingestion with `acif.body.symlink`.
+3. For each file, compute the relative path from the body root in POSIX form (`/` separators), normalized to Unicode NFC. Two distinct source paths that normalize to the same NFC relative path MUST be rejected at ingestion with `acif.body.path_collision`.
+4. Compute each file's per-file hash per §7.3 (for the canonical entry file, over its frontmatter-stripped canonical text form).
 5. Sort entries by the raw UTF-8 byte order of their relative paths.
 6. Build the manifest: one line per entry, `<lowercase-hex-hash><SP><SP><relative-path><LF>`.
 7. The directory hash is `sha256:` followed by the lowercase hex SHA-256 of the manifest bytes.
 
-A body containing no files after exclusions is unpublishable for frontmatter-bearing content types.
+A body containing no files after exclusions is unpublishable for frontmatter-bearing content types; a canonicalizer detecting this condition MUST report `acif.body.empty`.
 
 The `body_hash.value` field carries the lowercase hex digest; the `body_hash.algorithm` field carries `sha256`.
 
 ### 7.5 Sidecar exclusion (root-only)
 
 Any registry-generated sidecar file stored inside the content directory is excluded from `body_hash` at the body root only. A file of the same name in a subdirectory has no protocol meaning and MUST be included in the hash. *(Informative: root-only exclusion breaks the circular dependency — the sidecar contains `body_hash` — while preventing content from hiding under the excluded name at depth.)*
+
+In ACIF 0.1 the registry-generated sidecar filename is `acif-sidecar.yaml`; the §7.2 and §7.5 exclusions match exactly this name. A registry that stores sidecars inside content directories MUST use this name — an unpinned name would make the exclusion, and therefore `body_hash`, implementation-dependent.
 
 ### 7.6 Hash-then-canonicalize ordering
 
@@ -225,7 +229,7 @@ For sidecar-only content types, the executable wiring carried in the sidecar (e.
 The hash home of an item's canonical extension block follows its carrier:
 
 - For **sidecar-only** content types, the extension block is executable wiring and enters the `body_hash` preimage (§7.7). It MUST NOT be duplicated into `publisher_section`: when a publisher-authored sidecar for a sidecar-only item yields a `publisher_section` ([ACIF-PUBLISHER]), that section carries envelope-level fields only.
-- For **frontmatter-bearing** content types, the declared extension-block values are publisher-declared metadata: they are observed faithfully into `publisher_section` and covered by `metadata_hash` ([ACIF-PUBLISHER]), and they MUST NOT enter the `body_hash` preimage.
+- For **frontmatter-bearing** content types, the declared extension-block values are publisher-declared metadata: they are observed faithfully into `publisher_section` and covered by `metadata_hash` ([ACIF-PUBLISHER]), and they MUST NOT enter the `body_hash` preimage. The §7.3 entry-file frontmatter strip implements this for both body classifications.
 
 Default values materialized at canonicalization (§8.1) are deterministic functions of declared absence. They are part of canonical form — derivation predicates (§9.2) and registry projections read them — but they are not publisher-declared: they MUST NOT be written into `publisher_section`, and for frontmatter-bearing types they enter no hash preimage. *(Informative: this is not a coverage hole — a materialized value cannot be re-targeted without declaring it, and declaring it moves `metadata_hash`.)*
 
@@ -267,6 +271,14 @@ RFC 8785 preserves array element order. Where a specification's canonical value 
 - Every named error identifier in this document set is stable and MUST be reported verbatim (`acif.<area>.<condition>`).
 - Rejection diagnostics for authoring errors MUST be fix-forward: the diagnostic names the remedy, not only the defect.
 - Diagnostics classified INFORMATIVE by the owning specification never gate conformance, canonicalization, or install.
+
+The error identifiers this document mints are:
+
+| Identifier | Class | Condition |
+|---|---|---|
+| `acif.body.symlink` | reject | Symbolic link anywhere in the body at ingestion (§7.4) |
+| `acif.body.path_collision` | reject | Two distinct source paths NFC-normalize to the same relative path (§7.4) |
+| `acif.body.empty` | reject | Frontmatter-bearing body contains no files after exclusions (§7.4) |
 
 ## 9. Capability Model (`requires`)
 
@@ -391,3 +403,5 @@ Per-provider MCP tool-name formats, for matcher passthrough and render-back: cla
 ## Appendix B — Provenance (Informative)
 
 This document was promoted from the ACIF design record (`SHAPE.md`, Decisions #1–#34, and the panel consensus documents under `panel/`) on 2026-07-11. The tool vocabulary in Appendix A was repatriated from a frozen snapshot of the Syllago converter (`toolmap.go` at commit `cf047f52`) on 2026-07-11; from that date the authority direction is inverted — downstream implementations, including Syllago and capmon, conform to this document's copy.
+
+Amended after the second independent review (2026-07-11): the §7.3 entry-file frontmatter strip generalized to multi-file bodies, pinning in prose the single-coverage behavior that §7.8 and vector TV-SKILL (k) already required (the informative reference script was corrected to match — the vectors were authoritative, and the script disagreed with them); the §7.2 exclusion-match semantics; the §7.5 sidecar filename pin; the §2 YAML-schema and provider-input pins; the §7.4 NFC-collision reject; and the three `acif.body.*` identifiers.

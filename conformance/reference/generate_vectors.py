@@ -73,7 +73,17 @@ def compute() -> dict[str, list[str]]:
     ns = uuid.UUID("93516344-00e5-419b-a230-6e8b1d02f87d")
     ref = uuid.uuid5(ns, "https://github.com/obra/superpowers\nsuperpowers")
     assert str(ref) == "d932cd6d-1c14-527d-b2e7-185c717b7a0d", f"TV-3 mismatch: {ref}"
-    out["core.yaml"] = [tv1, tv2, tv9_bytes, tv9_hash]
+    # TV-12 — root-only sidecar exclusion in bytes
+    tv12_base = {"SKILL.md": b"Body prose.\n", "sub/acif-sidecar.yaml": b"kind: skill\n"}
+    tv12_a = body_hash_multi(tv12_base, "SKILL.md")
+    tv12_b = body_hash_multi({**tv12_base, "acif-sidecar.yaml": b"kind: skill\n"}, "SKILL.md")
+    assert tv12_a == tv12_b, "root sidecar must not enter body_hash"
+    tv12_c = body_hash_multi({
+        "SKILL.md": b"Body prose.\n",
+        "sub/acif-sidecar.yaml": b"kind: skill\nid: f47ac10b\n",
+    }, "SKILL.md")
+    assert tv12_c != tv12_a, "subdirectory sidecar must enter body_hash"
+    out["core.yaml"] = [tv1, tv2, tv9_bytes, tv9_hash, tv12_a, tv12_c]
 
     # ── mcp.yaml ─────────────────────────────────────────────────────────────
     mcp_stdio = {"servers": {"demo": {
@@ -131,8 +141,18 @@ def compute() -> dict[str, list[str]]:
     multi = body_hash_multi({
         "SKILL.md": b"Use this to demo classification.\n",
         "scripts/run.sh": b"#!/bin/sh\necho hi\n",
-    })
-    out["skill.yaml"] = [single, multi]
+    }, "SKILL.md")
+    # TV-SKILL-n — multi-file entry-file frontmatter strip
+    n1 = body_hash_multi({
+        "SKILL.md": b"---\ndescription: one\n---\nProse body.\n",
+        "scripts/run.sh": b"#!/bin/sh\necho hi\n",
+    }, "SKILL.md")
+    n2 = body_hash_multi({
+        "SKILL.md": b"---\ndescription: two\n---\nProse body.\n",
+        "scripts/run.sh": b"#!/bin/sh\necho hi\n",
+    }, "SKILL.md")
+    assert n1 == n2, "frontmatter must not move a multi-file body_hash"
+    out["skill.yaml"] = [single, multi, n1]
 
     # ── rule.yaml ────────────────────────────────────────────────────────────
     out["rule.yaml"] = [

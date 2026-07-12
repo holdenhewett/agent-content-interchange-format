@@ -104,7 +104,7 @@ Canonicalization rewrites provider placeholder syntaxes to the canonical `$ARGUM
 
 ### 8.1 `body_hash`
 
-The command's canonical body is the prompt prose. `body_hash` follows [ACIF-CORE] §7, computed over the **post-rewrite** form (§7): single-file bodies hash the canonical text form with the frontmatter block stripped; a command shipping co-located content files classifies multi-file per [ACIF-CORE] §7.2.
+The command's canonical body is the prompt prose. `body_hash` follows [ACIF-CORE] §7, computed over the **post-rewrite** form (§7): single-file bodies hash the canonical text form with the frontmatter block stripped; a command shipping co-located content files classifies multi-file per [ACIF-CORE] §7.2. The canonical entry file for classification is the command source file itself: commands pin no canonical filename in 0.1, and the ingestion context designates which file is the source.
 
 ### 8.2 Extension-block hash coverage
 
@@ -215,7 +215,9 @@ This appendix is ACIF-owned normative text; implementations conform to this copy
 
 ### A.1 Canonical token and total mapping
 
-Canonical token: `$ARGUMENTS`, with the indexed form `$ARGUMENTS[N]` (N a non-negative decimal integer).
+Canonical token: `$ARGUMENTS`, with the indexed form `$ARGUMENTS[N]` (N one or more decimal digits).
+
+Source-form grammar, pinned for table-membership decidability: in `${input:varName}` and `${input:varName:placeholder}`, `varName` is one or more bytes from `[A-Za-z0-9_-]`, and `placeholder` extends from the second `:` to the first `}` and may contain any byte except `}`. A `${input:...}` sequence not matching these patterns — an empty `varName`, a disallowed byte, an unclosed brace — is not in this table and passes through as opaque prose. `{{args}}` is matched as the exact eight-byte sequence; its braces are its boundary, so the A.2 boundary rule does not apply to it.
 
 | Source form | Provider provenance | Canonical | Fidelity |
 |---|---|---|---|
@@ -253,3 +255,5 @@ Promoted 2026-07-11 from the ACIF design record: the command extension block and
 Preserved positions recorded for future revision: registry-operator's DERIVABLE-with-totality minority position (the advisory projection ships the same installer join, so the practical loss was the `derivable` flag, not the signal; his existence-proof framing — a deterministic advisory scan at registry scale is evidence a structured import grammar could run too — is input to the reference-grammar roadmap item); spec-purist's conditional body-token discipline (the authorship test, boundary-precise, disclosed-imprecision — the recorded design if body-content derivation is ever legitimized, which requires a structured canonical record, never a prose scan promoted to a predicate); Remy's sparse-vocabulary caveat (two keys is the weakest evidence in the series; the validation weight rests on the rules walk).
 
 Newly minted at spec-promotion time (not present in the design record; flagged for review): the identifier `acif.command.placeholder_untranslated` and its dual-actor obligation (§10.2/§11 — the design record described the render warning and the install-time SHOULD-warn without naming an identifier; the template discipline requires SHOULD-warn obligations to carry one); the §10.3 requirement that a discretionary shadowing advisory, when emitted, names the provider(s) and colliding name; and the TV-COMMAND (h′)/(m) vectors. These items were ratified back into the design record (SHAPE.md, Spec-Promotion Ratifications section) at promotion time.
+
+Amended after the second independent review (2026-07-11): the Appendix A.1 source-form grammar pinned for table-membership decidability, and the §8.1 entry-file statement that commands pin no canonical filename.

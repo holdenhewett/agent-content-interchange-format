@@ -105,3 +105,26 @@
   expect:
     absent_type: {canonical_handler_type: command, body_hash_equals_explicit_command_variant: true}
     unrecognized_type: {error: acif.hook.handler_type_unrecognized}
+
+- id: TV-HOOK-i
+  spec: "[ACIF-HOOK] §9.2"
+  harness: static
+  description: missing referenced file at ingestion rejects
+  input:
+    hook: {event: session_start, handlers: [{type: command, scripts: [{type: file, path: "hooks/run.sh"}]}]}
+    files_present: []
+  expect:
+    error: acif.hook.script_file_missing
+
+- id: TV-HOOK-j
+  spec: "[ACIF-HOOK] §9.2"
+  harness: static
+  description: invalid referenced paths reject — absolute and traversing
+  input:
+    absolute:
+      hook: {event: session_start, handlers: [{type: command, scripts: [{type: file, path: "/etc/hooks/run.sh"}]}]}
+    traversal:
+      hook: {event: session_start, handlers: [{type: command, scripts: [{type: file, path: "../outside/run.sh"}]}]}
+  expect:
+    absolute: {error: acif.hook.script_path_invalid}
+    traversal: {error: acif.hook.script_path_invalid}

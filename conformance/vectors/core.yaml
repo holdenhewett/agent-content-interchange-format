@@ -1,4 +1,4 @@
-# ACIF conformance vectors — record & pack layer (TV-1..TV-10, TV-L2-*, TV-L3-*)
+# ACIF conformance vectors — record & pack layer (TV-1..TV-13, TV-L2-*, TV-L3-*)
 # Normative. Owning specs: [ACIF-PUBLISHER] Appendix A, [ACIF-REGISTRY] Appendix A (TV-L3),
 # [ACIF-CORE] §5–§7. Hash values marked <computed> are filled by reference/generate_vectors.py.
 
@@ -131,6 +131,58 @@
     id_unchanged: true
     reference_resolves_after_rename: true
 
+- id: TV-11
+  spec: "[ACIF-CORE] §5.1"
+  harness: static
+  description: envelope field validation — non-enum kind, non-UUIDv4 id, non-SemVer version, non-SPDX license.spdx each reject
+  input:
+    cases:
+      - {kind: "Skill", id: "f47ac10b-58cc-4372-a567-0e02b2c3d479", display_name: "Demo"}
+      - {kind: skill, id: "not-a-uuid", display_name: "Demo"}
+      - {kind: skill, id: "f47ac10b-58cc-4372-a567-0e02b2c3d479", display_name: "Demo", version: "1.0"}
+      - {kind: skill, id: "f47ac10b-58cc-4372-a567-0e02b2c3d479", display_name: "Demo", license: {spdx: "MIT License"}}
+  expect:
+    case_1: {conformant: false, reason: kind-not-in-closed-enum}
+    case_2: {conformant: false, reason: id-not-uuid-v4}
+    case_3: {conformant: false, reason: version-not-semver}
+    case_4: {conformant: false, reason: license-spdx-not-identifier}
+
+- id: TV-12
+  spec: "[ACIF-CORE] §7.5"
+  harness: static
+  description: root-only sidecar exclusion — root acif-sidecar.yaml never enters body_hash; a same-named subdirectory file always does
+  input:
+    base:
+      files: {SKILL.md: "Body prose.\n", sub/acif-sidecar.yaml: "kind: skill\n"}
+      entry_file: SKILL.md
+    with_root_sidecar:
+      files: {SKILL.md: "Body prose.\n", sub/acif-sidecar.yaml: "kind: skill\n", acif-sidecar.yaml: "kind: skill\n"}
+      entry_file: SKILL.md
+    subdir_sidecar_edited:
+      files: {SKILL.md: "Body prose.\n", sub/acif-sidecar.yaml: "kind: skill\nid: f47ac10b\n"}
+      entry_file: SKILL.md
+  expect:
+    base: {body_hash: "581e9b6b2dbd5a5947758f8ecdf67896c2a1225936ab5bd744a3973460b85169"}
+    with_root_sidecar: {body_hash_equals_base: true}
+    subdir_sidecar_edited: {body_hash: "b4e9079283b7852f98fc2a9f9719699a1c5e3b48101695f8f7567314d3a2eae4", body_hash_equals_base: false}
+
+- id: TV-13
+  spec: "[ACIF-CORE] §7.4, §8.7"
+  harness: static
+  description: body-boundary rejects — symlink, NFC path collision, empty body
+  input:
+    symlink:
+      files: {SKILL.md: "Prose.\n"}
+      symlinks: [{path: "scripts/link.sh", target: "/etc/passwd"}]
+    path_collision:
+      files_raw_paths: ["caf\u00E9.md", "cafe\u0301.md"]   # NFC and NFD spellings of one name
+    empty:
+      files: {LICENSE: "MIT\n", README.md: "readme\n"}
+  expect:
+    symlink: {error: acif.body.symlink}
+    path_collision: {error: acif.body.path_collision}
+    empty: {error: acif.body.empty}
+
 - id: TV-L2-a
   spec: "[ACIF-PUBLISHER] §5.2"
   harness: static
@@ -206,6 +258,22 @@
     declared_pack: {metadata_hash: present, body_hash: absent}
     inferred_pack: {publisher_section: absent, metadata_hash: absent, body_hash: absent}
 
+- id: TV-L2-f
+  spec: "[ACIF-PUBLISHER] §9.1"
+  harness: static
+  description: pack-source conflict — precedence winner adopted; diagnostic names the conflicting sources and values
+  input:
+    manifests:
+      - {source: "package.json", name: "superpowers"}
+      - {source: "gemini-extension.json", name: "super-powers"}
+  expect:
+    canonical_source: "package.json"
+    canonical_display_name: "superpowers"
+    diagnostic:
+      id: acif.publisher.pack_source_conflict
+      names_sources: ["package.json", "gemini-extension.json"]
+      names_values: ["superpowers", "super-powers"]
+
 - id: TV-L3-a
   spec: "[ACIF-REGISTRY] §7"
   harness: static
@@ -238,3 +306,18 @@
   expect:
     conformant: false
     reason: missing-method-stamp
+
+- id: TV-L3-d
+  spec: "[ACIF-CORE] §10; [ACIF-REGISTRY] §9"
+  harness: static
+  description: revoked-reference refusal — install refuses an item carrying a revoked cross-reference absent operator opt-in
+  input:
+    item:
+      cross_references:
+        - source_path: "agent.mcp_servers[0]"
+          declared_name: "figma"
+          target_kind: mcp_config
+          resolution: revoked
+          diagnostic: "target a1b2c3d4-... revoked by its registry"
+  expect:
+    install: refuse-unless-operator-opt-in

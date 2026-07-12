@@ -128,7 +128,7 @@ Let `W` be the canonical JSON serialization ([ACIF-CORE] §8.6, RFC 8785) of the
 Array ordering in `W` ([ACIF-CORE] §8.6):
 
 - `args` — order significant, preserved (command-line argument order is semantics).
-- `includeTools`, `excludeTools`, `disabledTools`, `autoApprove` (and any other tool-filter list) — sets, not sequences: in canonical form their elements MUST be sorted by raw UTF-8 byte order and MUST NOT contain duplicates.
+- `includeTools`, `excludeTools`, `disabledTools`, `autoApprove` — the closed tool-filter set of ACIF 0.1 — are sets, not sequences: in canonical form their elements MUST be sorted by raw UTF-8 byte order and MUST NOT contain duplicates. No other field is a tool-filter list in 0.1; an open-ended membership test would make canonical bytes implementation-dependent.
 - Any other passthrough array — order preserved (provider-owned semantics are opaque; reordering opaque content is not safe).
 
 Server map keys and object members are ordered by RFC 8785 itself.
@@ -255,3 +255,5 @@ Promoted 2026-07-11 from the ACIF design record: the MCP extension block and Dec
 Preserved positions and roadmap items: `env_file_reference` and `path_variable_expansion` as future `requires` candidates if the capability ever leaves the wiring; the marketplace identity model and enterprise/org-policy surface, both cut from the publisher schema with the ownership rationale recorded (§9.3); MCP working-group precedence over the server-name recommendation (§6.2).
 
 Newly minted at spec-promotion time (not present in the design record; flagged for review): the error identifiers `acif.mcp.servers_missing`, `acif.mcp.transport_type_invalid`, and `acif.mcp.server_name_unconventional` (the design record carried only the two Decision #24 codes); the §8 preimage pinning (the design record's Decision #33 amendment established that sidecar-only preimages cover the whole extension block but pinned the exact serialization only for hooks; this document instantiates it for MCP, including the empty-manifest constant and the §8.3 array-ordering pins required by [ACIF-CORE] §8.6); and the §9.1/§9.2 restatement of the design record's "all eight keys DERIVABLE" summary sentence as 5 DERIVABLE / 3 OUT-OF-SCOPE-AT-L1 — the consensus document's own per-key table classifies `marketplace`, `enterprise_management`, and `resource_referencing` as out-of-band concerns, and this document applies the mature three-way vocabulary to that substance (the `requires` result is unchanged: empty). These items were ratified back into the design record (SHAPE.md, Spec-Promotion Ratifications section) at promotion time.
+
+Amended after the second independent review (2026-07-11): the §8.3 tool-filter set closed to the four named lists (an open-ended membership test would make canonical bytes implementation-dependent).

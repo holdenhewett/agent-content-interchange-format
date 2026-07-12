@@ -5,7 +5,8 @@ ACIF 0.1 — hash reference implementation (Informative)
 Reference implementation of:
   * body_hash for frontmatter-bearing content types ([ACIF-CORE] §7.2–§7.5):
       - single-file: canonical text form, frontmatter stripped
-      - multi-file: directory manifest hash
+      - multi-file: directory manifest hash, the entry file's frontmatter
+        stripped in its per-file hash ([ACIF-CORE] §7.3)
   * body_hash for sidecar-only content types ([ACIF-CORE] §7.7,
     [ACIF-HOOK] §9, [ACIF-MCP] §8): file manifest + canonical wiring
     serialization preimage
@@ -134,8 +135,10 @@ def body_hash_single(entry_bytes: bytes) -> str:
     return hashlib.sha256(strip_frontmatter(entry_bytes)).hexdigest()
 
 
-def directory_manifest(files: dict[str, bytes]) -> bytes:
-    """[ACIF-CORE] §7.4 manifest over {relpath: bytes} (symlinks unrepresentable here)."""
+def directory_manifest(files: dict[str, bytes], entry_file: str | None = None) -> bytes:
+    """[ACIF-CORE] §7.4 manifest over {relpath: bytes} (symlinks unrepresentable
+    here). The entry file's per-file hash input is its frontmatter-stripped
+    canonical text form ([ACIF-CORE] §7.3)."""
     entries = []
     for rel, data in files.items():
         parts = rel.split("/")
@@ -144,21 +147,25 @@ def directory_manifest(files: dict[str, bytes]) -> bytes:
         if len(parts) == 1 and rel in SIDECAR_NAMES:
             continue
         nfc = unicodedata.normalize("NFC", rel)
-        entries.append((nfc, file_hash(parts[-1], data)))
+        if rel == entry_file:
+            h = hashlib.sha256(strip_frontmatter(data)).hexdigest()
+        else:
+            h = file_hash(parts[-1], data)
+        entries.append((nfc, h))
     if not entries:
         raise ValueError("No files found — content is unpublishable")
     entries.sort(key=lambda e: e[0].encode("utf-8"))
     return "".join(f"{h}  {p}\n" for p, h in entries).encode("utf-8")
 
 
-def body_hash_multi(files: dict[str, bytes]) -> str:
-    return hashlib.sha256(directory_manifest(files)).hexdigest()
+def body_hash_multi(files: dict[str, bytes], entry_file: str | None = None) -> str:
+    return hashlib.sha256(directory_manifest(files, entry_file)).hexdigest()
 
 
 def body_hash_frontmatter_type(files: dict[str, bytes], entry_file: str) -> str:
     if classify(files, entry_file) == "single-file":
         return body_hash_single(files[entry_file])
-    return body_hash_multi(files)
+    return body_hash_multi(files, entry_file)
 
 
 # ── canonical JSON (RFC 8785 subset; [ACIF-CORE] §8.6) ───────────────────────

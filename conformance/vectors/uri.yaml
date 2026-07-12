@@ -216,3 +216,15 @@
   input: {emitted_source_status: conditional}
   expect:
     if_emitted: {value_in: [live, moved, gone, unreachable]}
+
+- id: TV-URI-v
+  spec: "[ACIF-REGISTRY] §10.2, §12"
+  harness: static
+  description: emitted record with no source_uri rejects at record-emit
+  input:
+    record:
+      registry_section:
+        body_hash: {algorithm: sha256, value: "916e570331167c16f8112573d1b6020c134cc3d4019e8011693676d019b88ffe"}
+        fetched_at: "2026-07-11T00:00:00+00:00"
+  expect:
+    error: acif.source_uri.missing

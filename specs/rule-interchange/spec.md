@@ -95,7 +95,7 @@ Canonical form therefore always carries an explicit `activation.mode`. Validator
 
 ### 8.1 Body classification and `body_hash`
 
-The rule's canonical body is the rule source file's prose, classified and hashed per [ACIF-CORE] §7: single-file bodies hash the canonical text form with the frontmatter block stripped; a rule shipping co-located content files classifies multi-file per [ACIF-CORE] §7.2 and hashes per [ACIF-CORE] §7.4.
+The rule's canonical body is the rule source file's prose, classified and hashed per [ACIF-CORE] §7: single-file bodies hash the canonical text form with the frontmatter block stripped; a rule shipping co-located content files classifies multi-file per [ACIF-CORE] §7.2 and hashes per [ACIF-CORE] §7.4. The canonical entry file for classification is the rule source file itself: rules pin no canonical filename in 0.1, and the ingestion context designates which file is the source.
 
 ### 8.2 Extension-block hash coverage
 
@@ -253,3 +253,5 @@ Promoted 2026-07-11 from the ACIF design record: the rule extension block and De
 Preserved positions recorded for future revision: spec-purist's ADMIT dissent on `file_imports` (fails the works-fine-without-it severity test; MUST be re-heard before any permanent never-parse resolution of the reference-grammar roadmap item); registry-operator's graceful-degradation class for `requires` evaluation (moot with no admitted key; reconsider if a graceful-class key ever lands); Remy's three-value-enum caution (round-trip resolving power; the Appendix A.2 residual rule is the mitigation — if round-trip divergence appears in practice, the mapping table is the file to fix); Karpathy's two-field minimal block (overridden; his out-of-band guardrail was adopted into [ACIF-CORE] §9.3).
 
 Newly minted at spec-promotion time (not present in the design record; flagged for review): `acif.rule.activation_degraded` and the §11 degradation rule (the design record pinned canonicalization-direction totality but no render-direction diagnostic; the gate-loss hazard motivates the MUST-emit, paralleling [ACIF-HOOK] §12.1); the §6.2 pins that `globs: []` rejects as `glob_mode_without_globs` and that glob elements are non-empty opaque strings with no dialect validation; the §8.2 hash-boundary statement ([ACIF-CORE] §7.8 model); and the TV-RULE (l)/(m) vectors. These items were ratified back into the design record (SHAPE.md, Spec-Promotion Ratifications section) at promotion time.
+
+Amended after the second independent review (2026-07-11): the §8.1 entry-file statement that rules pin no canonical filename.

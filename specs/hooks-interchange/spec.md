@@ -127,6 +127,8 @@ hook:
 
 **`auxiliary_files`** — OPTIONAL. Runtime dependencies of scripts. Each entry's `path` names a file included in the hash manifest (§9.2).
 
+**`async`** — OPTIONAL boolean on `type: command` handlers (Appendix B), default `false`, materialized at canonicalization ([ACIF-CORE] §8.1): canonical form always carries an explicit `async` on every command handler, and the materialized value enters the §9.3 wiring serialization. Declares that the provider runs the handler without awaiting its completion.
+
 **`blocking`** — OPTIONAL boolean, default `false`, materialized at canonicalization ([ACIF-CORE] §8.1). Declares that the provider should treat the hook's outcome as gating.
 
 **`requires`** — OPTIONAL. The recognized `requires` vocabulary for hooks is empty in ACIF 0.1 (§10); any key present is non-conformant ([ACIF-CORE] §9.4).
@@ -218,6 +220,8 @@ All inputs are taken from the **post-canonicalization** form: after §7.4 mappin
 ### 9.2 File manifest
 
 The referenced-file set of a hook is: every `type: file` script entry's `path` across all handlers, plus every `auxiliary_files` entry's `path`. Each referenced file MUST exist at ingestion ([ACIF-CORE] §2); a conforming canonicalizer MUST reject a missing referenced file with `acif.hook.script_file_missing`.
+
+Every `path` MUST be relative with `/` separators and MUST NOT contain a `.` or `..` segment, a leading `/`, a Windows drive or UNC prefix, or a `\` byte; a violating path MUST be rejected with `acif.hook.script_path_invalid`. Paths resolve against the item's **source root**: the base directory the ingestion context designates for the item — for a provider-native configuration, the directory against which the source provider resolves the same paths; for an ACIF-authored sidecar, the sidecar file's directory.
 
 Build the manifest exactly as in [ACIF-CORE] §7.4, with these bindings:
 
@@ -352,6 +356,7 @@ Registries MUST compute, per canonical event name, the set of providers recogniz
 | `acif.hook.script_default_ambiguous` | reject | More than one default entry in a handler's scripts (§7.2) |
 | `acif.hook.script_platform_ambiguous` | reject | Two constrained entries match one OS (§7.2) |
 | `acif.hook.script_file_missing` | reject | Referenced script/auxiliary file absent at ingestion (§9.2) |
+| `acif.hook.script_path_invalid` | reject | Referenced path absolute, traversing, or non-POSIX (§9.2) |
 | `acif.hook.platform_unmappable` | reject | Provider per-OS mechanism outside the §7.4 table |
 | `acif.hook.no_default_for_degraded_render` | refuse (render) | §12.2 |
 | `acif.hook.platform_override_dropped` | diagnostic (MUST-emit) | Constrained entries dropped at degraded render (§12.1) |
@@ -466,11 +471,13 @@ copilot-cli maps BOTH `error_occurred` and `tool_use_failure` to `errorOccurred`
 
 The absent-type legacy residual materializes to `command` per §8.2.
 
+The provider-native handler-type alias set of this appendix is **empty** in ACIF 0.1: no provider is known to spell these types differently, so the §8.2 reject fires on any non-canonical `type` value, and the absent-type residual is the only mapping.
+
 ## Appendix C — Conformance Test-Vector Families (Normative)
 
 The vectors in these families, published in the `conformance/` directory, are normatively authoritative over prose. Family definitions:
 
-**TV-HOOK-\*** (capability model): (a) empty `requires` conformant; (b) orphan-key reject (`requires.handler_types` on a hook); (c) unknown-key three-valued evaluation; (d) `D_K` handler_types — derivable-true on a conforming record; the empty-`handlers` input tests the `acif.hook.handlers_missing` reject, not a derivable-false result (the derivable-false branch is unreachable on valid input, §10.1); (e) `D_K` matcher_patterns; (f) `D_K` async_execution; (g) canonical event-name round-trip, `body_hash` post-translation; (h) canonical handler-type round-trip.
+**TV-HOOK-\*** (capability model): (a) empty `requires` conformant; (b) orphan-key reject (`requires.handler_types` on a hook); (c) unknown-key three-valued evaluation; (d) `D_K` handler_types — derivable-true on a conforming record; the empty-`handlers` input tests the `acif.hook.handlers_missing` reject, not a derivable-false result (the derivable-false branch is unreachable on valid input, §10.1); (e) `D_K` matcher_patterns; (f) `D_K` async_execution; (g) canonical event-name round-trip, `body_hash` post-translation; (h) canonical handler-type round-trip; (i) missing referenced file — a `type: file` script path with no file at ingestion → `acif.hook.script_file_missing`; (j) invalid referenced path — an absolute path and a `..`-traversing path each → `acif.hook.script_path_invalid`.
 
 **TV-PLATFORM-\*** (per-OS selection, canonicalization, hash coverage): (a) absence=all; (b) constrained-beats-default; (c) empty-list rejects; (d) invalid OS values (`freebsd`; case-variant `Linux`); (e) default ambiguity; (f) constrained overlap with named colliding OS + indices; (g) disjoint set passes; (g′) decoy accept — one default + one `os:[windows]` ACCEPTS (documents that selection determinism is not divergence safety); (h) no-match no-default → defined no-op + diagnostic; (i) per-OS key-map canonicalization to four disjoint entries, `body_hash` post-mapping; (j) `osx` never in canonical form; (k) shell-field collapse + MUST `platform_shell_os_proxy` + provenance; (l) extension-convention table incl. `.cmd`/`.bat`, `.xyz` → default + `platform_filename_uninferable`, and the disclosed false mapping (extensionless pwsh shebang infers unix); (m) interpreter-flag exclusion — no `os` synthesized; render-back structured-encodes an injection-shaped passthrough value; (n) `platform_unmappable`; (o) render-back drop + MUST `platform_override_dropped`; (p) no-default render: selected-entry emit when the declared target OS yields a selection; refuse both when no target is declared and when the declared target yields no selection; (q) **hash coverage — flipping one `os` tag with script bytes unchanged MUST move `body_hash`; flipping an interpreter-selection passthrough value likewise** (this vector fails against any implementation that omits §9.3's wiring serialization); (q′) **determinism — two sources differing only in `os` tag order, `scripts[]` entry order, or inline-content line endings MUST yield byte-identical canonical form and identical `body_hash`** (§7.1, §9.3); (r) round-trip identity modulo documented-lossy cases, dead-default preserved; (s) `os_coverage` projection incl. the divergence pair — one entry tagged `[darwin,linux,windows]` → `os_divergent: false` vs three per-OS entries → `true` with identical `os` sets; (t) install coverage-gap — `blocking: true` MUST-refuse vs `blocking: false` SHOULD-warn.
 
@@ -485,3 +492,5 @@ The event vocabulary and handler-type enum were repatriated from a frozen snapsh
 Preserved positions recorded for future revision: three panel variants proposed admitting one or more script-runtime keys (`json_io_protocol`; `input_modification` + `permission_control`) to `requires` for command handlers — re-heard if corpus evidence shows authors declaring them. A stricter fail-closed render rule for `blocking: true` hooks was overridden by observed provider warn-default behavior; enterprise policy engines obtain that posture via `os_divergent` + provenance refusal. A closed enum for interpreter-selection passthrough was rejected as a brittle list; if a passthrough splice vulnerability ever appears in a renderer, revisit enum validation before adding escaping.
 
 Newly minted at spec-promotion time (not present in the design record; flagged for review): `acif.hook.event_unrecognized`, `acif.hook.handlers_missing`, `acif.hook.handler_type_unrecognized`, `acif.hook.script_file_missing`; the §9.4 preimage framing, including its broadening from the design record's `scripts[]`-only wiring to the entire canonical extension block; the §7.1/§9.3 canonical array-ordering and inline-content-normalization pins; the §13.1 `os_divergent` executable-identity predicate; and the §6.3 model unification. The preimage broadening and the model unification were ratified back into the design record (SHAPE.md Decisions #19/#33, hook extension block, Appendix C.3, TV-HOOK row) at promotion time. A spec-purist review of both exemplar documents ran before replication; all findings were applied.
+
+Amended after the second independent review (2026-07-11): the §6.2 `async` materialization rule (the published vectors' hash literals already assumed it; the prose had only a schema comment), the §9.2 path constraints and source-root resolution rule with `acif.hook.script_path_invalid`, the Appendix B empty-alias-set note, and the TV-HOOK (i)/(j) vectors.

@@ -171,7 +171,7 @@ When multiple manifests exist with conflicting values, the registry adopts the p
 
 ### 9.3 Canonical repository URL
 
-`canonical_repository_url` is the whole-URL-lowercased, https-normalized, trailing-slash-stripped, `.git`-suffix-stripped form of the repository fetch URL (e.g., `git@github.com:obra/superpowers.git` → `https://github.com/obra/superpowers`).
+`canonical_repository_url` is the whole-URL-lowercased, https-normalized, trailing-slash-stripped, `.git`-suffix-stripped form of the repository fetch URL (e.g., `git@github.com:obra/superpowers.git` → `https://github.com/obra/superpowers`). "https-normalized" means: an scp-style `user@host:path` form is rewritten to `https://host/path`; any URL scheme (`ssh://`, `git://`, `http://`) is replaced with `https`, dropping a userinfo component if present.
 
 This whole-URL lowercasing deliberately collapses casing variance into one repository identity and is **scoped to pack inference only** — it is a documented identity-collapse hazard, technically wrong for case-sensitive paths in general. The `source_uri` normalization ([ACIF-REGISTRY]) lowercases scheme and host only and preserves path case; the two pipelines serve different contracts and MUST NOT share an implementation.
 
@@ -190,7 +190,7 @@ The namespace constant is spec-pinned for inference algorithm v0.1 and is never 
 
 ### 9.5 Canonical address
 
-`canonical_address = <owner>/<canonical_display_name>`, where `owner` is extracted from `canonical_repository_url`: for `github.com`, `gitlab.com` (full group path joined with `/`), and `bitbucket.org`, the path segment(s) after the host; for `git.sr.ht`, the first path segment with a leading `~` stripped; for any other host, the first path segment.
+`canonical_address = <owner>/<canonical_display_name>`, where `owner` is extracted from `canonical_repository_url` with the final path segment (the repository name) excluded throughout: for `github.com` and `bitbucket.org`, the single path segment before the repository name; for `gitlab.com`, the full group path (every segment before the repository name) joined with `/`; for `git.sr.ht`, the first path segment with a leading `~` stripped; for any other host, the first path segment.
 
 ### 9.6 Inference version
 
@@ -238,7 +238,7 @@ The `pack_resolution: unresolved` install refusal (§8.3) is a state-vocabulary 
 
 ## Appendix A — Conformance Test-Vector Families (Normative)
 
-The vectors below, published in the `conformance/` directory, are normatively authoritative over prose. This appendix carries the record-layer and pack-layer vectors (TV-1 through TV-10 of the design record):
+The vectors below, published in the `conformance/` directory, are normatively authoritative over prose. This appendix carries the record-layer and pack-layer vectors (TV-1 through TV-10 of the design record, plus the review-time additions TV-11 through TV-13):
 
 - **TV-1** — `body_hash` stability across pack context: same skill body bytes under pack-less / pack-A / pack-B contexts → identical `body_hash.value`.
 - **TV-2** — `metadata_hash` invariance (PATH α): same `publisher_section`, different inferred pack contexts → identical `metadata_hash.value`.
@@ -250,7 +250,9 @@ The vectors below, published in the `conformance/` directory, are normatively au
 - **TV-8** — pack-less item is first-class: no `pack_id`, no `inferred_pack_id` → valid record, installable.
 - **TV-9** — canonical `metadata_hash` bytes: for a published `publisher_section`, the §6 serialization matches the published byte string and the published reference hash.
 - **TV-10** — pack rename preserves identity: `display_name` change → `id` unchanged; existing `pack_id` references resolve.
-- **TV-L2 additions** *(promotion-time)*: (a) `publisher_section` presence follows declaration — a crawled no-frontmatter skill has no `publisher_section` and no `metadata_hash` (`publisher_declared: false`); the same skill republished with frontmatter gains both; (b) sidecar-only envelope-only rule — a hook with a publisher-authored sidecar declaring `display_name` + `pack_id` yields a `publisher_section` with envelope fields only, and its `metadata_hash` moves on a display-name edit while `body_hash` does not; (c) faithful observation — a declared provider-native tool spelling appears as written in `publisher_section` while the canonical form carries the translated name; `metadata_hash` is computed over the as-written form; (d) frontmatter CI matrix — absent-add / equal-noop / conflict-block with `acif.publisher.frontmatter_conflict` / overwrite-on-opt-in-with-log; (e) declared pack `metadata_hash` present; inferred pack record carries neither `publisher_section` nor `metadata_hash`.
+- **TV-L2 additions** *(promotion-time)*: (a) `publisher_section` presence follows declaration — a crawled no-frontmatter skill has no `publisher_section` and no `metadata_hash` (`publisher_declared: false`); the same skill republished with frontmatter gains both; (b) sidecar-only envelope-only rule — a hook with a publisher-authored sidecar declaring `display_name` + `pack_id` yields a `publisher_section` with envelope fields only, and its `metadata_hash` moves on a display-name edit while `body_hash` does not; (c) faithful observation — a declared provider-native tool spelling appears as written in `publisher_section` while the canonical form carries the translated name; `metadata_hash` is computed over the as-written form; (d) frontmatter CI matrix — absent-add / equal-noop / conflict-block with `acif.publisher.frontmatter_conflict` / overwrite-on-opt-in-with-log; (e) declared pack `metadata_hash` present; inferred pack record carries neither `publisher_section` nor `metadata_hash`; (f) *(review-time)* pack-source conflict — two pack-shaped manifests with conflicting values → the §9.1 precedence winner is adopted and `acif.publisher.pack_source_conflict` names the conflicting sources and values.
+
+- **TV-11 through TV-13** *(review-time additions, [ACIF-CORE] §5/§7)*: envelope-field validation rejects (non-enum `kind`, non-UUIDv4 `id`, non-SemVer `version`, non-SPDX `license.spdx`); root-only sidecar exclusion in bytes (root `acif-sidecar.yaml` excluded, a same-named subdirectory file included); body-boundary rejects (`acif.body.symlink`, `acif.body.path_collision`, `acif.body.empty`).
 
 Individual vector IDs are assigned in the conformance suite.
 
@@ -259,3 +261,5 @@ Individual vector IDs are assigned in the conformance suite.
 Promoted 2026-07-11 from the ACIF design record: the common envelope, carrier rules, two-section record, pack extension block, registry-section framing, and Decisions #10, #11, #14, #15, #16, #17, #18, and #20 of `SHAPE.md`, with deliberation records in `panel/pack-model-consensus.md` and `panel/carrier-model-consensus.md`.
 
 Newly minted at spec-promotion time (not present in the design record; flagged for review): the §5.2 presence-by-declaration rule and the sidecar-only envelope-only content rule (resolving the design record's tension between "pack_id lives in publisher_section" and the hook exemplar's no-`publisher_section` note — the spec-purist hash-boundary consult's fixes, applied with [ACIF-CORE] §7.8); the §5.3 faithful-observation restatement (declared values as written; canonical form is a distinct view); the §6 preimage framing (RFC 8785 + single trailing LF — the design record's "sorted keys, no whitespace, LF" made byte-precise); the §8.2 pack hashing rule (no body hashes for packs; declared packs get `metadata_hash`, inferred packs get neither — discharging the [ACIF-CORE] §7.8 scope-out); the named identifiers `acif.publisher.frontmatter_conflict` (with the per-run-opt-in constraint on overwrite) and `acif.publisher.pack_source_conflict` (the multi-manifest warning, given an identifier at review); and the TV-L2 vector additions. These items were ratified back into the design record (SHAPE.md, Spec-Promotion Ratifications section) at promotion time.
+
+Amended after the second independent review (2026-07-11): the §9.3 https-normalization made algorithmic (scp-form rewrite, scheme replacement, userinfo drop); the §9.5 owner extraction restated to exclude the repository-name segment explicitly; and the TV-L2 (f) and TV-11–TV-13 vector registrations.

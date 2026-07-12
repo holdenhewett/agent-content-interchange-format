@@ -102,7 +102,7 @@ Canonicalization rewrites provider-native tool names in `tools` and `disallowed_
 
 ### 8.1 `body_hash`
 
-The agent's canonical body is the system-prompt prose. `body_hash` follows [ACIF-CORE] §7: single-file bodies hash the canonical text form with the frontmatter block stripped; an agent shipping co-located content files classifies multi-file per [ACIF-CORE] §7.2.
+The agent's canonical body is the system-prompt prose. `body_hash` follows [ACIF-CORE] §7: single-file bodies hash the canonical text form with the frontmatter block stripped; an agent shipping co-located content files classifies multi-file per [ACIF-CORE] §7.2. The canonical entry file for classification is the agent source file itself: agents pin no canonical filename in 0.1, and the ingestion context designates which file is the source.
 
 ### 8.2 Extension-block hash coverage
 
@@ -212,3 +212,5 @@ The design record carried no drawn agent extension block; the §6.1 schema was d
 Preserved positions and roadmap items: agent handoff/delegation chains as a structured capability candidate (today prose-expressed; runs through the derivability test if a provider structures it); per-agent permission-policy promotion (`permission_mode` enum-of-values — needs an owned enum with total mapping if promoted); provider-specific agent surfaces (tool aliases, welcome messages, keyboard shortcuts) handled under the general passthrough rule rather than per-provider drop lists; cross-registry federation of resolution state (registry-scoped in 0.1).
 
 Newly minted at spec-promotion time (flagged for review): the §6.2 pins that `tools` order is preserved with no set semantics, that entries are non-empty strings, and that `permission_mode`/`background` are opaque passthrough; the §8.2 clarification that `metadata_hash` covers declared (untranslated) spellings while predicates read the translated canonical form; the §11 rule that renderers never substitute resolved UUIDs into provider output; and the TV-AGENT (h)–(k) vector reshaping (the design record's "body_hash post-translation" phrasing was vacuous for a frontmatter-carried array and is restated in hash-boundary terms).
+
+Amended after the second independent review (2026-07-11): the §8.1 entry-file statement that agents pin no canonical filename.

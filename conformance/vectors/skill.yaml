@@ -173,3 +173,19 @@
     skill: {activation: {type: hook, user_invocable: true}}
   expect:
     accept: true
+
+- id: TV-SKILL-n
+  spec: "[ACIF-CORE] §7.3, §7.4; [ACIF-SKILL] §8.2"
+  harness: static
+  description: multi-file entry-file frontmatter strip — frontmatter never enters body_hash, in either classification
+  input:
+    variant_1:
+      files: {SKILL.md: "---\ndescription: one\n---\nProse body.\n", scripts/run.sh: "#!/bin/sh\necho hi\n"}
+      entry_file: SKILL.md
+    variant_2:
+      files: {SKILL.md: "---\ndescription: two\n---\nProse body.\n", scripts/run.sh: "#!/bin/sh\necho hi\n"}
+      entry_file: SKILL.md
+  expect:
+    classification: multi-file
+    body_hash_identical_across_variants: true
+    body_hash: "b08c2af8a9d5c2eced158b49a13bacfe3d0a22221b965bd2a46672bc5b8f9648"
