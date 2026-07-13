@@ -238,6 +238,15 @@ when the request is for one) → `result`: `projection` (the projected
 value), or `conformant`/`reason` verdict transport for
 projection-validation forms.
 
+Pinned projection: `"projection": "derived_capabilities"` evaluates the
+per-type derivation predicates D_K ([ACIF-REGISTRY] §8.1; the L1 specs'
+"DERIVABLE keys" sections) over the supplied record →
+`result`: `{"derived_capabilities": {"<capability key>": true | false}}`.
+The catalogs spell expected outcomes as the labels
+`derivable-true` / `derivable-false`; bindings translate label ↔ boolean
+(a derivation-noted translation, [DESIGN.md] §4) — the label vocabulary is
+the vectors', the wire vocabulary is boolean.
+
 ### 4.11 `resolve_reference`
 
 Cross-reference resolution ([ACIF-REGISTRY] §9).
