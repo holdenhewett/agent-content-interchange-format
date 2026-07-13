@@ -1,10 +1,11 @@
 # DRAFT
 
-> **Status (2026-05-12):** these traces predate SHAPE.md and surface gaps the spec
-> has since closed. The bodies are preserved as a record of the design journey.
-> For current normative shape, read `SHAPE.md` at the repo root. Per-trace status
-> blocks at the top of each file map the "Questions raised" sections to the
-> SHAPE.md Decisions that now resolve them.
+> **Status (2026-05-12, pointer updated 2026-07-12):** these traces predate
+> SHAPE.md and surface gaps the spec has since closed. The bodies are preserved
+> as a record of the design journey. For current normative shape, read the
+> specification set under `specs/` (SHAPE.md is now the historical design
+> record). Per-trace status blocks at the top of each file map the "Questions
+> raised" sections to the SHAPE.md Decisions that now resolve them.
 
 # End-to-End Trace: obra/superpowers
 
