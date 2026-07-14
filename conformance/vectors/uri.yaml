@@ -117,6 +117,15 @@
     transport: [{status: 302, location: "https://edge.example.com/skill.md?X-Sig=abc&Expires=60"}, {status: 200}]
   expect: {source_uri: "https://cdn.example.com/skill.md"}
 
+- id: TV-URI-l3
+  spec: "[ACIF-REGISTRY] §10.4"
+  harness: mock-transport
+  description: 303 is temporary-class; records the requested URL
+  input:
+    request: "https://a.example.com/skill.md"
+    transport: [{status: 303, location: "https://b.example.com/skill.md"}, {status: 200}]
+  expect: {source_uri: "https://a.example.com/skill.md"}
+
 - id: TV-URI-m
   spec: "[ACIF-REGISTRY] §10.4"
   harness: mock-transport
@@ -125,6 +134,16 @@
     request: "https://a.example.com/x"
     transport: [{status: 301, location: "http://b.example.com/x"}]
   expect: {error: acif.source_uri.redirect_downgrade}
+
+- id: TV-URI-m2
+  spec: "[ACIF-REGISTRY] §10.4"
+  harness: mock-transport
+  description: downgrade after the freeze point still rejects; the freeze governs recording only
+  input:
+    request: "https://a.example.com/x"
+    transport: [{status: 302, location: "https://b.example.com/x"}, {status: 301, location: "http://c.example.com/x"}]
+  expect:
+    error: acif.source_uri.redirect_downgrade
 
 - id: TV-URI-n
   spec: "[ACIF-REGISTRY] §10.4"
@@ -136,6 +155,42 @@
       - {request: "https://a.example.com/loop", transport: two-node-301-loop}
   expect:
     error: acif.source_uri.redirect_limit
+
+- id: TV-URI-w
+  spec: "[ACIF-REGISTRY] §10.4"
+  harness: mock-transport
+  description: permanent redirect after a temporary hop never affects the record; the crawl-seed stays recorded
+  input:
+    request: "https://a.example.com/skill.md"
+    transport: [{status: 302, location: "https://edge.example.com/skill.md"}, {status: 301, location: "https://c.example.com/skill.md"}, {status: 200}]
+  expect: {source_uri: "https://a.example.com/skill.md"}
+
+- id: TV-URI-x
+  spec: "[ACIF-REGISTRY] §10.4"
+  harness: mock-transport
+  description: recorded value is the request URL of the first temporary redirect, not the crawl-seed
+  input:
+    request: "https://old.example.com/skill.md"
+    transport: [{status: 301, location: "https://new.example.com/skill.md"}, {status: 302, location: "https://edge.example.com/skill.md"}, {status: 200}]
+  expect: {source_uri: "https://new.example.com/skill.md"}
+
+- id: TV-URI-y
+  spec: "[ACIF-REGISTRY] §10.4"
+  harness: mock-transport
+  description: consecutive permanents fold to the final resolved URL; 308 is permanent-class
+  input:
+    request: "https://a.example.com/skill.md"
+    transport: [{status: 301, location: "https://b.example.com/skill.md"}, {status: 308, location: "https://c.example.com/skill.md"}, {status: 200}]
+  expect: {source_uri: "https://c.example.com/skill.md"}
+
+- id: TV-URI-z
+  spec: "[ACIF-REGISTRY] §10.4"
+  harness: mock-transport
+  description: permanent-temporary-permanent sandwich records the permanent-prefix endpoint
+  input:
+    request: "https://a.example.com/skill.md"
+    transport: [{status: 301, location: "https://b.example.com/skill.md"}, {status: 302, location: "https://edge.example.com/skill.md"}, {status: 301, location: "https://d.example.com/skill.md"}, {status: 200}]
+  expect: {source_uri: "https://b.example.com/skill.md"}
 
 - id: TV-URI-o
   spec: "[ACIF-REGISTRY] §10.5"

@@ -9,7 +9,7 @@ document governs.
 ## 1. Goal and non-goals
 
 The runner executes the published conformance vectors
-(`conformance/vectors/*.yaml`: 159 vectors — 153 static, 4 mock-transport,
+(`conformance/vectors/*.yaml`: 165 vectors — 153 static, 10 mock-transport,
 2 mock-crawl — across 11 catalogs) against an **implementation under test
 (IUT)** and produces a conformance report. The specs graduate from Draft
 when two independent implementations pass all vectors in their claimed
@@ -154,7 +154,7 @@ that sprays diagnostics does not pass diagnostic vectors.
 
 ### 3.3 Operation vocabulary (v1)
 
-Derived from the input/expect shapes of all 159 vectors. Exact schemas
+Derived from the input/expect shapes of all 165 vectors. Exact schemas
 live in PROTOCOL.md (§2: written first); the vocabulary:
 
 | Op | Covers | In (essentials) | Out (essentials) |
@@ -312,16 +312,16 @@ counts per-surface and is consistent as written).
   which may resolve `::1`); ports are ephemeral and passed in the request;
   one vector's double at a time, torn down after each. TLS negotiation
   itself is not under test and PROTOCOL.md says so.
-  **Coverage note:** these 4 vectors pin single-hop semantics only. The
-  §10.4 composition ambiguity is resolved (permanent-prefix rule, SHAPE
-  Decision #35: record the request URL of the first temporary redirect,
-  else the final resolved URL; the reference adapter implements it), but
-  mixed 301/302 chains, mid-chain downgrade, and 303/308 representatives
-  remain uncovered by vectors — filed as suite follow-up work (new
-  lettered vectors). Record-time re-dereference is no longer separate
-  follow-up: under Decision #35 it is the composition rule's
-  by-construction outcome, not a distinct post-crawl check. A
-  registry-scope claim against the current family must not be over-read.
+  **Coverage note:** the §10.4 composition ambiguity is resolved
+  (permanent-prefix rule, SHAPE Decision #35: record the request URL of
+  the first temporary redirect, else the final resolved URL) and the
+  family now pins it: TV-URI-w (temp-then-permanent freeze), TV-URI-x
+  (prefix endpoint, not crawl-seed), TV-URI-y (consecutive permanents
+  fold; 308 representative), TV-URI-z (perm-temp-perm sandwich),
+  TV-URI-m2 (post-freeze downgrade still rejects), TV-URI-l3 (303
+  temporary-class representative). Record-time re-dereference is not
+  separate coverage: under Decision #35 it is the composition rule's
+  by-construction outcome, not a distinct post-crawl check.
 - **mock-crawl** (2) — the runner sequences two passes with changed mock
   state and asserts across the pair; cross-pass state lives runner-side
   (§3 statelessness).
@@ -384,7 +384,7 @@ such, never a wall of green.
   must agree with each other. The pair is its own oracle — this smuggles
   no informative reference implementation into normative status — and it
   kills the lookup-table adapter class outright: you cannot pre-compute
-  answers to inputs that did not exist yesterday. The published 159 remain
+  answers to inputs that did not exist yesterday. The published 165 remain
   the normative claim basis; the differential pass is graduation evidence
   only.
 

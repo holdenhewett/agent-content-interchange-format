@@ -159,8 +159,24 @@ def tv_uri_l2(vector: Vector, session: Any, ctx: Any):
     return result
 
 
+@binding("TV-URI-l3")
+def tv_uri_l3(vector: Vector, session: Any, ctx: Any):
+    result = result_for(vector)
+    response = _mock_fetch(result, vector, session, ctx, vector.data["input"])
+    assert_result_field(result, "transport", response, "source_uri", vector.data["expect"]["source_uri"])
+    return result
+
+
 @binding("TV-URI-m")
 def tv_uri_m(vector: Vector, session: Any, ctx: Any):
+    result = result_for(vector)
+    response = _mock_fetch(result, vector, session, ctx, vector.data["input"])
+    assert_error(result, "transport", response, vector.data["expect"]["error"])
+    return result
+
+
+@binding("TV-URI-m2")
+def tv_uri_m2(vector: Vector, session: Any, ctx: Any):
     result = result_for(vector)
     response = _mock_fetch(result, vector, session, ctx, vector.data["input"])
     assert_error(result, "transport", response, vector.data["expect"]["error"])
@@ -185,6 +201,38 @@ def tv_uri_n(vector: Vector, session: Any, ctx: Any):
             assert_error(result, f"case_{idx}", response, vector.data["expect"]["error"])
     finally:
         double.close()
+    return result
+
+
+@binding("TV-URI-w")
+def tv_uri_w(vector: Vector, session: Any, ctx: Any):
+    result = result_for(vector)
+    response = _mock_fetch(result, vector, session, ctx, vector.data["input"])
+    assert_result_field(result, "transport", response, "source_uri", vector.data["expect"]["source_uri"])
+    return result
+
+
+@binding("TV-URI-x")
+def tv_uri_x(vector: Vector, session: Any, ctx: Any):
+    result = result_for(vector)
+    response = _mock_fetch(result, vector, session, ctx, vector.data["input"])
+    assert_result_field(result, "transport", response, "source_uri", vector.data["expect"]["source_uri"])
+    return result
+
+
+@binding("TV-URI-y")
+def tv_uri_y(vector: Vector, session: Any, ctx: Any):
+    result = result_for(vector)
+    response = _mock_fetch(result, vector, session, ctx, vector.data["input"])
+    assert_result_field(result, "transport", response, "source_uri", vector.data["expect"]["source_uri"])
+    return result
+
+
+@binding("TV-URI-z")
+def tv_uri_z(vector: Vector, session: Any, ctx: Any):
+    result = result_for(vector)
+    response = _mock_fetch(result, vector, session, ctx, vector.data["input"])
+    assert_result_field(result, "transport", response, "source_uri", vector.data["expect"]["source_uri"])
     return result
 
 
