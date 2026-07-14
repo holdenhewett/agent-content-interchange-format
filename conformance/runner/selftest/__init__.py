@@ -26,6 +26,7 @@ def main(argv: list[str] | None = None) -> int:
         ("anti-softening", check_anti_softening),
         ("protocol round-trip", check_protocol_roundtrip),
         ("scopes totality", check_scopes_totality),
+        ("suite manifest", check_suite_manifest),
         ("sabotage", check_sabotage),
     ]
     failures: list[str] = []
@@ -148,6 +149,33 @@ def check_scopes_totality() -> None:
     errors = totality_check(load_catalogs())
     if errors:
         raise AssertionError("; ".join(errors))
+
+
+def check_suite_manifest() -> None:
+    manifest_path = CONFORMANCE_ROOT / "suite-manifest.yaml"
+    entries = yaml.safe_load(manifest_path.read_text(encoding="utf-8"))
+    if not isinstance(entries, list) or not entries:
+        raise AssertionError("suite-manifest.yaml is empty or not a list")
+    head = max(entries, key=lambda e: e["suite"])
+    catalogs = load_catalogs()
+    bindings.load_all()
+    drift: list[str] = []
+    if head["catalogs"] != catalogs.catalog_hashes:
+        changed = sorted(
+            name
+            for name in set(head["catalogs"]) | set(catalogs.catalog_hashes)
+            if head["catalogs"].get(name) != catalogs.catalog_hashes.get(name)
+        )
+        drift.append("catalogs: " + ", ".join(changed))
+    if head["binding_set"] != bindings.binding_set_hash():
+        drift.append("binding_set")
+    if head["vectors"] != len(catalogs.by_id):
+        drift.append(f"vectors: manifest {head['vectors']} != suite {len(catalogs.by_id)}")
+    if drift:
+        raise AssertionError(
+            "manifest head (suite %s) drifted from the working tree — append a manifest entry per CHANGE-PROCESS.md: %s"
+            % (head["suite"], "; ".join(drift))
+        )
 
 
 def check_sabotage() -> None:

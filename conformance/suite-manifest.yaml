@@ -1,0 +1,31 @@
+# ACIF conformance suite manifest (CHANGE-PROCESS.md).
+#
+# The published, monotonic artifact consumers compare a conformance
+# report's pinned hashes against. One entry per suite change, newest
+# first; every suite change MUST append an entry (the runner selftest
+# fails if the head entry drifts from the working tree).
+#
+# change_class: initial | b | c | mixed — what kind of change produced
+# the entry. Class C entries carry their expectation-flip inventory in
+# the SHAPE.md decision row the note names. Prior suite history predates
+# this manifest and lives in git.
+
+- suite: 1
+  date: 2026-07-13
+  change_class: initial
+  supersedes: null
+  note: "manifest publication; suite state as of Decision #35 (165 vectors, six §10.4 composition vectors included)"
+  vectors: 165
+  binding_set: fd5d4ea7e5cb6ec9ccabaed22cda8473ce7e1e601ae8baf2f2c3b16da33e389e
+  catalogs:
+    agent.yaml: b0e25aec0185a9d3ab6176b13c497cb6c6a91b0b26b7070567cb9754f9502cf3
+    command.yaml: 11e10b0737e4031e5670b09b96a8c0f2d2eca1b2ed4e120a3f83b6592d59c294
+    core.yaml: 6b69e3df0c32d058c426d6c85fa812c07a80cbaede0a95370078bd19890a65b0
+    fresh.yaml: 1d09c6570b26f9b9f9a1be8af5c3a14d98c03af88863d975f19862f43e4788a9
+    hook.yaml: bb97d51c6e9e65f77970415625fa1cecf122c1bf40d720cf420dd267dd5e1ab7
+    mcp.yaml: 704441c815c7d414968af0f8a9bf49dbb0c256acdd84da5180df69717c611952
+    platform.yaml: da9d4eb155633e616c59a5d1154614262ce1100f15628ef01609fd6a2016e194
+    render.yaml: 8de6a43006d5e68be7cdf1460719f9fd30270b3b18f4f63f63a5c54c8a9c0147
+    rule.yaml: 3aa6ceafe87f355549f74a16fc3c26923c7a930743cce2ef22d39863ac57ab1b
+    skill.yaml: 13817b7083f6aeb172612650bfc8f38e7bd4e60fb892efcd1ae6486ffba22d2d
+    uri.yaml: 050e4f1c7232b4750a3c1ba0e36bc2482671891606815b1a8ffaef020b19625c

@@ -62,7 +62,9 @@ dependencies and conformance classes explicitly.
 [`conformance/`](conformance/README.md) publishes the test-vector catalog —
 165 vectors across 11 families. **The vectors are normatively authoritative
 over prose**: an implementation that contradicts a published vector is
-non-conformant regardless of any prose reading. Reference implementations
+non-conformant regardless of any prose reading. Post-publication changes
+follow [CHANGE-PROCESS.md](CHANGE-PROCESS.md); the suite's published state
+is pinned in [`conformance/suite-manifest.yaml`](conformance/suite-manifest.yaml). Reference implementations
 under `conformance/reference/` are informative.
 
 ## Design principles (short form)
