@@ -14,6 +14,10 @@ def main(argv: list[str] | None = None) -> int:
         from .selftest import main as selftest_main
 
         return selftest_main(argv[1:])
+    if argv and argv[0] == "differential":
+        from .differential import main as differential_main
+
+        return differential_main(argv[1:])
 
     parser = argparse.ArgumentParser(prog="python -m runner")
     parser.add_argument("--adapter", required=True, help="adapter command to spawn")

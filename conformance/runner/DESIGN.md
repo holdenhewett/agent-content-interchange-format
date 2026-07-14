@@ -396,7 +396,11 @@ such, never a wall of green.
   kills the lookup-table adapter class outright: you cannot pre-compute
   answers to inputs that did not exist yesterday. The published 165 remain
   the normative claim basis; the differential pass is graduation evidence
-  only.
+  only. Implementation: `conformance/runner/differential.py`, invoked as
+  `python -m conformance.runner differential --adapter-a … --adapter-b …
+  --seed … --count … [--report …]` — trials are generated
+  deterministically from the seed, so a report is re-runnable the same
+  way a static report is (§7).
 
 ## 9. Bootstrap and validation of the runner itself
 
