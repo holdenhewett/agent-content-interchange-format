@@ -103,23 +103,23 @@ license:                                                          # OPTIONAL
 pack_id: "a1b2c3d4-..."                                           # OPTIONAL
 ```
 
-**`kind`** — REQUIRED. MUST be one of the seven values above, matched by exact byte comparison.
+**`kind`** — REQUIRED. MUST be one of the seven values above, matched by exact byte comparison (violation: `acif.envelope.kind_invalid`).
 
-**`id`** — REQUIRED. MUST be a UUID version 4 [RFC9562], generated once when the item is first registered or authored. The `id` is the item's stable identity: it MUST NOT change across renames, moves, content edits, or pack reorganizations. (Exception: pack records with `source_kind: inferred` use a UUID version 5 identity; see [ACIF-PUBLISHER].)
+**`id`** — REQUIRED. MUST be a UUID version 4 [RFC9562], generated once when the item is first registered or authored. The `id` is the item's stable identity: it MUST NOT change across renames, moves, content edits, or pack reorganizations. (Exception: pack records with `source_kind: inferred` use a UUID version 5 identity; see [ACIF-PUBLISHER].) Violation: `acif.envelope.id_invalid` — a valid UUID v5 on an inferred pack record is the exception, not a violation.
 
 **`display_name`** — REQUIRED. A human-readable name for display only. Implementations MUST NOT use `display_name` for identity, cross-reference resolution, or deduplication.
 
-**`version`** — OPTIONAL, literal-or-absent. When declared, the value MUST be valid Semantic Versioning 2.0.0 [SEMVER]. No implementation may synthesize, inherit, or derive a value when the publisher omits it. `version` is advisory; the canonical change signal is `body_hash` (§6.2).
+**`version`** — OPTIONAL, literal-or-absent. When declared, the value MUST be valid Semantic Versioning 2.0.0 [SEMVER] (violation: `acif.envelope.version_invalid`). No implementation may synthesize, inherit, or derive a value when the publisher omits it. `version` is advisory; the canonical change signal is `body_hash` (§6.2).
 
 **`description`** — OPTIONAL. Free text.
 
-**`license`** — OPTIONAL. When present, `spdx` is REQUIRED and MUST be an SPDX license identifier; `file` (repository-relative path) and `url` (absolute URL) are each OPTIONAL.
+**`license`** — OPTIONAL. When present, `spdx` is REQUIRED and MUST be an SPDX license identifier; `file` (repository-relative path) and `url` (absolute URL) are each OPTIONAL. A present `spdx` value that is not an SPDX license identifier: `acif.envelope.license_spdx_invalid` (scoped to malformation; the absence case is unminted).
 
 **`pack_id`** — OPTIONAL. A UUID version 4 declaring pack membership. Pack semantics are defined in [ACIF-PUBLISHER].
 
 ### 5.2 Forbidden fields
 
-The following field names MUST NOT appear on an item record, in any section: `effective_version`, `derived_version`, `pack_inherited_version`, `resolved_version`. Their presence is a conformance error. (These names are reserved to prevent version-inheritance semantics from re-entering the format; a pack's own `version` lives on the pack record only.)
+The following field names MUST NOT appear on an item record, in any section: `effective_version`, `derived_version`, `pack_inherited_version`, `resolved_version`. Their presence is a conformance error: `acif.envelope.forbidden_field`, naming the offending field in its `field` param. (These names are reserved to prevent version-inheritance semantics from re-entering the format; a pack's own `version` lives on the pack record only.)
 
 ## 6. Carriers, Identity, and Change Signal
 
@@ -279,6 +279,14 @@ The error identifiers this document mints are:
 | `acif.body.symlink` | reject | Symbolic link anywhere in the body at ingestion (§7.4) |
 | `acif.body.path_collision` | reject | Two distinct source paths NFC-normalize to the same relative path (§7.4) |
 | `acif.body.empty` | reject | Frontmatter-bearing body contains no files after exclusions (§7.4) |
+| `acif.envelope.kind_invalid` | reject (verdict) | `kind` not one of the seven closed-enum values by exact byte comparison (§5.1) |
+| `acif.envelope.id_invalid` | reject (verdict) | `id` not a UUID version 4 — except a pack record with `source_kind: inferred`, whose `id` MUST be a valid UUID version 5 (§5.1) |
+| `acif.envelope.version_invalid` | reject (verdict) | Declared `version` not valid Semantic Versioning 2.0.0 (§5.1) |
+| `acif.envelope.license_spdx_invalid` | reject (verdict) | Present `license.spdx` value is not an SPDX license identifier (§5.1; malformation only — absence is unminted) |
+| `acif.envelope.forbidden_field` | reject (verdict) | A §5.2 reserved version-inheritance field present on an item record, any section; params: `field` (the offending name) (§5.2) |
+| `acif.requires.orphan_key` | reject (verdict) | A `requires.<key>` not defined for the item's content type, uniform over all causes; params: `key` (the offending key) (§9.4) |
+
+Rows classed `reject (verdict)` are minted ahead of assertion. The named conditions are conformance-tested today through the `{conformant: false}` verdict transport (the conformance adapter protocol, `conformance/runner/PROTOCOL.md` §3), where the identifier travels as the `reason` value; under `adapter_protocol: 1` that value is unasserted, and the verbatim-report obligation above binds from the adapter-protocol revision that asserts it exact-string — gated on the adapter's declared handshake protocol, never applied retroactively. *(Informative migration guidance, not an `adapter_protocol: 1` conformance criterion: emitting the minted identifier as the `reason` value today makes the future flip a no-op.)*
 
 ## 9. Capability Model (`requires`)
 
@@ -308,7 +316,7 @@ Equivalently, every capability routes to one of three destinations: a **body-car
 
 ### 9.4 Orphan-key reject
 
-An item carrying a `requires.<key>` not defined for its content type is non-conformant. This applies uniformly: keys recognized for a different content type, keys disposed DERIVABLE or OUT-OF-SCOPE-AT-L1 for this content type, and keys matching a passthrough or latent field of the content type are all rejected. The presence of a matching latent field MUST NOT soften the reject.
+An item carrying a `requires.<key>` not defined for its content type is non-conformant. This applies uniformly: keys recognized for a different content type, keys disposed DERIVABLE or OUT-OF-SCOPE-AT-L1 for this content type, and keys matching a passthrough or latent field of the content type are all rejected. The presence of a matching latent field MUST NOT soften the reject. The reject identifier is likewise uniform: `acif.requires.orphan_key`, naming the offending key in its `key` param. The cause taxonomy above is informative rationale — an implementation rejects **that** the key is orphaned and is never required to classify **why**.
 
 ### 9.5 Three-valued unknown-key evaluation
 

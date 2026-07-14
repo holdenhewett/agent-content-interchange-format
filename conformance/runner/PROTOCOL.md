@@ -79,10 +79,20 @@ Rules:
   this is the reserved channel for the adapter's own top-level exception
   handler, and adapters SHOULD emit e.g. `"error": "adapter: <detail>"`
   deliberately on internal failure.
-- **Non-conformance verdicts that are not spec-minted errors**: return
+- **Non-conformance verdicts on record-validation forms**: return
   `{"ok": true, "result": {"conformant": false, "reason": "<text>"}}`.
-  `reason` is informative diagnostic text and is never asserted.
-  A conforming input judged conformant returns
+  Under `adapter_protocol: 1`, `reason` is never asserted — this is
+  frozen per the adapter's declared handshake protocol, never changed
+  retroactively. The specs mint `reject (verdict)`-classed identifiers
+  for these conditions ([ACIF-CORE] §8.7; Appendix B maps every vector
+  site to its identifier); a future `adapter_protocol` revision asserts
+  `reason` exact-string against them, for adapters declaring that
+  revision only. *(Informative migration guidance, not an
+  `adapter_protocol: 1` conformance criterion: emit the minted
+  identifier as the `reason` value now and the flip is a no-op. The
+  normative source for which identifier a condition takes is the owning
+  spec's condition text, not Appendix B — an adapter never sees vector
+  ids.)* A conforming input judged conformant returns
   `{"ok": true, "result": {"conformant": true, …}}` alongside any other
   asserted fields.
 - `unsupported` is **per-request**: it means the adapter cannot serve
@@ -322,3 +332,51 @@ and is not asserted): `acif.command.placeholder_named_arg_collapsed`,
 Every identifier here is spec-minted; this table never mints. The
 anti-softening self-check reconciles it against both the catalogs and the
 specs' Error Identifiers sections.
+
+Reserved param shapes (assertion deferred to the `adapter_protocol`
+revision that asserts verdict reasons; pinned now so day-one emitters
+carry the payload and the detail survives the flip):
+
+| Identifier | Required params | Deferred asserting site |
+|---|---|---|
+| `acif.envelope.forbidden_field` | `field` (the offending reserved name) | TV-6 |
+| `acif.requires.orphan_key` | `key` (the offending `requires` key) | the six §9.4 orphan-key vectors (Appendix B) |
+
+## Appendix B — Verdict-reason identifier map (informative)
+
+Flip mechanics for runner binding authors: every `{conformant: false}`
+vector site, its current catalog reason string, and the spec-minted
+identifier the flip will assert. This table is NOT the normative source
+for adapter authors — an adapter never sees vector ids; it emits from the
+owning spec's condition text ([ACIF-CORE] §5.1–§5.2, §8.7, §9.4;
+[ACIF-REGISTRY] §8.3, §8.5, §11.2). The many-to-one rows are deliberate:
+[ACIF-CORE] §9.4 defines one uniform reject, so six catalog strings map
+to `acif.requires.orphan_key` — at the flip, the catalog strings survive
+as informative annotations (they keep failure output legible) and the
+per-case discrimination lives in each case's input key.
+
+| Vector site | Catalog reason string | Minted identifier |
+|---|---|---|
+| TV-6 | `forbidden-field effective_version` | `acif.envelope.forbidden_field` |
+| TV-11 case_1 | `kind-not-in-closed-enum` | `acif.envelope.kind_invalid` |
+| TV-11 case_2 | `id-not-uuid-v4` | `acif.envelope.id_invalid` |
+| TV-11 case_3 | `version-not-semver` | `acif.envelope.version_invalid` |
+| TV-11 case_4 | `license-spdx-not-identifier` | `acif.envelope.license_spdx_invalid` |
+| TV-L3-b | `missing-provenance-tag` | `acif.registry.provenance_tag_missing` |
+| TV-L3-c | `missing-method-stamp` | `acif.registry.method_stamp_missing` |
+| TV-FRESH-f | `rfc3339-explicit-offset-required` | `acif.registry.timestamp_offset_missing` |
+| TV-FRESH-k | `response-envelope-clock-is-not-a-staleness-input` | *retired at the flip* — reframed as a behavioral `staleness: stale` assertion (the `implementation_behavior` confession input is dropped; no identifier is minted, because no conforming implementation can detect and report its own clock conflation) |
+| TV-SKILL-b `foreign` | `foreign-type-key` | `acif.requires.orphan_key` |
+| TV-SKILL-b `latent_match` | `latent-field-presence-does-not-soften` | `acif.requires.orphan_key` |
+| TV-RULE-i case_1 | `considered-and-rejected-candidate` | `acif.requires.orphan_key` |
+| TV-RULE-i case_2 | `derivable-key-never-requires` | `acif.requires.orphan_key` |
+| TV-RULE-i case_3 | `foreign-type-key` | `acif.requires.orphan_key` |
+| TV-COMMAND-j case_1 | `considered-and-disposed` | `acif.requires.orphan_key` |
+| TV-COMMAND-j case_2 | `out-of-scope-key` | `acif.requires.orphan_key` |
+| TV-COMMAND-j case_3 | `foreign-type-key` | `acif.requires.orphan_key` |
+| TV-COMMAND-j case_4 | `latent-field-presence-does-not-soften` | `acif.requires.orphan_key` |
+| TV-AGENT-c `on_agent` | `derivable-key-never-requires` | `acif.requires.orphan_key` |
+| TV-AGENT-c `on_rule` | `foreign-type-key` | `acif.requires.orphan_key` |
+| TV-MCP-g `on_mcp_item` | `derivable-key-never-requires` | `acif.requires.orphan_key` |
+| TV-MCP-g `on_skill_item` | `foreign-type-key` | `acif.requires.orphan_key` |
+| TV-HOOK-b | `derivable-key-never-requires` | `acif.requires.orphan_key` |

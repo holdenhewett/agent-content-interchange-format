@@ -117,7 +117,7 @@ Projections are registry-computed only: they MUST NOT be stored in or sourced fr
 
 A registry MAY compute heuristic signals (e.g., the command token-presence scan, [ACIF-COMMAND] §10.1) under `derived_capabilities.advisory`, subject to all of:
 
-- method-version-stamped (`method: "<name>-v<N>"`), with the stamp REQUIRED on every emitted entry;
+- method-version-stamped (`method: "<name>-v<N>"`), with the stamp REQUIRED on every emitted entry (an entry emitted without it: `acif.registry.method_stamp_missing`);
 - both error directions documented in the owning specification;
 - never sets `derivable`, never gates conformance, canonicalization, or install;
 - no per-item confidence scores.
@@ -139,7 +139,7 @@ install_scope_capabilities:
   managed: {supported: false, source: publisher_claim}
 ```
 
-`source` ∈ `{canonical, publisher_claim, install_context}` — derived from the canonical body, asserted by the publisher unverified, or determined by the install mechanism. Without the tag, consumers cannot distinguish a derived scope from a claim; emitting an entry without `source` is non-conformant. Provider-matrix facts (e.g., hierarchical loading) do not belong here — none of the three tags can honestly source one; they live in §8.4.
+`source` ∈ `{canonical, publisher_claim, install_context}` — derived from the canonical body, asserted by the publisher unverified, or determined by the install mechanism. Without the tag, consumers cannot distinguish a derived scope from a claim; emitting an entry without `source` is non-conformant (`acif.registry.provenance_tag_missing`). Provider-matrix facts (e.g., hierarchical loading) do not belong here — none of the three tags can honestly source one; they live in §8.4.
 
 ## 9. Cross-Reference Resolution
 
@@ -220,7 +220,7 @@ No combined effective-staleness scalar exists; attestation validity is never fol
 
 ### 11.2 The staleness predicate
 
-An item is **stale** at consumer time `T` (UTC) iff `T > E_sidecar`, where `E_sidecar = expires` when present, else `fetched_at + 72h`. `fetched_at` is REQUIRED, so the predicate is total. All freshness fields MUST be RFC 3339 timestamps with an explicit offset; an offsetless timestamp is malformed. Clock-skew tolerance, if an implementation applies any, MUST be explicit, bounded, and fail-closed: a borderline instant evaluates stale. *(Informative: fail-closed is the conformance-tested property of the three — TV-FRESH (g); "explicit" and "bounded" describe how a tolerance must be declared, not independently vectorable behavior.)*
+An item is **stale** at consumer time `T` (UTC) iff `T > E_sidecar`, where `E_sidecar = expires` when present, else `fetched_at + 72h`. `fetched_at` is REQUIRED, so the predicate is total. All freshness fields MUST be RFC 3339 timestamps with an explicit offset; an offsetless timestamp is malformed (`acif.registry.timestamp_offset_missing`). Clock-skew tolerance, if an implementation applies any, MUST be explicit, bounded, and fail-closed: a borderline instant evaluates stale. *(Informative: fail-closed is the conformance-tested property of the three — TV-FRESH (g); "explicit" and "bounded" describe how a tolerance must be declared, not independently vectorable behavior.)*
 
 `expires < fetched_at` is a malformed window: `acif.registry.expires_before_fetched_at` (fix-forward). It is distinct from an `expires` legitimately already in the past, which is well-formed, evaluates stale, and is conforming to serve — an honest crawl backlog is not an error.
 
@@ -246,6 +246,11 @@ Staleness is a state flag on the warn lane: consumers SHOULD warn on stale items
 | `acif.source_uri.direct_file_trailing_slash` | reject (record-emit) | Single-file item URL path ends in `/` (§10.5) |
 | `acif.source_uri.filename_conflict` | diagnostic (MUST-emit) | URL-derived filename ≠ frontmatter-declared name; both recorded (§10.5) |
 | `acif.registry.expires_before_fetched_at` | reject (record-emit) | Malformed freshness window (§11.2) |
+| `acif.registry.method_stamp_missing` | reject (verdict) | Advisory-tier entry emitted without its REQUIRED method-version stamp (§8.3) |
+| `acif.registry.provenance_tag_missing` | reject (verdict) | `install_scope_capabilities` entry emitted without its `source` tag (§8.5) |
+| `acif.registry.timestamp_offset_missing` | reject (verdict) | Freshness field timestamp lacks an explicit offset (§11.2) |
+
+Rows classed `reject (verdict)` follow the minted-ahead-of-assertion discipline defined at [ACIF-CORE] §8.7: the condition is conformance-tested today through the `{conformant: false}` verdict, and the identifier value is unasserted under `adapter_protocol: 1`.
 
 Reject-class identifiers here bind the registry at the record-emit boundary: a record failing the condition MUST NOT be emitted as conforming. All are fix-forward ([ACIF-CORE] §8.7).
 
