@@ -6,9 +6,9 @@ import yaml
 from . import binding
 from .common import (
     assert_derived_capability,
+    assert_diagnostic,
     assert_relation,
     assert_result_field,
-    diagnostics_for,
     evaluate_requires,
     hash_value,
     ingest,
@@ -242,18 +242,7 @@ def tv_agent_j(vector: Vector, session: Any, ctx: Any):
             continue
         assert_result_field(result, "state_2", response, "cross_reference.resolution", expected["cross_reference"]["resolution"])
         assert_result_field(result, "state_2", response, "install", expected["install"])
-        if response.kind == "ok":
-            diagnostics = diagnostics_for(response)
-            observed = [
-                diagnostic.get("params", {}).get("declared_name")
-                for diagnostic in diagnostics
-                if isinstance(diagnostic.get("params"), dict)
-            ]
-            # DERIVATION: PROTOCOL.md §4.11 pins unresolved-reference
-            # diagnostics by params.declared_name; the vector records the
-            # expected value as diagnostic_names.
-            expected_name = expected["cross_reference"]["diagnostic_names"]
-            result.add_check("state_2", "diagnostic.declared_name", expected_name, observed, expected_name in observed)
+        assert_diagnostic(result, "state_2", response, expected["diagnostic"], expected["diagnostic_names"])
     return result
 
 

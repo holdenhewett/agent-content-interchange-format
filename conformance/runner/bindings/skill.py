@@ -7,6 +7,7 @@ import yaml
 
 from . import binding
 from .common import (
+    ABSENT,
     assert_derived_capability,
     assert_error,
     assert_ok,
@@ -17,6 +18,7 @@ from .common import (
     ingest,
     project_derived_capabilities,
     resolve_reference,
+    result_field,
     result_for,
     send,
 )
@@ -203,13 +205,22 @@ def tv_skill_h(vector: Vector, session: Any, ctx: Any):
             [hash_value(base, "body_hash"), hash_value(declared, "body_hash")],
             hash_value(base, "body_hash") == hash_value(declared, "body_hash"),
         )
+    if base.kind == "ok":
+        # DERIVATION: [ACIF-SKILL] §7/§8.3 — materialized values never enter
+        # publisher_section (metadata_hash's preimage), so the relation is the
+        # canonical form carrying the activation block while publisher_section
+        # does not. Declaring the same values MOVES metadata_hash (§8.3), so a
+        # declared-variant hash comparison tests declaration, not
+        # materialization (suite repair, syllago Stage 2).
+        ps_activation = result_field(base, "publisher_section.skill.activation")
+        canonical_activation = result_field(base, "canonical.skill.activation")
         assert_relation(
             result,
             "source",
             "metadata_hash_unaffected_by_materialization",
             exp["metadata_hash_unaffected_by_materialization"],
-            [hash_value(base, "metadata_hash"), hash_value(declared, "metadata_hash")],
-            hash_value(base, "metadata_hash") == hash_value(declared, "metadata_hash"),
+            {"publisher_section.skill.activation": ps_activation, "canonical.skill.activation": canonical_activation},
+            ps_activation is ABSENT and canonical_activation is not ABSENT,
         )
     return result
 

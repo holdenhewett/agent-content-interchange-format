@@ -113,8 +113,9 @@ A diagnostic is a structured object, never a bare string:
 ```
 
 `params` keys for every identifier whose payload the vectors assert are
-pinned in Appendix A; the runner's anti-softening self-check verifies
-Appendix A covers every payload-asserting vector. Matching discipline:
+pinned in Appendix A; the runner's Appendix-A payload-pin self-check
+verifies Appendix A covers every payload-asserting vector, and that every
+pinned row has its asserting vector. Matching discipline:
 every expected diagnostic MUST be present with its required params, and no
 unexpected diagnostic from the same `acif.<family>` may appear on that
 response.
@@ -281,8 +282,10 @@ supplies) → `result`: `cross_reference` (object or array),
 
 Pinned `cross_reference` object schema: `source_path`, `declared_name`,
 `target_kind`, `resolution` (`resolved` | `unresolved` | `revoked`),
-`target_id` (when resolved). An unresolved reference carries a §3.1
-diagnostic whose `params` include `declared_name`.
+`target_id` (when resolved; for name-declared references — UUID-authored
+references MAY omit it, [ACIF-REGISTRY] §9). An unresolved or revoked
+reference carries the §3.1 diagnostic `acif.registry.reference_unresolved`
+([ACIF-REGISTRY] §12) whose `params` include `declared_name`.
 
 ### 4.12 `evaluate_install`
 
@@ -304,16 +307,19 @@ Publisher-side frontmatter CI reconciliation ([ACIF-PUBLISHER] §7).
 
 ## Appendix A — Pinned diagnostic params
 
-Populated in lockstep with the bindings; the anti-softening self-check
-fails if a vector asserts a diagnostic payload not pinned here.
+Populated in lockstep with the bindings; the Appendix-A payload-pin
+self-check fails if a vector asserts a diagnostic payload not pinned
+here, or if a row here has no asserting vector.
 
 Payload-pinned (a vector asserts params content):
 
 | Identifier | Required params | Asserting vector |
 |---|---|---|
 | `acif.hook.script_platform_ambiguous` | `os` (colliding OS tag), `entries` (colliding entry indices, input order) | TV-PLATFORM-f |
-| `acif.source_uri.filename_conflict` | `declared_name`, `url_derived_name` | the §10.5 record-both vector |
+| `acif.source_uri.filename_conflict` | `declared_name`, `url_derived_name` | TV-URI-o2 |
 | `acif.publisher.pack_source_conflict` | `sources` (conflicting manifest filenames), `values` (conflicting values, same order) | TV-L2-f |
+| `acif.rule.activation_degraded` | `mode_lost` (the canonical mode the render loses), `effective_behavior` (the target's effective loading behavior) | TV-RULE-m |
+| `acif.registry.reference_unresolved` | `declared_name` (the declared reference string as written) | TV-AGENT-j |
 
 Identifier-only (vectors assert presence of the id; `params` MAY be empty
 and is not asserted): `acif.command.placeholder_named_arg_collapsed`,
@@ -325,7 +331,6 @@ and is not asserted): `acif.command.placeholder_named_arg_collapsed`,
 `acif.hook.script_no_platform_match`,
 `acif.mcp.server_name_unconventional`,
 `acif.publisher.frontmatter_conflict`,
-`acif.rule.activation_degraded`,
 `acif.source_uri.filename_conflict` (when asserted id-only),
 `acif.rule.activation_mode_unmappable`.
 

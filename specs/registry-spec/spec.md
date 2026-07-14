@@ -150,11 +150,17 @@ cross_references:
   - source_path: "agent.mcp_servers[0]"  # JSON path to the reference site
     declared_name: "figma"               # the string the publisher wrote (name-declared refs)
     target_kind: mcp_config              # expected content type of the target
-    target_id: "a1b2c3d4-..."            # REQUIRED iff resolution: resolved
+    target_id: "a1b2c3d4-..."            # name-declared refs: REQUIRED iff resolution:
+                                         # resolved. UUID-authored refs MAY omit it — the
+                                         # declared identifier at source_path is the target id
     resolution: resolved                 # declared | resolved | unresolved | revoked
-    diagnostic: ""                       # REQUIRED for unresolved | revoked — names the
-                                         # missing or revoked target
+    diagnostic: acif.registry.reference_unresolved
+                                         # REQUIRED for unresolved | revoked — the §12
+                                         # identifier; the missing or revoked target is named
+                                         # by declared_name (or the UUID at source_path)
 ```
+
+An unresolved or revoked reference additionally carries the structured diagnostic `acif.registry.reference_unresolved` (§12) on the computing response, once per affected reference, its `params` carrying `declared_name` — the declared reference string as written (the name for name-declared references, the UUID for UUID-authored ones).
 
 Reciprocal entries: for hook-activated skills, the registry MUST emit a skill-side entry reciprocal to the hook-side `activation_target` entry, so the relationship is discoverable from both ends; `source_path` names the site that actually declared the relationship (the skill's `hook_ref` when declared, else the hook-side site), per [ACIF-SKILL] §13.2. A `source_path` MUST NOT name a reference site the source record does not contain. Install-tool refusal on `unresolved`/`revoked` is [ACIF-CORE] §10; the registry's obligation is the resolution and the diagnostic.
 
@@ -246,6 +252,7 @@ Staleness is a state flag on the warn lane: consumers SHOULD warn on stale items
 | `acif.source_uri.direct_file_trailing_slash` | reject (record-emit) | Single-file item URL path ends in `/` (§10.5) |
 | `acif.source_uri.filename_conflict` | diagnostic (MUST-emit) | URL-derived filename ≠ frontmatter-declared name; both recorded (§10.5) |
 | `acif.registry.expires_before_fetched_at` | reject (record-emit) | Malformed freshness window (§11.2) |
+| `acif.registry.reference_unresolved` | diagnostic (MUST-emit) | Cross-reference resolution lands `unresolved` or `revoked`; params: `declared_name` (the declared reference string as written) (§9) |
 | `acif.registry.method_stamp_missing` | reject (verdict) | Advisory-tier entry emitted without its REQUIRED method-version stamp (§8.3) |
 | `acif.registry.provenance_tag_missing` | reject (verdict) | `install_scope_capabilities` entry emitted without its `source` tag (§8.5) |
 | `acif.registry.timestamp_offset_missing` | reject (verdict) | Freshness field timestamp lacks an explicit offset (§11.2) |

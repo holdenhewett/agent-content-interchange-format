@@ -141,7 +141,7 @@ A conforming registry MUST compute the four §9.1 predicates for every agent ite
 
 ### 10.2 Name-declared reference resolution
 
-`mcp_servers` and `skills` entries are name-declared references: the author writes a bare name; no UUID is authored. A conforming registry MUST resolve each entry at compute time into the [ACIF-CORE] §10 state vocabulary (`declared | resolved | unresolved | revoked`), emitting one `cross_references` entry per declared name with the source path (e.g., `agent.mcp_servers[0]`), the declared name, the expected target kind, the resolved target's `id` when resolution succeeds, and a diagnostic naming the missing or revoked target otherwise ([ACIF-REGISTRY] pins the record shape).
+`mcp_servers` and `skills` entries are name-declared references: the author writes a bare name; no UUID is authored. A conforming registry MUST resolve each entry at compute time into the [ACIF-CORE] §10 state vocabulary (`declared | resolved | unresolved | revoked`), emitting one `cross_references` entry per declared name with the source path (e.g., `agent.mcp_servers[0]`), the declared name, the expected target kind, the resolved target's `id` when resolution succeeds, and a diagnostic naming the missing or revoked target otherwise (`acif.registry.reference_unresolved`; [ACIF-REGISTRY] §9 pins the record shape, §12 the identifier).
 
 Install tools MUST refuse agent items carrying any `unresolved` or `revoked` reference unless the operator has explicitly opted in ([ACIF-CORE] §10).
 

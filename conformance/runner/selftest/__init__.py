@@ -24,6 +24,7 @@ def main(argv: list[str] | None = None) -> int:
     checks = [
         ("binding coverage", check_binding_coverage),
         ("anti-softening", check_anti_softening),
+        ("appendix-a payload pins", check_appendix_payload_pins),
         ("protocol round-trip", check_protocol_roundtrip),
         ("scopes totality", check_scopes_totality),
         ("suite manifest", check_suite_manifest),
@@ -69,6 +70,50 @@ def check_anti_softening() -> None:
     missing = sorted(lit for lit in literals if lit not in collected)
     if missing:
         raise AssertionError("runtime assertions did not collect expect literal(s): " + ", ".join(missing))
+
+
+APPENDIX_PIN_ROW_RE = re.compile(r"^\|\s*`(acif\.[a-z_.]+)`\s*\|.*\|\s*(TV-[A-Za-z0-9-]+)\s*\|$")
+
+
+def check_appendix_payload_pins() -> None:
+    """PROTOCOL.md §3.1: Appendix A pins the params of every diagnostic a
+    vector asserts payload content for — both directions."""
+    catalogs = load_catalogs()
+    bindings.load_all()
+    pinned = _appendix_payload_pins()
+    asserted: set[tuple[str, str]] = set()
+    for vid in sorted(bindings.bound_ids()):
+        vector = catalogs.by_id[vid]
+        with tempfile.TemporaryDirectory(prefix="acif-selftest-fixtures-") as tmp:
+            result = bindings.get(vid)(vector, _StubSession(), _StubContext(tmp))
+        for check in result.checks:
+            expected = check.get("expected")
+            if check.get("field") == "diagnostic" and isinstance(expected, dict) and "params" in expected:
+                asserted.add((expected["id"], vid))
+    problems = [
+        f"{vid} asserts params of {diag_id} but Appendix A does not pin it to that vector"
+        for diag_id, vid in sorted(asserted)
+        if vid not in pinned.get(diag_id, set())
+    ]
+    problems.extend(
+        f"Appendix A pins {diag_id} to {vid}, which does not assert its params"
+        for diag_id, vids in sorted(pinned.items())
+        for vid in sorted(vids)
+        if (diag_id, vid) not in asserted
+    )
+    if problems:
+        raise AssertionError("; ".join(problems))
+
+
+def _appendix_payload_pins() -> dict[str, set[str]]:
+    text = (CONFORMANCE_ROOT / "runner" / "PROTOCOL.md").read_text(encoding="utf-8")
+    section = text.split("Payload-pinned (a vector asserts params content):", 1)[1].split("Identifier-only", 1)[0]
+    pins: dict[str, set[str]] = {}
+    for line in section.splitlines():
+        match = APPENDIX_PIN_ROW_RE.match(line.strip())
+        if match:
+            pins.setdefault(match.group(1), set()).add(match.group(2))
+    return pins
 
 
 def _asserted_literals(value: Any, parent_key: str | None = None) -> set[str]:

@@ -96,13 +96,22 @@ def tv_rule_a(vector: Vector, session: Any, ctx: Any):
             [hash_value(base, "body_hash"), hash_value(declared, "body_hash")],
             hash_value(base, "body_hash") == hash_value(declared, "body_hash"),
         )
+    if base.kind == "ok":
+        # DERIVATION: [ACIF-RULE] §7/§8 — the materialized default is covered by
+        # no hash, and this source declares no frontmatter, so faithful
+        # observation ([ACIF-PUBLISHER]) yields no publisher_section and no
+        # metadata_hash at all; the relation is that absence. Declaring the mode
+        # MOVES metadata_hash (absent → present), so a declared-variant hash
+        # comparison tests declaration, not materialization (suite repair,
+        # syllago Stage 2).
+        observed = hash_value(base, "metadata_hash")
         assert_relation(
             result,
             "source",
             "metadata_hash_unaffected_by_materialization",
             exp["metadata_hash_unaffected_by_materialization"],
-            [hash_value(base, "metadata_hash"), hash_value(declared, "metadata_hash")],
-            hash_value(base, "metadata_hash") == hash_value(declared, "metadata_hash"),
+            {"metadata_hash": observed},
+            observed is ABSENT,
         )
     return result
 

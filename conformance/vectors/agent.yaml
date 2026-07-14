@@ -133,7 +133,9 @@
     state_1:
       cross_reference: {source_path: "agent.mcp_servers[0]", declared_name: figma, target_kind: mcp_config, resolution: resolved, target_id: "a1b2c3d4-58cc-4372-a567-0e02b2c3d479"}
     state_2:
-      cross_reference: {resolution: unresolved, diagnostic_names: figma}
+      cross_reference: {resolution: unresolved}
+      diagnostic: acif.registry.reference_unresolved
+      diagnostic_names: {declared_name: figma}
       install: refuse-unless-operator-opt-in
 
 - id: TV-AGENT-k
