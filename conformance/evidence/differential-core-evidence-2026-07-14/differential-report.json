@@ -1,0 +1,5515 @@
+{
+  "adapters": {
+    "a": {
+      "hello": {
+        "adapter_protocol": 2,
+        "implementation": "syllago",
+        "scopes": [
+          "core",
+          "hook",
+          "skill",
+          "rule",
+          "command",
+          "agent",
+          "mcp",
+          "publisher",
+          "registry",
+          "render"
+        ],
+        "version": "0.0.0-dev"
+      },
+      "invocation": "/tmp/claude-1000/-home-hhewett--local-src-agent-content-interchange-format/d25cc525-6cd5-4543-bc0b-7a6d506d1784/scratchpad/syllago-acif-adapter"
+    },
+    "b": {
+      "hello": {
+        "adapter_protocol": 2,
+        "implementation": "acif-ts",
+        "scopes": [
+          "core"
+        ],
+        "version": "0.1.0"
+      },
+      "invocation": "bun /home/hhewett/.local/src/acif-ts/bin/acif-adapter.ts"
+    }
+  },
+  "differential": {
+    "clean": true,
+    "count": 200,
+    "design": "DESIGN.md \u00a78 differential pass (graduation evidence)",
+    "families": {
+      "body": {
+        "agree": 61
+      },
+      "envelope": {
+        "agree": 30
+      },
+      "normalize_uri": {
+        "uncomparable": 29
+      },
+      "pack_id": {
+        "agree": 28
+      },
+      "sidecar": {
+        "agree": 52
+      }
+    },
+    "seed": 20260714,
+    "summary": {
+      "agree": 171,
+      "disagree": 0,
+      "env-skipped": 0,
+      "harness-error": 0,
+      "uncomparable": 29,
+      "unsupported": 0
+    }
+  },
+  "env_probes": {
+    "byte_preserving_names": {
+      "detail": "2 distinct byte entries",
+      "ok": true
+    },
+    "case_sensitive": {
+      "detail": "2 entries",
+      "ok": true
+    },
+    "mock_http_tls": {
+      "detail": "openssl CLI: /home/linuxbrew/.linuxbrew/bin/openssl",
+      "ok": true
+    },
+    "symlink_creation": {
+      "detail": "created",
+      "ok": true
+    }
+  },
+  "fixture_paths": [],
+  "runner": {
+    "runner_protocol": 2,
+    "version": "0.1.0-stage1"
+  },
+  "trials": [
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "bd7e6936c8672662f8589811b8eaf817115049ca7214ca87f2c95140ce574e61",
+          "classification": "single-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "bd7e6936c8672662f8589811b8eaf817115049ca7214ca87f2c95140ce574e61",
+          "classification": "single-file"
+        }
+      },
+      "family": "body",
+      "index": 0,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "README.md": "tab\tstop back\\slash\nsidecar hash envelope\nsidecar conformance Z\u00fcrich\nfixture",
+          "SKILL.md": "canonical record envelope\ncanonical trailing space ",
+          "acif-sidecar.yaml": "kind: skill\nid: f7dba3f8-9893-40c2-8394-520438995c4e\n"
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "conformant": false,
+          "params.field": "<absent>",
+          "reason": "acif.envelope.id_invalid"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "conformant": false,
+          "params.field": "<absent>",
+          "reason": "acif.envelope.id_invalid"
+        }
+      },
+      "family": "envelope",
+      "index": 1,
+      "input": {
+        "kind": "command",
+        "sidecar": {
+          "display_name": "quote\"back\\slash",
+          "id": "not-a-uuid",
+          "kind": "command"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "afd1de2849472bcf345d64e913945d0dd4218953aa31558b5a2c2f925e18a723",
+          "classification": "multi-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "afd1de2849472bcf345d64e913945d0dd4218953aa31558b5a2c2f925e18a723",
+          "classification": "multi-file"
+        }
+      },
+      "family": "body",
+      "index": 2,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "SKILL.md": "---\ndescription: back\\slash\n---\n",
+          "scripts/run.sh": "fixture tab\tstop\nadapter\nadapter emoji \u2615 na\u00efve\nregistry publisher canonical\n"
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"description\":\"scope\",\"display_name\":\"Review PR\",\"id\":\"de32709b-45b5-41db-8438-9b5614b5be35\",\"kind\":\"command\",\"pack_id\":\"e7efd501-7c6a-46ad-bd3e-238c5b233aaa\",\"version\":\"10.20.30\"}",
+          "metadata_hash": "3b49c639393517bf8027a3e78a3ca885ac2d05004867ac918fea560ffce31131"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"description\":\"scope\",\"display_name\":\"Review PR\",\"id\":\"de32709b-45b5-41db-8438-9b5614b5be35\",\"kind\":\"command\",\"pack_id\":\"e7efd501-7c6a-46ad-bd3e-238c5b233aaa\",\"version\":\"10.20.30\"}",
+          "metadata_hash": "3b49c639393517bf8027a3e78a3ca885ac2d05004867ac918fea560ffce31131"
+        }
+      },
+      "family": "sidecar",
+      "index": 3,
+      "input": {
+        "kind": "command",
+        "sidecar": {
+          "description": "scope",
+          "display_name": "Review PR",
+          "id": "de32709b-45b5-41db-8438-9b5614b5be35",
+          "kind": "command",
+          "pack_id": "e7efd501-7c6a-46ad-bd3e-238c5b233aaa",
+          "version": "10.20.30"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "conformant": false,
+          "params.field": "<absent>",
+          "reason": "acif.envelope.id_invalid"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "conformant": false,
+          "params.field": "<absent>",
+          "reason": "acif.envelope.id_invalid"
+        }
+      },
+      "family": "envelope",
+      "index": 4,
+      "input": {
+        "kind": "agent",
+        "sidecar": {
+          "display_name": "\u65e5\u672c\u8a9e\u30c4\u30fc\u30eb",
+          "id": "7d3acd4a36f5-40c5-8198-8c7ee18a9576",
+          "kind": "agent"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"Review PR\",\"id\":\"0ecec180-991a-4fc1-94d7-4373e47f6f08\",\"kind\":\"command\",\"version\":\"2.3.4-alpha.7\"}",
+          "metadata_hash": "f94552f0cb091af298dbd75d8152b905f8cfbdd32b535089485c059d5e8f07d3"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"Review PR\",\"id\":\"0ecec180-991a-4fc1-94d7-4373e47f6f08\",\"kind\":\"command\",\"version\":\"2.3.4-alpha.7\"}",
+          "metadata_hash": "f94552f0cb091af298dbd75d8152b905f8cfbdd32b535089485c059d5e8f07d3"
+        }
+      },
+      "family": "sidecar",
+      "index": 5,
+      "input": {
+        "kind": "command",
+        "sidecar": {
+          "display_name": "Review PR",
+          "id": "0ecec180-991a-4fc1-94d7-4373e47f6f08",
+          "kind": "command",
+          "version": "2.3.4-alpha.7"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "source_uri": "https://example.com//double//slash"
+        }
+      },
+      "b": {
+        "class": "unsupported"
+      },
+      "family": "normalize_uri",
+      "index": 6,
+      "input": {
+        "uri": "https://example.com//double//slash"
+      },
+      "request_op": "normalize_uri",
+      "status": "uncomparable"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "21f978f95cbb6da34f5436a6e522e435dcb718d3d6cda8cbb05f5d97732ce62f",
+          "classification": "multi-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "21f978f95cbb6da34f5436a6e522e435dcb718d3d6cda8cbb05f5d97732ce62f",
+          "classification": "multi-file"
+        }
+      },
+      "family": "body",
+      "index": 7,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "LICENSE": "caf\u00e9\n",
+          "README.md": "back\\slash Z\u00fcrich\n\u65e5\u672c\u8a9e\n\u65e5\u672c\u8a9e adapter\n",
+          "SKILL.md": "---\ndescription: back\\slash\n---\n\n",
+          "docs/deep/ref.md": "\n",
+          "sub/acif-sidecar.yaml": "conformance scope\n"
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "ea8e05b679d42b8523390f608437b56ad6ef577f44e8bb26147390ea2acc7185",
+          "classification": "multi-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "ea8e05b679d42b8523390f608437b56ad6ef577f44e8bb26147390ea2acc7185",
+          "classification": "multi-file"
+        }
+      },
+      "family": "body",
+      "index": 8,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "LICENSE": "registry envelope fixture\nback\\slash envelope vector\nna\u00efve canonical Z\u00fcrich\n",
+          "SKILL.md": "trailing space  tab\tstop na\u00efve\npublisher scope\nrecord trailing space  Z\u00fcrich\n",
+          "docs/deep/ref.md": "vector\n",
+          "docs/guide.md": ""
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "ad974c3c30c3b7a3299a70b2f855dfaffd31971ab252c611a76bafb1487d0fe1",
+          "classification": "multi-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "ad974c3c30c3b7a3299a70b2f855dfaffd31971ab252c611a76bafb1487d0fe1",
+          "classification": "multi-file"
+        }
+      },
+      "family": "body",
+      "index": 9,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "SKILL.md": "\n",
+          "docs/deep/ref.md": "quote \"inner\" Z\u00fcrich sidecar\nemoji \u2615\nna\u00efve scope conformance",
+          "notes.md": "record\n"
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "inferred_pack_id": "e6e0a618-8fb3-5ad2-97a4-ecb8d3655eae"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "inferred_pack_id": "e6e0a618-8fb3-5ad2-97a4-ecb8d3655eae"
+        }
+      },
+      "family": "pack_id",
+      "index": 10,
+      "input": {
+        "display_name": "\u65e5\u672c\u8a9e\u30c4\u30fc\u30eb",
+        "namespace": "93516344-00e5-419b-a230-6e8b1d02f87d",
+        "repository_url": "https://github.com/rofvc/tools"
+      },
+      "request_op": "derive_pack_id",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "9096f66091bf76ac6ef25e201307534b53019b6585e828be9963e31044e2c2f3",
+          "classification": "multi-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "9096f66091bf76ac6ef25e201307534b53019b6585e828be9963e31044e2c2f3",
+          "classification": "multi-file"
+        }
+      },
+      "family": "body",
+      "index": 11,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "SKILL.md": "\n",
+          "assets/caf\u00e9.txt": "publisher\n",
+          "docs/guide.md": "\n",
+          "notes.md": "fixture tab\tstop sidecar\nback\\slash emoji \u2615 tab\tstop\ntrailing space \n",
+          "scripts/run.sh": "conformance hash\nfixture hash \u65e5\u672c\u8a9e\nsidecar Z\u00fcrich envelope\nemoji \u2615 vector Z\u00fcrich\n"
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"  padded  \",\"id\":\"5ca11e36-b565-4d4b-bfcf-6550ac550ce7\",\"kind\":\"command\",\"version\":\"0.1.0\"}",
+          "metadata_hash": "6e007b4b4c678201e86ce30ae55270cf3f7ef4d68a86dfc4f9b58263af57cf3c"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"  padded  \",\"id\":\"5ca11e36-b565-4d4b-bfcf-6550ac550ce7\",\"kind\":\"command\",\"version\":\"0.1.0\"}",
+          "metadata_hash": "6e007b4b4c678201e86ce30ae55270cf3f7ef4d68a86dfc4f9b58263af57cf3c"
+        }
+      },
+      "family": "sidecar",
+      "index": 12,
+      "input": {
+        "kind": "command",
+        "sidecar": {
+          "display_name": "  padded  ",
+          "id": "5ca11e36-b565-4d4b-bfcf-6550ac550ce7",
+          "kind": "command",
+          "version": "0.1.0"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"description\":\"quote \\\"inner\\\" fixture\",\"display_name\":\"Review PR\",\"id\":\"be965488-2a71-4707-adff-3eb345fe81ff\",\"kind\":\"skill\",\"version\":\"2.3.4-alpha.7\"}",
+          "metadata_hash": "5eacf734c47cb3568aeed6d1d5286e709d0ee8827b0facb6f563f52d06354741"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"description\":\"quote \\\"inner\\\" fixture\",\"display_name\":\"Review PR\",\"id\":\"be965488-2a71-4707-adff-3eb345fe81ff\",\"kind\":\"skill\",\"version\":\"2.3.4-alpha.7\"}",
+          "metadata_hash": "5eacf734c47cb3568aeed6d1d5286e709d0ee8827b0facb6f563f52d06354741"
+        }
+      },
+      "family": "sidecar",
+      "index": 13,
+      "input": {
+        "kind": "skill",
+        "sidecar": {
+          "description": "quote \"inner\" fixture",
+          "display_name": "Review PR",
+          "id": "be965488-2a71-4707-adff-3eb345fe81ff",
+          "kind": "skill",
+          "version": "2.3.4-alpha.7"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "error",
+        "error": "acif.source_uri.query_present"
+      },
+      "b": {
+        "class": "unsupported"
+      },
+      "family": "normalize_uri",
+      "index": 14,
+      "input": {
+        "uri": "https://example.com/skills/demo?tag=v1#frag"
+      },
+      "request_op": "normalize_uri",
+      "status": "uncomparable"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "source_uri": "https://xn--caf-dma.example/menu"
+        }
+      },
+      "b": {
+        "class": "unsupported"
+      },
+      "family": "normalize_uri",
+      "index": 15,
+      "input": {
+        "uri": "https://xn--caf-dma.example/menu"
+      },
+      "request_op": "normalize_uri",
+      "status": "uncomparable"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "conformant": false,
+          "params.field": "<absent>",
+          "reason": "acif.envelope.kind_invalid"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "conformant": false,
+          "params.field": "<absent>",
+          "reason": "acif.envelope.kind_invalid"
+        }
+      },
+      "family": "envelope",
+      "index": 16,
+      "input": {
+        "kind": "Skill",
+        "sidecar": {
+          "display_name": "0",
+          "id": "820f2573-d0c0-4c5f-9d40-25e34b8b7ebc",
+          "kind": "Skill"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "be96c8d4d16878c0932b68e82d7fe19de4a06e7058d28711e1cca50675c2aa5d",
+          "classification": "multi-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "be96c8d4d16878c0932b68e82d7fe19de4a06e7058d28711e1cca50675c2aa5d",
+          "classification": "multi-file"
+        }
+      },
+      "family": "body",
+      "index": 17,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "SKILL.md": "vector\n",
+          "acif-sidecar.yaml": "kind: skill\nid: 0fdac784-423c-4e85-a6c3-6709b83959a4\n",
+          "assets/caf\u00e9.txt": "quote \"inner\" caf\u00e9\nenvelope\ncaf\u00e9 canonical record\nback\\slash tab\tstop\n"
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "7635797464ef87b222e919954f8089eade3d40fa005dff4dedd5c66b3cfe8a23",
+          "classification": "multi-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "7635797464ef87b222e919954f8089eade3d40fa005dff4dedd5c66b3cfe8a23",
+          "classification": "multi-file"
+        }
+      },
+      "family": "body",
+      "index": 18,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "SKILL.md": "---\ndescription: scope\n---\n\n",
+          "scripts/run.sh": "trailing space \nfixture canonical envelope\ncaf\u00e9 envelope\nquote \"inner\" caf\u00e9\n",
+          "sub/acif-sidecar.yaml": "Z\u00fcrich trailing space \nconformance\ncanonical back\\slash"
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "217cb86d79f6b72e3efc11032367364e11e045b216f3e6be8b56f6c1b2a4c1f8",
+          "classification": "multi-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "217cb86d79f6b72e3efc11032367364e11e045b216f3e6be8b56f6c1b2a4c1f8",
+          "classification": "multi-file"
+        }
+      },
+      "family": "body",
+      "index": 19,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "README.md": "publisher\nadapter\n",
+          "SKILL.md": "\n",
+          "acif-sidecar.yaml": "kind: skill\nid: de340f6c-8ab8-44c1-8344-dcf02d0b1f0d\n",
+          "data/values.json": ""
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "error",
+        "error": "acif.source_uri.userinfo_present"
+      },
+      "b": {
+        "class": "unsupported"
+      },
+      "family": "normalize_uri",
+      "index": 20,
+      "input": {
+        "uri": "https://user@example.com/skills/demo"
+      },
+      "request_op": "normalize_uri",
+      "status": "uncomparable"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "conformant": false,
+          "params.field": "<absent>",
+          "reason": "acif.envelope.kind_invalid"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "conformant": false,
+          "params.field": "<absent>",
+          "reason": "acif.envelope.kind_invalid"
+        }
+      },
+      "family": "envelope",
+      "index": 21,
+      "input": {
+        "kind": "mcp",
+        "sidecar": {
+          "display_name": "Review PR",
+          "id": "0a43d114-726d-4b1d-a548-4bdfb48d9672",
+          "kind": "mcp"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "source_uri": "https://example.com/b/c"
+        }
+      },
+      "b": {
+        "class": "unsupported"
+      },
+      "family": "normalize_uri",
+      "index": 22,
+      "input": {
+        "uri": "https://example.com/a/../b/./c"
+      },
+      "request_op": "normalize_uri",
+      "status": "uncomparable"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"description\":\"canonical back\\\\slash record\",\"display_name\":\"line\\nbreak name\",\"id\":\"7a47850c-b86e-4596-b4e1-9010013d4301\",\"kind\":\"skill\",\"version\":\"2.3.4-alpha.7\"}",
+          "metadata_hash": "25590beea55db5d76b7d5749b5cf657247524c92a31bb628d4bf8924e4499e9d"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"description\":\"canonical back\\\\slash record\",\"display_name\":\"line\\nbreak name\",\"id\":\"7a47850c-b86e-4596-b4e1-9010013d4301\",\"kind\":\"skill\",\"version\":\"2.3.4-alpha.7\"}",
+          "metadata_hash": "25590beea55db5d76b7d5749b5cf657247524c92a31bb628d4bf8924e4499e9d"
+        }
+      },
+      "family": "sidecar",
+      "index": 23,
+      "input": {
+        "kind": "skill",
+        "sidecar": {
+          "description": "canonical back\\slash record",
+          "display_name": "line\nbreak name",
+          "id": "7a47850c-b86e-4596-b4e1-9010013d4301",
+          "kind": "skill",
+          "version": "2.3.4-alpha.7"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "53645961a10a5b578dc787818126d7078a1480259b83ab65dbf7d69fcb2d8acf",
+          "classification": "multi-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "53645961a10a5b578dc787818126d7078a1480259b83ab65dbf7d69fcb2d8acf",
+          "classification": "multi-file"
+        }
+      },
+      "family": "body",
+      "index": 24,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "SKILL.md": "conformance quote \"inner\"\nZ\u00fcrich canonical tab\tstop\nvector adapter back\\slash\n",
+          "assets/caf\u00e9.txt": "hash tab\tstop\nvector emoji \u2615\nsidecar emoji \u2615 fixture\n",
+          "data/values.json": "\n",
+          "docs/deep/ref.md": "tab\tstop publisher\n",
+          "notes.md": "fixture caf\u00e9 sidecar"
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "source_uri": "https://xn--caf-dma.example/menu"
+        }
+      },
+      "b": {
+        "class": "unsupported"
+      },
+      "family": "normalize_uri",
+      "index": 25,
+      "input": {
+        "uri": "https://xn--caf-dma.example/menu"
+      },
+      "request_op": "normalize_uri",
+      "status": "uncomparable"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"description\":\"hash \u65e5\u672c\u8a9e record\",\"display_name\":\"tab\\tname\",\"id\":\"495bfeec-4b73-4e47-b304-f8d721903cdd\",\"kind\":\"skill\",\"version\":\"10.20.30\"}",
+          "metadata_hash": "948bbe10ff345e052a98011441ad0132e3edc96304b0139d16921056b2e56868"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"description\":\"hash \u65e5\u672c\u8a9e record\",\"display_name\":\"tab\\tname\",\"id\":\"495bfeec-4b73-4e47-b304-f8d721903cdd\",\"kind\":\"skill\",\"version\":\"10.20.30\"}",
+          "metadata_hash": "948bbe10ff345e052a98011441ad0132e3edc96304b0139d16921056b2e56868"
+        }
+      },
+      "family": "sidecar",
+      "index": 26,
+      "input": {
+        "kind": "skill",
+        "sidecar": {
+          "description": "hash \u65e5\u672c\u8a9e record",
+          "display_name": "tab\tname",
+          "id": "495bfeec-4b73-4e47-b304-f8d721903cdd",
+          "kind": "skill",
+          "version": "10.20.30"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "source_uri": "https://xn--caf-dma.example/menu"
+        }
+      },
+      "b": {
+        "class": "unsupported"
+      },
+      "family": "normalize_uri",
+      "index": 27,
+      "input": {
+        "uri": "https://xn--caf-dma.example/menu"
+      },
+      "request_op": "normalize_uri",
+      "status": "uncomparable"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "ef34ffc46c17448740a261cc6ea1c2a4ab332f834b45a0d9f5aa4a0898043699",
+          "classification": "multi-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "ef34ffc46c17448740a261cc6ea1c2a4ab332f834b45a0d9f5aa4a0898043699",
+          "classification": "multi-file"
+        }
+      },
+      "family": "body",
+      "index": 28,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "SKILL.md": "\n",
+          "data/values.json": "fixture record adapter\nenvelope canonical back\\slash\nadapter\n\u65e5\u672c\u8a9e back\\slash\n"
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "error",
+        "error": "acif.source_uri.userinfo_present"
+      },
+      "b": {
+        "class": "unsupported"
+      },
+      "family": "normalize_uri",
+      "index": 29,
+      "input": {
+        "uri": "https://user@example.com/skills/demo"
+      },
+      "request_op": "normalize_uri",
+      "status": "uncomparable"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"0\",\"id\":\"b72f56b3-590d-4718-a433-be84c540f701\",\"kind\":\"rule\",\"license\":{\"spdx\":\"MIT\"}}",
+          "metadata_hash": "365d1ad888f752a6ded8e89a6d51b92c132b58f62524c73fc0cfecb129604220"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"0\",\"id\":\"b72f56b3-590d-4718-a433-be84c540f701\",\"kind\":\"rule\",\"license\":{\"spdx\":\"MIT\"}}",
+          "metadata_hash": "365d1ad888f752a6ded8e89a6d51b92c132b58f62524c73fc0cfecb129604220"
+        }
+      },
+      "family": "sidecar",
+      "index": 30,
+      "input": {
+        "kind": "rule",
+        "sidecar": {
+          "display_name": "0",
+          "id": "b72f56b3-590d-4718-a433-be84c540f701",
+          "kind": "rule",
+          "license": {
+            "spdx": "MIT"
+          }
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "source_uri": "https://example.com/a%2Fb/c%20d"
+        }
+      },
+      "b": {
+        "class": "unsupported"
+      },
+      "family": "normalize_uri",
+      "index": 31,
+      "input": {
+        "uri": "https://example.com/a%2Fb/c%20d"
+      },
+      "request_op": "normalize_uri",
+      "status": "uncomparable"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "conformant": false,
+          "params.field": "pack_inherited_version",
+          "reason": "acif.envelope.forbidden_field"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "conformant": false,
+          "params.field": "pack_inherited_version",
+          "reason": "acif.envelope.forbidden_field"
+        }
+      },
+      "family": "envelope",
+      "index": 32,
+      "input": {
+        "kind": "command",
+        "sidecar": {
+          "display_name": "line\nbreak name",
+          "id": "a91e1940-83b5-4ff5-b721-b6301eed3a6d",
+          "kind": "command",
+          "pack_inherited_version": "1.2.3"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "df50fa9bb6ea6bc5b184ed426284987391155882edc44cbbb658fd7082aad064",
+          "classification": "multi-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "df50fa9bb6ea6bc5b184ed426284987391155882edc44cbbb658fd7082aad064",
+          "classification": "multi-file"
+        }
+      },
+      "family": "body",
+      "index": 33,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "SKILL.md": "Z\u00fcrich fixture caf\u00e9\nemoji \u2615 hash na\u00efve\n",
+          "acif-sidecar.yaml": "kind: skill\nid: 7362d31d-78f5-4d67-b00a-6651dd855dc6\n",
+          "scripts/run.sh": "envelope hash vector\nna\u00efve record\nquote \"inner\" trailing space  vector\nsidecar vector\n"
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "inferred_pack_id": "5f920e85-3f3c-51fa-a98a-f98d84ff3e91"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "inferred_pack_id": "5f920e85-3f3c-51fa-a98a-f98d84ff3e91"
+        }
+      },
+      "family": "pack_id",
+      "index": 34,
+      "input": {
+        "display_name": "caf\u00e9 \u2615 tool",
+        "namespace": "93516344-00e5-419b-a230-6e8b1d02f87d",
+        "repository_url": "https://github.com/plbjbrvx/demo"
+      },
+      "request_op": "derive_pack_id",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "conformant": false,
+          "params.field": "resolved_version",
+          "reason": "acif.envelope.forbidden_field"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "conformant": false,
+          "params.field": "resolved_version",
+          "reason": "acif.envelope.forbidden_field"
+        }
+      },
+      "family": "envelope",
+      "index": 35,
+      "input": {
+        "kind": "command",
+        "sidecar": {
+          "display_name": "Demo Skill",
+          "id": "f66c25b5-4d5d-4a2e-bd99-410c65605810",
+          "kind": "command",
+          "resolved_version": "10.20.30"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "392c0ffda0e41be7f2f65579997b974c2b5878ae6c867fe54f3e02cf71f797ff",
+          "classification": "multi-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "392c0ffda0e41be7f2f65579997b974c2b5878ae6c867fe54f3e02cf71f797ff",
+          "classification": "multi-file"
+        }
+      },
+      "family": "body",
+      "index": 36,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "SKILL.md": "---\ndescription: caf\u00e9\n---\nback\\slash\nemoji \u2615 caf\u00e9 scope\nhash tab\tstop\n",
+          "assets/caf\u00e9.txt": "publisher na\u00efve canonical\nemoji \u2615 tab\tstop\nvector hash trailing space \n",
+          "data/values.json": "canonical\nrecord back\\slash\n",
+          "docs/guide.md": "record\n",
+          "scripts/run.sh": "\n"
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "conformant": false,
+          "params.field": "<absent>",
+          "reason": "acif.envelope.kind_invalid"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "conformant": false,
+          "params.field": "<absent>",
+          "reason": "acif.envelope.kind_invalid"
+        }
+      },
+      "family": "envelope",
+      "index": 37,
+      "input": {
+        "kind": "plugin",
+        "sidecar": {
+          "display_name": "line\nbreak name",
+          "id": "b76212a9-3777-4c77-b31d-69e532bdd9d3",
+          "kind": "plugin"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "source_uri": "https://example.com/skills/demo"
+        }
+      },
+      "b": {
+        "class": "unsupported"
+      },
+      "family": "normalize_uri",
+      "index": 38,
+      "input": {
+        "uri": "https://example.com:443/skills/demo"
+      },
+      "request_op": "normalize_uri",
+      "status": "uncomparable"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "conformant": false,
+          "params.field": "effective_version",
+          "reason": "acif.envelope.forbidden_field"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "conformant": false,
+          "params.field": "effective_version",
+          "reason": "acif.envelope.forbidden_field"
+        }
+      },
+      "family": "envelope",
+      "index": 39,
+      "input": {
+        "kind": "skill",
+        "sidecar": {
+          "display_name": "\u65e5\u672c\u8a9e\u30c4\u30fc\u30eb",
+          "effective_version": "10.20.30",
+          "id": "ee87f8b9-c79c-442d-9d05-053d2aca95df",
+          "kind": "skill"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"line\\nbreak name\",\"id\":\"147b6820-bca7-428a-b4bd-be1c56abc6d8\",\"kind\":\"skill\",\"version\":\"10.20.30\"}",
+          "metadata_hash": "bfb02027efccd93c18287e8f245354fd714ff674a2ea9ed1bd64bb54b2ba1ef2"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"line\\nbreak name\",\"id\":\"147b6820-bca7-428a-b4bd-be1c56abc6d8\",\"kind\":\"skill\",\"version\":\"10.20.30\"}",
+          "metadata_hash": "bfb02027efccd93c18287e8f245354fd714ff674a2ea9ed1bd64bb54b2ba1ef2"
+        }
+      },
+      "family": "sidecar",
+      "index": 40,
+      "input": {
+        "kind": "skill",
+        "sidecar": {
+          "display_name": "line\nbreak name",
+          "id": "147b6820-bca7-428a-b4bd-be1c56abc6d8",
+          "kind": "skill",
+          "version": "10.20.30"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "classification": "single-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "classification": "single-file"
+        }
+      },
+      "family": "body",
+      "index": 41,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "SKILL.md": "---\ndescription: adapter\n---\n"
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "af3d35748a74794c15f46dca931047e078193784e37edf3b6406afbe94b17b51",
+          "classification": "multi-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "af3d35748a74794c15f46dca931047e078193784e37edf3b6406afbe94b17b51",
+          "classification": "multi-file"
+        }
+      },
+      "family": "body",
+      "index": 42,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "LICENSE": "sidecar tab\tstop scope",
+          "SKILL.md": "---\ndescription: publisher\n---\ncaf\u00e9\nemoji \u2615 hash registry\nback\\slash\nregistry fixture\n",
+          "assets/caf\u00e9.txt": "na\u00efve fixture \u65e5\u672c\u8a9e\nquote \"inner\" canonical sidecar\n",
+          "docs/deep/ref.md": "record na\u00efve\nfixture publisher \u65e5\u672c\u8a9e\nrecord\ntrailing space  envelope\n",
+          "docs/guide.md": "Z\u00fcrich\nquote \"inner\"\n\u65e5\u672c\u8a9e tab\tstop\n\u65e5\u672c\u8a9e record sidecar"
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "ffa4d5e4c0baac51489a02b6168a00985d5274aeab0dbea6ca90987e82ade983",
+          "classification": "single-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "ffa4d5e4c0baac51489a02b6168a00985d5274aeab0dbea6ca90987e82ade983",
+          "classification": "single-file"
+        }
+      },
+      "family": "body",
+      "index": 43,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "SKILL.md": "tab\tstop emoji \u2615\nvector back\\slash\n"
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"Demo Skill\",\"id\":\"1dc64907-5062-4a71-a225-e2077f6789e4\",\"kind\":\"agent\",\"pack_id\":\"3aeba9bc-665d-4c63-a91c-1d77bdfa127b\",\"version\":\"0.1.0\"}",
+          "metadata_hash": "a0509b3753811abfb15b862554729d979c2f6f9bd572c55f6fb9035da0bac469"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"Demo Skill\",\"id\":\"1dc64907-5062-4a71-a225-e2077f6789e4\",\"kind\":\"agent\",\"pack_id\":\"3aeba9bc-665d-4c63-a91c-1d77bdfa127b\",\"version\":\"0.1.0\"}",
+          "metadata_hash": "a0509b3753811abfb15b862554729d979c2f6f9bd572c55f6fb9035da0bac469"
+        }
+      },
+      "family": "sidecar",
+      "index": 44,
+      "input": {
+        "kind": "agent",
+        "sidecar": {
+          "display_name": "Demo Skill",
+          "id": "1dc64907-5062-4a71-a225-e2077f6789e4",
+          "kind": "agent",
+          "pack_id": "3aeba9bc-665d-4c63-a91c-1d77bdfa127b",
+          "version": "0.1.0"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "conformant": false,
+          "params.field": "<absent>",
+          "reason": "acif.envelope.license_spdx_invalid"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "conformant": false,
+          "params.field": "<absent>",
+          "reason": "acif.envelope.license_spdx_invalid"
+        }
+      },
+      "family": "envelope",
+      "index": 45,
+      "input": {
+        "kind": "skill",
+        "sidecar": {
+          "display_name": "  padded  ",
+          "id": "a161a3bf-84f0-4a7c-a251-edb5898f2f94",
+          "kind": "skill",
+          "license": {
+            "spdx": "GPL v3"
+          }
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "9dc0e981c71f3506ff905490a317ff412f54655626a837d352dede719babee8f",
+          "classification": "single-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "9dc0e981c71f3506ff905490a317ff412f54655626a837d352dede719babee8f",
+          "classification": "single-file"
+        }
+      },
+      "family": "body",
+      "index": 46,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "SKILL.md": "envelope back\\slash\nadapter canonical scope\nscope\nenvelope vector\n"
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "148571cc326677991d2e496249abc42e5eb6bb5d79b7df9fcc2b1f28319d2da3",
+          "classification": "multi-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "148571cc326677991d2e496249abc42e5eb6bb5d79b7df9fcc2b1f28319d2da3",
+          "classification": "multi-file"
+        }
+      },
+      "family": "body",
+      "index": 47,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "SKILL.md": "conformance sidecar\nenvelope back\\slash\nconformance\nvector tab\tstop\n",
+          "assets/caf\u00e9.txt": "publisher quote \"inner\" conformance\nconformance publisher\nback\\slash caf\u00e9 registry\nna\u00efve\n",
+          "data/values.json": "Z\u00fcrich adapter\nna\u00efve",
+          "sub/acif-sidecar.yaml": "publisher\ntrailing space \nback\\slash record\n"
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "222f353525d8969f2639bc02dace675610681f4ee4fd046575b36b80c7e34125",
+          "classification": "multi-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "222f353525d8969f2639bc02dace675610681f4ee4fd046575b36b80c7e34125",
+          "classification": "multi-file"
+        }
+      },
+      "family": "body",
+      "index": 48,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "LICENSE": "\u65e5\u672c\u8a9e na\u00efve registry\n",
+          "SKILL.md": "\n",
+          "data/values.json": "fixture conformance\nZ\u00fcrich\ncaf\u00e9 conformance\n\u65e5\u672c\u8a9e Z\u00fcrich\n",
+          "docs/guide.md": "registry record\n\u65e5\u672c\u8a9e sidecar fixture\ntrailing space  \u65e5\u672c\u8a9e emoji \u2615\n",
+          "scripts/run.sh": "vector \u65e5\u672c\u8a9e fixture"
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "conformant": false,
+          "params.field": "<absent>",
+          "reason": "acif.envelope.id_invalid"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "conformant": false,
+          "params.field": "<absent>",
+          "reason": "acif.envelope.id_invalid"
+        }
+      },
+      "family": "envelope",
+      "index": 49,
+      "input": {
+        "kind": "command",
+        "sidecar": {
+          "display_name": "line\nbreak name",
+          "id": "f1db69b7-9ef8-4fb6-bb4e-9b69129ce32",
+          "kind": "command"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "source_uri": "https://example.com/%C3%A9clair"
+        }
+      },
+      "b": {
+        "class": "unsupported"
+      },
+      "family": "normalize_uri",
+      "index": 50,
+      "input": {
+        "uri": "https://example.com/%C3%A9clair"
+      },
+      "request_op": "normalize_uri",
+      "status": "uncomparable"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "448c97a0bae9b8b7c48305ac3d223a7f8c0e56a1a2c2cfd9bd4612ceec0e08f6",
+          "classification": "multi-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "448c97a0bae9b8b7c48305ac3d223a7f8c0e56a1a2c2cfd9bd4612ceec0e08f6",
+          "classification": "multi-file"
+        }
+      },
+      "family": "body",
+      "index": 51,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "README.md": "",
+          "SKILL.md": "",
+          "docs/guide.md": "trailing space \n\u65e5\u672c\u8a9e\n"
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "conformant": false,
+          "params.field": "<absent>",
+          "reason": "acif.envelope.license_spdx_invalid"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "conformant": false,
+          "params.field": "<absent>",
+          "reason": "acif.envelope.license_spdx_invalid"
+        }
+      },
+      "family": "envelope",
+      "index": 52,
+      "input": {
+        "kind": "rule",
+        "sidecar": {
+          "display_name": "\u65e5\u672c\u8a9e\u30c4\u30fc\u30eb",
+          "id": "e00c533b-ef1a-4d4a-89ce-640ac0ed090e",
+          "kind": "rule",
+          "license": {
+            "spdx": "MIT License"
+          }
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "conformant": false,
+          "params.field": "<absent>",
+          "reason": "acif.envelope.version_invalid"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "conformant": false,
+          "params.field": "<absent>",
+          "reason": "acif.envelope.version_invalid"
+        }
+      },
+      "family": "envelope",
+      "index": 53,
+      "input": {
+        "kind": "skill",
+        "sidecar": {
+          "display_name": "tab\tname",
+          "id": "535d0d57-5515-4cdd-82ca-adb93d8a61bf",
+          "kind": "skill",
+          "version": "1.0.0.0"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "conformant": false,
+          "params.field": "<absent>",
+          "reason": "acif.envelope.id_invalid"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "conformant": false,
+          "params.field": "<absent>",
+          "reason": "acif.envelope.id_invalid"
+        }
+      },
+      "family": "envelope",
+      "index": 54,
+      "input": {
+        "kind": "command",
+        "sidecar": {
+          "display_name": "Demo Skill",
+          "id": "not-a-uuid",
+          "kind": "command"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "9631dfe5cfaeb0dff377d38b010b9c5c600cf25fe770784b565f63d74ecc9513",
+          "classification": "multi-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "9631dfe5cfaeb0dff377d38b010b9c5c600cf25fe770784b565f63d74ecc9513",
+          "classification": "multi-file"
+        }
+      },
+      "family": "body",
+      "index": 55,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "SKILL.md": "---\ndescription: caf\u00e9\n---\nZ\u00fcrich\n",
+          "assets/caf\u00e9.txt": "publisher registry\n",
+          "docs/deep/ref.md": "vector\nconformance record scope\npublisher tab\tstop\nhash canonical envelope\n"
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "0a8b4d4c96e0083e4641a2591a25112f34ef5ff5b85de1676fca9c4f8f510a1b",
+          "classification": "multi-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "0a8b4d4c96e0083e4641a2591a25112f34ef5ff5b85de1676fca9c4f8f510a1b",
+          "classification": "multi-file"
+        }
+      },
+      "family": "body",
+      "index": 56,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "SKILL.md": "---\ndescription: quote \"inner\"\n---\npublisher \u65e5\u672c\u8a9e\n",
+          "acif-sidecar.yaml": "kind: skill\nid: d433ca43-94c1-4b94-8e1b-c31261489bb1\n",
+          "data/values.json": "trailing space  Z\u00fcrich\nna\u00efve fixture sidecar\n",
+          "docs/deep/ref.md": "Z\u00fcrich envelope\nback\\slash quote \"inner\" sidecar\n",
+          "notes.md": "conformance\ncaf\u00e9 adapter sidecar\n",
+          "sub/acif-sidecar.yaml": "emoji \u2615 publisher fixture\npublisher\nsidecar\n"
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "source_uri": "https://example.com/skills/demo"
+        }
+      },
+      "b": {
+        "class": "unsupported"
+      },
+      "family": "normalize_uri",
+      "index": 57,
+      "input": {
+        "uri": "https://example.com/skills/demo"
+      },
+      "request_op": "normalize_uri",
+      "status": "uncomparable"
+    },
+    {
+      "a": {
+        "class": "error",
+        "error": "acif.source_uri.scheme_forbidden"
+      },
+      "b": {
+        "class": "unsupported"
+      },
+      "family": "normalize_uri",
+      "index": 58,
+      "input": {
+        "uri": "file:///opt/skills/demo"
+      },
+      "request_op": "normalize_uri",
+      "status": "uncomparable"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "conformant": false,
+          "params.field": "<absent>",
+          "reason": "acif.envelope.license_spdx_invalid"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "conformant": false,
+          "params.field": "<absent>",
+          "reason": "acif.envelope.license_spdx_invalid"
+        }
+      },
+      "family": "envelope",
+      "index": 59,
+      "input": {
+        "kind": "command",
+        "sidecar": {
+          "display_name": "Review PR",
+          "id": "47a505da-9014-4528-bebe-ced0b62dee22",
+          "kind": "command",
+          "license": {
+            "spdx": "MIT License"
+          }
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"description\":\"envelope emoji \u2615 adapter\",\"display_name\":\"  padded  \",\"id\":\"ad6170d7-5777-4eff-9883-4ffb49edcd34\",\"kind\":\"command\",\"version\":\"1.2.3\"}",
+          "metadata_hash": "9015846e393e0898407e8faa42d4bd9f34e5a0056c43a9ada0658bad60c59d73"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"description\":\"envelope emoji \u2615 adapter\",\"display_name\":\"  padded  \",\"id\":\"ad6170d7-5777-4eff-9883-4ffb49edcd34\",\"kind\":\"command\",\"version\":\"1.2.3\"}",
+          "metadata_hash": "9015846e393e0898407e8faa42d4bd9f34e5a0056c43a9ada0658bad60c59d73"
+        }
+      },
+      "family": "sidecar",
+      "index": 60,
+      "input": {
+        "kind": "command",
+        "sidecar": {
+          "description": "envelope emoji \u2615 adapter",
+          "display_name": "  padded  ",
+          "id": "ad6170d7-5777-4eff-9883-4ffb49edcd34",
+          "kind": "command",
+          "version": "1.2.3"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "e9be9e47264a122fec0118b0b923ff31a14482c60ab5e36280beb7b13ae56cb0",
+          "classification": "multi-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "e9be9e47264a122fec0118b0b923ff31a14482c60ab5e36280beb7b13ae56cb0",
+          "classification": "multi-file"
+        }
+      },
+      "family": "body",
+      "index": 61,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "SKILL.md": "---\ndescription: record\n---\ncaf\u00e9 hash back\\slash\n\u65e5\u672c\u8a9e envelope vector\n",
+          "assets/caf\u00e9.txt": "\n",
+          "data/values.json": "scope canonical trailing space \nconformance caf\u00e9\nvector tab\tstop\n",
+          "docs/deep/ref.md": "scope\n",
+          "docs/guide.md": ""
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "inferred_pack_id": "56d297d4-7c2c-53ca-9f6b-5eda605da9e4"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "inferred_pack_id": "56d297d4-7c2c-53ca-9f6b-5eda605da9e4"
+        }
+      },
+      "family": "pack_id",
+      "index": 62,
+      "input": {
+        "display_name": "caf\u00e9 \u2615 tool",
+        "namespace": "93516344-00e5-419b-a230-6e8b1d02f87d",
+        "repository_url": "https://github.com/zmynoksfs/skills"
+      },
+      "request_op": "derive_pack_id",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"Review PR\",\"id\":\"8bb321b4-a475-4a18-8c69-34d6895e3401\",\"kind\":\"command\",\"license\":{\"spdx\":\"Apache-2.0\"}}",
+          "metadata_hash": "69b6c36fc4841c6b5ab95954e35d1444e25a519f4719bfb65e3ca08e0adc20a0"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"Review PR\",\"id\":\"8bb321b4-a475-4a18-8c69-34d6895e3401\",\"kind\":\"command\",\"license\":{\"spdx\":\"Apache-2.0\"}}",
+          "metadata_hash": "69b6c36fc4841c6b5ab95954e35d1444e25a519f4719bfb65e3ca08e0adc20a0"
+        }
+      },
+      "family": "sidecar",
+      "index": 63,
+      "input": {
+        "kind": "command",
+        "sidecar": {
+          "display_name": "Review PR",
+          "id": "8bb321b4-a475-4a18-8c69-34d6895e3401",
+          "kind": "command",
+          "license": {
+            "spdx": "Apache-2.0"
+          }
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+          "classification": "single-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+          "classification": "single-file"
+        }
+      },
+      "family": "body",
+      "index": 64,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "SKILL.md": "\n"
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "79967ec95e5a7f1231b65732dc32d3b46b72ac0cda373e48c3e63f7277e746d3",
+          "classification": "multi-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "79967ec95e5a7f1231b65732dc32d3b46b72ac0cda373e48c3e63f7277e746d3",
+          "classification": "multi-file"
+        }
+      },
+      "family": "body",
+      "index": 65,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "LICENSE": "tab\tstop fixture\n",
+          "SKILL.md": "trailing space \nback\\slash hash vector\nsidecar canonical\n",
+          "notes.md": "conformance vector envelope\nfixture emoji \u2615 back\\slash\n"
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"0\",\"id\":\"8c3dff0e-f7e6-41d7-a945-1cd4f94de085\",\"kind\":\"skill\",\"version\":\"10.20.30\"}",
+          "metadata_hash": "de4a800dd31bcabffa43bd28c2f0340c1b02b9dcfaa7ef6f4bc3a94ef4b5b886"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"0\",\"id\":\"8c3dff0e-f7e6-41d7-a945-1cd4f94de085\",\"kind\":\"skill\",\"version\":\"10.20.30\"}",
+          "metadata_hash": "de4a800dd31bcabffa43bd28c2f0340c1b02b9dcfaa7ef6f4bc3a94ef4b5b886"
+        }
+      },
+      "family": "sidecar",
+      "index": 66,
+      "input": {
+        "kind": "skill",
+        "sidecar": {
+          "display_name": "0",
+          "id": "8c3dff0e-f7e6-41d7-a945-1cd4f94de085",
+          "kind": "skill",
+          "version": "10.20.30"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "error",
+        "error": "acif.source_uri.scheme_forbidden"
+      },
+      "b": {
+        "class": "unsupported"
+      },
+      "family": "normalize_uri",
+      "index": 67,
+      "input": {
+        "uri": "file:///opt/skills/demo"
+      },
+      "request_op": "normalize_uri",
+      "status": "uncomparable"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "inferred_pack_id": "4eb0ecb7-442a-531f-a68a-b79380c06d86"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "inferred_pack_id": "4eb0ecb7-442a-531f-a68a-b79380c06d86"
+        }
+      },
+      "family": "pack_id",
+      "index": 68,
+      "input": {
+        "display_name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "namespace": "93516344-00e5-419b-a230-6e8b1d02f87d",
+        "repository_url": "https://github.com/onsln/acif-pack"
+      },
+      "request_op": "derive_pack_id",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "0e7fa813b5a1503deac08261c1f1c05bdf3d00940a29a835b7f08574ee4db22e",
+          "classification": "multi-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "0e7fa813b5a1503deac08261c1f1c05bdf3d00940a29a835b7f08574ee4db22e",
+          "classification": "multi-file"
+        }
+      },
+      "family": "body",
+      "index": 69,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "SKILL.md": "back\\slash caf\u00e9\n",
+          "notes.md": "na\u00efve\nquote \"inner\" fixture record\nback\\slash adapter\n"
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "9b5eafdc0e2d27bfa101ff356180e34f69f3744c3b58aaea61d163e5605e41f5",
+          "classification": "multi-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "9b5eafdc0e2d27bfa101ff356180e34f69f3744c3b58aaea61d163e5605e41f5",
+          "classification": "multi-file"
+        }
+      },
+      "family": "body",
+      "index": 70,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "SKILL.md": "vector registry\ncaf\u00e9 canonical\nscope record publisher\nback\\slash fixture\n",
+          "data/values.json": "trailing space  na\u00efve\ntab\tstop canonical\n\u65e5\u672c\u8a9e\n"
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "inferred_pack_id": "48e940a8-6658-576b-96c2-31924f1bcb1b"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "inferred_pack_id": "48e940a8-6658-576b-96c2-31924f1bcb1b"
+        }
+      },
+      "family": "pack_id",
+      "index": 71,
+      "input": {
+        "display_name": "  padded  ",
+        "namespace": "93516344-00e5-419b-a230-6e8b1d02f87d",
+        "repository_url": "https://github.com/erkh/demo-pack"
+      },
+      "request_op": "derive_pack_id",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"tab\\tname\",\"id\":\"7d96cb66-d278-4046-aac7-a098992166b1\",\"kind\":\"command\",\"version\":\"2.3.4-alpha.7\"}",
+          "metadata_hash": "cbc9b5a5510ca73cc65854d6908ddcb1c4675333e2db4917131ba5877bc344b6"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"tab\\tname\",\"id\":\"7d96cb66-d278-4046-aac7-a098992166b1\",\"kind\":\"command\",\"version\":\"2.3.4-alpha.7\"}",
+          "metadata_hash": "cbc9b5a5510ca73cc65854d6908ddcb1c4675333e2db4917131ba5877bc344b6"
+        }
+      },
+      "family": "sidecar",
+      "index": 72,
+      "input": {
+        "kind": "command",
+        "sidecar": {
+          "display_name": "tab\tname",
+          "id": "7d96cb66-d278-4046-aac7-a098992166b1",
+          "kind": "command",
+          "version": "2.3.4-alpha.7"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "38af0daa88e4a03dd132354acfc09e81c14689cbe537a8bfe2723b416823cba6",
+          "classification": "single-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "38af0daa88e4a03dd132354acfc09e81c14689cbe537a8bfe2723b416823cba6",
+          "classification": "single-file"
+        }
+      },
+      "family": "body",
+      "index": 73,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "README.md": "canonical adapter\ncanonical record quote \"inner\"\n",
+          "SKILL.md": "---\ndescription: registry\n---\nsidecar\ncaf\u00e9\n\u65e5\u672c\u8a9e\ncanonical hash na\u00efve"
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "48d4defb2c07b6fa2ecced806e4d6c6dd207fb5dcf9a0fdb5cd9c280508697b0",
+          "classification": "multi-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "48d4defb2c07b6fa2ecced806e4d6c6dd207fb5dcf9a0fdb5cd9c280508697b0",
+          "classification": "multi-file"
+        }
+      },
+      "family": "body",
+      "index": 74,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "SKILL.md": "---\ndescription: scope\n---\nvector\n",
+          "data/values.json": "envelope\nna\u00efve\n",
+          "docs/deep/ref.md": "fixture publisher emoji \u2615\ncanonical trailing space \n"
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"\u00dcn\u00efcod\u00e9 N\u00e0me\",\"id\":\"16639406-b2ab-4d6e-a454-83bcbddef91a\",\"kind\":\"command\",\"version\":\"2.3.4-alpha.7\"}",
+          "metadata_hash": "c1b80bb8641b2a0f752adc3c6c47db3cd99c91acad78f769f4429b087d150a3f"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"\u00dcn\u00efcod\u00e9 N\u00e0me\",\"id\":\"16639406-b2ab-4d6e-a454-83bcbddef91a\",\"kind\":\"command\",\"version\":\"2.3.4-alpha.7\"}",
+          "metadata_hash": "c1b80bb8641b2a0f752adc3c6c47db3cd99c91acad78f769f4429b087d150a3f"
+        }
+      },
+      "family": "sidecar",
+      "index": 75,
+      "input": {
+        "kind": "command",
+        "sidecar": {
+          "display_name": "\u00dcn\u00efcod\u00e9 N\u00e0me",
+          "id": "16639406-b2ab-4d6e-a454-83bcbddef91a",
+          "kind": "command",
+          "version": "2.3.4-alpha.7"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"description\":\"\u65e5\u672c\u8a9e sidecar back\\\\slash\",\"display_name\":\"Review PR\",\"id\":\"19d23c68-a663-4618-a4b7-e6d426d6ea88\",\"kind\":\"agent\",\"version\":\"1.2.3\"}",
+          "metadata_hash": "7339283a03a78a69703bce3a111d9e807efba2918102cdeda908e468d99d6af4"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"description\":\"\u65e5\u672c\u8a9e sidecar back\\\\slash\",\"display_name\":\"Review PR\",\"id\":\"19d23c68-a663-4618-a4b7-e6d426d6ea88\",\"kind\":\"agent\",\"version\":\"1.2.3\"}",
+          "metadata_hash": "7339283a03a78a69703bce3a111d9e807efba2918102cdeda908e468d99d6af4"
+        }
+      },
+      "family": "sidecar",
+      "index": 76,
+      "input": {
+        "kind": "agent",
+        "sidecar": {
+          "description": "\u65e5\u672c\u8a9e sidecar back\\slash",
+          "display_name": "Review PR",
+          "id": "19d23c68-a663-4618-a4b7-e6d426d6ea88",
+          "kind": "agent",
+          "version": "1.2.3"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "48472d08e1c06eb50418b8c56c9ce6480731bf02473c3a4897e4012cadd1fd4b",
+          "classification": "multi-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "48472d08e1c06eb50418b8c56c9ce6480731bf02473c3a4897e4012cadd1fd4b",
+          "classification": "multi-file"
+        }
+      },
+      "family": "body",
+      "index": 77,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "LICENSE": "quote \"inner\" vector\n",
+          "README.md": "envelope\nadapter\nregistry trailing space \n",
+          "SKILL.md": "---\ndescription: back\\slash\n---\npublisher \u65e5\u672c\u8a9e scope\n\u65e5\u672c\u8a9e envelope emoji \u2615\nsidecar\nscope na\u00efve",
+          "notes.md": "caf\u00e9 back\\slash\ncanonical quote \"inner\"\n",
+          "scripts/run.sh": "conformance trailing space  scope\n"
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "source_uri": "https://example.com/skills/demo/"
+        }
+      },
+      "b": {
+        "class": "unsupported"
+      },
+      "family": "normalize_uri",
+      "index": 78,
+      "input": {
+        "uri": "https://example.com/skills/demo/"
+      },
+      "request_op": "normalize_uri",
+      "status": "uncomparable"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "inferred_pack_id": "5672bc4b-6f9a-5714-9713-cbf294b9d766"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "inferred_pack_id": "5672bc4b-6f9a-5714-9713-cbf294b9d766"
+        }
+      },
+      "family": "pack_id",
+      "index": 79,
+      "input": {
+        "display_name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "namespace": "93516344-00e5-419b-a230-6e8b1d02f87d",
+        "repository_url": "https://github.com/mkllhsol/demo-pack"
+      },
+      "request_op": "derive_pack_id",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "inferred_pack_id": "a20541f2-f540-5b44-82a2-0d6ff6ecd79c"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "inferred_pack_id": "a20541f2-f540-5b44-82a2-0d6ff6ecd79c"
+        }
+      },
+      "family": "pack_id",
+      "index": 80,
+      "input": {
+        "display_name": "  padded  ",
+        "namespace": "93516344-00e5-419b-a230-6e8b1d02f87d",
+        "repository_url": "https://github.com/qeuxk/pack"
+      },
+      "request_op": "derive_pack_id",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "inferred_pack_id": "e2953c72-3b62-5b0e-ab49-5b1c433501b3"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "inferred_pack_id": "e2953c72-3b62-5b0e-ab49-5b1c433501b3"
+        }
+      },
+      "family": "pack_id",
+      "index": 81,
+      "input": {
+        "display_name": "Demo Skill",
+        "namespace": "93516344-00e5-419b-a230-6e8b1d02f87d",
+        "repository_url": "https://github.com/erujns/acif-tools"
+      },
+      "request_op": "derive_pack_id",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "3019bb29520aae2c14e66d0f7415b6877796eda0f3a249fa1c37f164d9f2dde3",
+          "classification": "single-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "3019bb29520aae2c14e66d0f7415b6877796eda0f3a249fa1c37f164d9f2dde3",
+          "classification": "single-file"
+        }
+      },
+      "family": "body",
+      "index": 82,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "SKILL.md": "scope envelope\nfixture \u65e5\u672c\u8a9e emoji \u2615\ntrailing space  emoji \u2615 registry\nemoji \u2615\n"
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"description\":\"back\\\\slash record fixture\",\"display_name\":\"quote\\\"back\\\\slash\",\"id\":\"5cdb8b0a-9b68-4c70-872f-0067c1112fb6\",\"kind\":\"skill\"}",
+          "metadata_hash": "adf0625d0eea0f45df5df3ad787e0404fb0fccd475f588d8e6d4d34a4b64e4cc"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"description\":\"back\\\\slash record fixture\",\"display_name\":\"quote\\\"back\\\\slash\",\"id\":\"5cdb8b0a-9b68-4c70-872f-0067c1112fb6\",\"kind\":\"skill\"}",
+          "metadata_hash": "adf0625d0eea0f45df5df3ad787e0404fb0fccd475f588d8e6d4d34a4b64e4cc"
+        }
+      },
+      "family": "sidecar",
+      "index": 83,
+      "input": {
+        "kind": "skill",
+        "sidecar": {
+          "description": "back\\slash record fixture",
+          "display_name": "quote\"back\\slash",
+          "id": "5cdb8b0a-9b68-4c70-872f-0067c1112fb6",
+          "kind": "skill"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"description\":\"registry\",\"display_name\":\"Demo Skill\",\"id\":\"97a6dcb9-6075-4844-82cf-4bf85c4f10de\",\"kind\":\"command\",\"license\":{\"spdx\":\"MPL-2.0\"}}",
+          "metadata_hash": "f8d231104b235ca8b0f0289bdb3381c38435dd4f09eb859c7bc04e2403a9e35d"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"description\":\"registry\",\"display_name\":\"Demo Skill\",\"id\":\"97a6dcb9-6075-4844-82cf-4bf85c4f10de\",\"kind\":\"command\",\"license\":{\"spdx\":\"MPL-2.0\"}}",
+          "metadata_hash": "f8d231104b235ca8b0f0289bdb3381c38435dd4f09eb859c7bc04e2403a9e35d"
+        }
+      },
+      "family": "sidecar",
+      "index": 84,
+      "input": {
+        "kind": "command",
+        "sidecar": {
+          "description": "registry",
+          "display_name": "Demo Skill",
+          "id": "97a6dcb9-6075-4844-82cf-4bf85c4f10de",
+          "kind": "command",
+          "license": {
+            "spdx": "MPL-2.0"
+          }
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"0\",\"id\":\"a129a749-8210-452b-8584-1b6b246b7975\",\"kind\":\"agent\",\"version\":\"1.2.3+build.5\"}",
+          "metadata_hash": "9558eab22daac86dc97e8d8e22e68c09142275dae5eaccd416f6ca3753a0c77d"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"0\",\"id\":\"a129a749-8210-452b-8584-1b6b246b7975\",\"kind\":\"agent\",\"version\":\"1.2.3+build.5\"}",
+          "metadata_hash": "9558eab22daac86dc97e8d8e22e68c09142275dae5eaccd416f6ca3753a0c77d"
+        }
+      },
+      "family": "sidecar",
+      "index": 85,
+      "input": {
+        "kind": "agent",
+        "sidecar": {
+          "display_name": "0",
+          "id": "a129a749-8210-452b-8584-1b6b246b7975",
+          "kind": "agent",
+          "version": "1.2.3+build.5"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "inferred_pack_id": "fb313644-c6fc-5078-b269-76a16fa9c60d"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "inferred_pack_id": "fb313644-c6fc-5078-b269-76a16fa9c60d"
+        }
+      },
+      "family": "pack_id",
+      "index": 86,
+      "input": {
+        "display_name": "  padded  ",
+        "namespace": "93516344-00e5-419b-a230-6e8b1d02f87d",
+        "repository_url": "https://github.com/vvfsrpwdc/skills"
+      },
+      "request_op": "derive_pack_id",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"quote\\\"back\\\\slash\",\"id\":\"93058744-fab8-44c7-a3a2-2f5f8c7145df\",\"kind\":\"command\"}",
+          "metadata_hash": "3775efc99f90e639e450c3e5161949d3ae1192b0d35c32f1e6a771c0f8d7038d"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"quote\\\"back\\\\slash\",\"id\":\"93058744-fab8-44c7-a3a2-2f5f8c7145df\",\"kind\":\"command\"}",
+          "metadata_hash": "3775efc99f90e639e450c3e5161949d3ae1192b0d35c32f1e6a771c0f8d7038d"
+        }
+      },
+      "family": "sidecar",
+      "index": 87,
+      "input": {
+        "kind": "command",
+        "sidecar": {
+          "display_name": "quote\"back\\slash",
+          "id": "93058744-fab8-44c7-a3a2-2f5f8c7145df",
+          "kind": "command"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "inferred_pack_id": "dbec1521-384c-52d7-b2dd-442297210f51"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "inferred_pack_id": "dbec1521-384c-52d7-b2dd-442297210f51"
+        }
+      },
+      "family": "pack_id",
+      "index": 88,
+      "input": {
+        "display_name": "Review PR",
+        "namespace": "93516344-00e5-419b-a230-6e8b1d02f87d",
+        "repository_url": "https://github.com/ozmbau/tools-agent"
+      },
+      "request_op": "derive_pack_id",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"\u65e5\u672c\u8a9e\u30c4\u30fc\u30eb\",\"id\":\"7277a245-bef8-4f31-901f-b4f3d064506b\",\"kind\":\"skill\",\"license\":{\"spdx\":\"MPL-2.0\"}}",
+          "metadata_hash": "da6e60069cff802e8dee40123196e7c0bf99da4b801c59fe969ce0b6b1ab0158"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"\u65e5\u672c\u8a9e\u30c4\u30fc\u30eb\",\"id\":\"7277a245-bef8-4f31-901f-b4f3d064506b\",\"kind\":\"skill\",\"license\":{\"spdx\":\"MPL-2.0\"}}",
+          "metadata_hash": "da6e60069cff802e8dee40123196e7c0bf99da4b801c59fe969ce0b6b1ab0158"
+        }
+      },
+      "family": "sidecar",
+      "index": 89,
+      "input": {
+        "kind": "skill",
+        "sidecar": {
+          "display_name": "\u65e5\u672c\u8a9e\u30c4\u30fc\u30eb",
+          "id": "7277a245-bef8-4f31-901f-b4f3d064506b",
+          "kind": "skill",
+          "license": {
+            "spdx": "MPL-2.0"
+          }
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "6d2711618ee577537f00b45360d5daa88228c07af0cc4931bbb8d019290b0dd4",
+          "classification": "multi-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "6d2711618ee577537f00b45360d5daa88228c07af0cc4931bbb8d019290b0dd4",
+          "classification": "multi-file"
+        }
+      },
+      "family": "body",
+      "index": 90,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "LICENSE": "\n",
+          "SKILL.md": "\n",
+          "data/values.json": "Z\u00fcrich back\\slash\nvector envelope\ntab\tstop\n",
+          "notes.md": "envelope canonical back\\slash\npublisher emoji \u2615 vector",
+          "sub/acif-sidecar.yaml": "caf\u00e9\nna\u00efve\nrecord publisher registry\ncanonical emoji \u2615 envelope\n"
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "07d6535aea83f197d3ffe7d205fcb6950a02c2d855408e893cb342665ef65c8d",
+          "classification": "multi-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "07d6535aea83f197d3ffe7d205fcb6950a02c2d855408e893cb342665ef65c8d",
+          "classification": "multi-file"
+        }
+      },
+      "family": "body",
+      "index": 91,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "SKILL.md": "---\ndescription: canonical\n---\npublisher sidecar hash\nemoji \u2615\nfixture record\ntrailing space \n",
+          "docs/deep/ref.md": "\n",
+          "docs/guide.md": "vector \u65e5\u672c\u8a9e quote \"inner\"\n\u65e5\u672c\u8a9e tab\tstop quote \"inner\"\nquote \"inner\" registry Z\u00fcrich\ncaf\u00e9 envelope\n",
+          "sub/acif-sidecar.yaml": "caf\u00e9\nback\\slash na\u00efve tab\tstop"
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"description\":\"na\u00efve trailing space  back\\\\slash\",\"display_name\":\"line\\nbreak name\",\"id\":\"b93143f9-6646-4eec-bbac-51435a371b4a\",\"kind\":\"agent\",\"license\":{\"spdx\":\"MIT\"}}",
+          "metadata_hash": "4230a99292acd95756451b33e008221b372521e60f6540f174b1a211b56826e2"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"description\":\"na\u00efve trailing space  back\\\\slash\",\"display_name\":\"line\\nbreak name\",\"id\":\"b93143f9-6646-4eec-bbac-51435a371b4a\",\"kind\":\"agent\",\"license\":{\"spdx\":\"MIT\"}}",
+          "metadata_hash": "4230a99292acd95756451b33e008221b372521e60f6540f174b1a211b56826e2"
+        }
+      },
+      "family": "sidecar",
+      "index": 92,
+      "input": {
+        "kind": "agent",
+        "sidecar": {
+          "description": "na\u00efve trailing space  back\\slash",
+          "display_name": "line\nbreak name",
+          "id": "b93143f9-6646-4eec-bbac-51435a371b4a",
+          "kind": "agent",
+          "license": {
+            "spdx": "MIT"
+          }
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "0b1bccb25bb19d6e221b1b36df45a083d88fccc294b95dd8bc00714d80890847",
+          "classification": "multi-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "0b1bccb25bb19d6e221b1b36df45a083d88fccc294b95dd8bc00714d80890847",
+          "classification": "multi-file"
+        }
+      },
+      "family": "body",
+      "index": 93,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "README.md": "trailing space \n",
+          "SKILL.md": "\u65e5\u672c\u8a9e hash\nZ\u00fcrich registry hash\nemoji \u2615 vector\nsidecar envelope",
+          "assets/caf\u00e9.txt": "Z\u00fcrich \u65e5\u672c\u8a9e canonical\ntab\tstop\nconformance canonical scope\n",
+          "data/values.json": "\n"
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "conformant": false,
+          "params.field": "derived_version",
+          "reason": "acif.envelope.forbidden_field"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "conformant": false,
+          "params.field": "derived_version",
+          "reason": "acif.envelope.forbidden_field"
+        }
+      },
+      "family": "envelope",
+      "index": 94,
+      "input": {
+        "kind": "command",
+        "sidecar": {
+          "derived_version": "2.3.4-alpha.7",
+          "display_name": "Review PR",
+          "id": "16dd8a01-fe32-48bf-a935-81f06e24c92c",
+          "kind": "command"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "inferred_pack_id": "80b3394b-d547-5af0-9fbd-5de685e57f25"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "inferred_pack_id": "80b3394b-d547-5af0-9fbd-5de685e57f25"
+        }
+      },
+      "family": "pack_id",
+      "index": 95,
+      "input": {
+        "display_name": "line\nbreak name",
+        "namespace": "93516344-00e5-419b-a230-6e8b1d02f87d",
+        "repository_url": "https://github.com/bezfiujy/agent"
+      },
+      "request_op": "derive_pack_id",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "error",
+        "error": "acif.source_uri.query_present"
+      },
+      "b": {
+        "class": "unsupported"
+      },
+      "family": "normalize_uri",
+      "index": 96,
+      "input": {
+        "uri": "https://example.com/skills/demo?tag=v1#frag"
+      },
+      "request_op": "normalize_uri",
+      "status": "uncomparable"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "d9d8eed767a2af6464d61ebebf3574e27ddd7aaa9a967cd90ffd0026fe174f2f",
+          "classification": "multi-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "d9d8eed767a2af6464d61ebebf3574e27ddd7aaa9a967cd90ffd0026fe174f2f",
+          "classification": "multi-file"
+        }
+      },
+      "family": "body",
+      "index": 97,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "SKILL.md": "---\ndescription: registry\n---\nback\\slash record sidecar\n",
+          "assets/caf\u00e9.txt": "emoji \u2615",
+          "notes.md": "publisher caf\u00e9 \u65e5\u672c\u8a9e",
+          "scripts/run.sh": "tab\tstop hash registry\nback\\slash\n"
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "conformant": false,
+          "params.field": "derived_version",
+          "reason": "acif.envelope.forbidden_field"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "conformant": false,
+          "params.field": "derived_version",
+          "reason": "acif.envelope.forbidden_field"
+        }
+      },
+      "family": "envelope",
+      "index": 98,
+      "input": {
+        "kind": "skill",
+        "sidecar": {
+          "derived_version": "2.3.4-alpha.7",
+          "display_name": "line\nbreak name",
+          "id": "fabbc513-b500-428a-a076-e39a8ce403cd",
+          "kind": "skill"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "conformant": false,
+          "params.field": "<absent>",
+          "reason": "acif.envelope.license_spdx_invalid"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "conformant": false,
+          "params.field": "<absent>",
+          "reason": "acif.envelope.license_spdx_invalid"
+        }
+      },
+      "family": "envelope",
+      "index": 99,
+      "input": {
+        "kind": "agent",
+        "sidecar": {
+          "display_name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "id": "6593e239-4a8f-446f-be7e-583ca11dd10e",
+          "kind": "agent",
+          "license": {
+            "spdx": ""
+          }
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "source_uri": "https://example.com/Skills/Demo"
+        }
+      },
+      "b": {
+        "class": "unsupported"
+      },
+      "family": "normalize_uri",
+      "index": 100,
+      "input": {
+        "uri": "HTTPS://Example.COM/Skills/Demo"
+      },
+      "request_op": "normalize_uri",
+      "status": "uncomparable"
+    },
+    {
+      "a": {
+        "class": "error",
+        "error": "acif.source_uri.userinfo_present"
+      },
+      "b": {
+        "class": "unsupported"
+      },
+      "family": "normalize_uri",
+      "index": 101,
+      "input": {
+        "uri": "https://user@example.com/skills/demo"
+      },
+      "request_op": "normalize_uri",
+      "status": "uncomparable"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"Review PR\",\"id\":\"be085df8-2ee9-4394-bdb6-6e3a325beb44\",\"kind\":\"agent\",\"license\":{\"spdx\":\"MIT\"}}",
+          "metadata_hash": "b3f6faed6dde755660279a0d8219a7a2bc459bbb76a5d866f4aa9ccac3e57cc8"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"Review PR\",\"id\":\"be085df8-2ee9-4394-bdb6-6e3a325beb44\",\"kind\":\"agent\",\"license\":{\"spdx\":\"MIT\"}}",
+          "metadata_hash": "b3f6faed6dde755660279a0d8219a7a2bc459bbb76a5d866f4aa9ccac3e57cc8"
+        }
+      },
+      "family": "sidecar",
+      "index": 102,
+      "input": {
+        "kind": "agent",
+        "sidecar": {
+          "display_name": "Review PR",
+          "id": "be085df8-2ee9-4394-bdb6-6e3a325beb44",
+          "kind": "agent",
+          "license": {
+            "spdx": "MIT"
+          }
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "conformant": false,
+          "params.field": "<absent>",
+          "reason": "acif.envelope.license_spdx_invalid"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "conformant": false,
+          "params.field": "<absent>",
+          "reason": "acif.envelope.license_spdx_invalid"
+        }
+      },
+      "family": "envelope",
+      "index": 103,
+      "input": {
+        "kind": "agent",
+        "sidecar": {
+          "display_name": "Demo Skill",
+          "id": "6c963e18-5f2f-406b-89bd-0b9ac8303970",
+          "kind": "agent",
+          "license": {
+            "spdx": "GPL v3"
+          }
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "baf4e397029df737da52c2860ab9d757f46ee46ff636d5aaf32295234570fcef",
+          "classification": "multi-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "baf4e397029df737da52c2860ab9d757f46ee46ff636d5aaf32295234570fcef",
+          "classification": "multi-file"
+        }
+      },
+      "family": "body",
+      "index": 104,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "SKILL.md": "adapter scope\nfixture\nemoji \u2615 adapter\n",
+          "assets/caf\u00e9.txt": "trailing space  sidecar registry\nscope \u65e5\u672c\u8a9e tab\tstop\n",
+          "notes.md": ""
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "conformant": false,
+          "params.field": "<absent>",
+          "reason": "acif.envelope.kind_invalid"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "conformant": false,
+          "params.field": "<absent>",
+          "reason": "acif.envelope.kind_invalid"
+        }
+      },
+      "family": "envelope",
+      "index": 105,
+      "input": {
+        "kind": "SKILL",
+        "sidecar": {
+          "display_name": "tab\tname",
+          "id": "14f04a7e-9caa-44ff-908c-fe4b7127d970",
+          "kind": "SKILL"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "5327f295d2ac4903304b28ba8002dc2de364bc68c246ce7dbc04a1c58ec7cd45",
+          "classification": "multi-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "5327f295d2ac4903304b28ba8002dc2de364bc68c246ce7dbc04a1c58ec7cd45",
+          "classification": "multi-file"
+        }
+      },
+      "family": "body",
+      "index": 106,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "LICENSE": "na\u00efve trailing space  record\n",
+          "SKILL.md": "---\ndescription: Z\u00fcrich\n---\nrecord Z\u00fcrich\nconformance quote \"inner\"\n",
+          "docs/guide.md": ""
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "inferred_pack_id": "72efd5ed-4f70-5e56-a95a-8c465a56c560"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "inferred_pack_id": "72efd5ed-4f70-5e56-a95a-8c465a56c560"
+        }
+      },
+      "family": "pack_id",
+      "index": 107,
+      "input": {
+        "display_name": "line\nbreak name",
+        "namespace": "93516344-00e5-419b-a230-6e8b1d02f87d",
+        "repository_url": "https://github.com/gjsn/demo"
+      },
+      "request_op": "derive_pack_id",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "a78ad961fb7cc17c045e06371cc619a3a81c21ab50a3b2d56a068615d53113dd",
+          "classification": "multi-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "a78ad961fb7cc17c045e06371cc619a3a81c21ab50a3b2d56a068615d53113dd",
+          "classification": "multi-file"
+        }
+      },
+      "family": "body",
+      "index": 108,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "SKILL.md": "---\ndescription: emoji \u2615\n---\n",
+          "assets/caf\u00e9.txt": "na\u00efve emoji \u2615 envelope",
+          "scripts/run.sh": "fixture"
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "25db3d56e340987283e0b289e7bbe2a1183b25cb984239965df53516def178d8",
+          "classification": "multi-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "25db3d56e340987283e0b289e7bbe2a1183b25cb984239965df53516def178d8",
+          "classification": "multi-file"
+        }
+      },
+      "family": "body",
+      "index": 109,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "SKILL.md": "scope back\\slash\n\u65e5\u672c\u8a9e caf\u00e9\nregistry \u65e5\u672c\u8a9e\npublisher\n",
+          "acif-sidecar.yaml": "kind: skill\nid: 4031463d-7550-42cb-ab73-95b866b7cff8\n",
+          "assets/caf\u00e9.txt": "\u65e5\u672c\u8a9e\ntrailing space  Z\u00fcrich na\u00efve\n",
+          "docs/guide.md": "\n",
+          "scripts/run.sh": "",
+          "sub/acif-sidecar.yaml": "back\\slash scope tab\tstop\n"
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"description\":\"vector\",\"display_name\":\"quote\\\"back\\\\slash\",\"id\":\"76ffa2a5-b95e-43d5-b53c-97ba66a1a60b\",\"kind\":\"skill\",\"version\":\"1.2.3\"}",
+          "metadata_hash": "1e4b3cb9f35ab84595af68ab8ab48e22889ee35eac51fddc0fbe95331b30c225"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"description\":\"vector\",\"display_name\":\"quote\\\"back\\\\slash\",\"id\":\"76ffa2a5-b95e-43d5-b53c-97ba66a1a60b\",\"kind\":\"skill\",\"version\":\"1.2.3\"}",
+          "metadata_hash": "1e4b3cb9f35ab84595af68ab8ab48e22889ee35eac51fddc0fbe95331b30c225"
+        }
+      },
+      "family": "sidecar",
+      "index": 110,
+      "input": {
+        "kind": "skill",
+        "sidecar": {
+          "description": "vector",
+          "display_name": "quote\"back\\slash",
+          "id": "76ffa2a5-b95e-43d5-b53c-97ba66a1a60b",
+          "kind": "skill",
+          "version": "1.2.3"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "error",
+        "error": "acif.source_uri.scheme_forbidden"
+      },
+      "b": {
+        "class": "unsupported"
+      },
+      "family": "normalize_uri",
+      "index": 111,
+      "input": {
+        "uri": "http://example.com/skills/demo"
+      },
+      "request_op": "normalize_uri",
+      "status": "uncomparable"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "ad33a4249cd0030aa56231eea7655545a9ff0e54dfb414fe7e9b87d9a7d9b6be",
+          "classification": "multi-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "ad33a4249cd0030aa56231eea7655545a9ff0e54dfb414fe7e9b87d9a7d9b6be",
+          "classification": "multi-file"
+        }
+      },
+      "family": "body",
+      "index": 112,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "LICENSE": "na\u00efve conformance sidecar",
+          "README.md": "canonical Z\u00fcrich\nregistry canonical sidecar\nhash canonical trailing space \nadapter fixture na\u00efve\n",
+          "SKILL.md": "canonical\nvector\nenvelope\n",
+          "scripts/run.sh": "",
+          "sub/acif-sidecar.yaml": "publisher record registry\ntab\tstop canonical conformance\nscope\nemoji \u2615\n"
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "inferred_pack_id": "ac40c906-b969-5cca-bef6-89ec1b067d0e"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "inferred_pack_id": "ac40c906-b969-5cca-bef6-89ec1b067d0e"
+        }
+      },
+      "family": "pack_id",
+      "index": 113,
+      "input": {
+        "display_name": "tab\tname",
+        "namespace": "93516344-00e5-419b-a230-6e8b1d02f87d",
+        "repository_url": "https://github.com/brj/demo"
+      },
+      "request_op": "derive_pack_id",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "a434821d11460d81b9e4cec231972da77887c0e0c2ca52f05d9b9ce1f04951e6",
+          "classification": "multi-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "a434821d11460d81b9e4cec231972da77887c0e0c2ca52f05d9b9ce1f04951e6",
+          "classification": "multi-file"
+        }
+      },
+      "family": "body",
+      "index": 114,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "SKILL.md": "---\ndescription: sidecar\n---\nrecord adapter sidecar\nemoji \u2615 conformance\nenvelope \u65e5\u672c\u8a9e\nsidecar scope\n",
+          "docs/guide.md": "hash \u65e5\u672c\u8a9e\nscope conformance\n",
+          "sub/acif-sidecar.yaml": "quote \"inner\" hash vector\n"
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"caf\u00e9 \u2615 tool\",\"id\":\"2bd71618-9994-441e-b890-260cf1fc8a4d\",\"kind\":\"rule\",\"license\":{\"spdx\":\"BSD-3-Clause\"}}",
+          "metadata_hash": "47bfefa5727948b7145c7cf166d5eb7732668b6a56559363b61442f7d06bda9b"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"caf\u00e9 \u2615 tool\",\"id\":\"2bd71618-9994-441e-b890-260cf1fc8a4d\",\"kind\":\"rule\",\"license\":{\"spdx\":\"BSD-3-Clause\"}}",
+          "metadata_hash": "47bfefa5727948b7145c7cf166d5eb7732668b6a56559363b61442f7d06bda9b"
+        }
+      },
+      "family": "sidecar",
+      "index": 115,
+      "input": {
+        "kind": "rule",
+        "sidecar": {
+          "display_name": "caf\u00e9 \u2615 tool",
+          "id": "2bd71618-9994-441e-b890-260cf1fc8a4d",
+          "kind": "rule",
+          "license": {
+            "spdx": "BSD-3-Clause"
+          }
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "inferred_pack_id": "7bbfe18b-b410-5beb-95ec-380e8ecb83ef"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "inferred_pack_id": "7bbfe18b-b410-5beb-95ec-380e8ecb83ef"
+        }
+      },
+      "family": "pack_id",
+      "index": 116,
+      "input": {
+        "display_name": "0",
+        "namespace": "93516344-00e5-419b-a230-6e8b1d02f87d",
+        "repository_url": "https://github.com/rwpcdlib/acif"
+      },
+      "request_op": "derive_pack_id",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"quote\\\"back\\\\slash\",\"id\":\"fb20aa19-fe63-4132-b532-2ce5d7406e98\",\"kind\":\"skill\",\"version\":\"1.2.3+build.5\"}",
+          "metadata_hash": "9cbe8326a871c22e313d6ff2a92e37278274617df93267024eceae7bee36ef3e"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"quote\\\"back\\\\slash\",\"id\":\"fb20aa19-fe63-4132-b532-2ce5d7406e98\",\"kind\":\"skill\",\"version\":\"1.2.3+build.5\"}",
+          "metadata_hash": "9cbe8326a871c22e313d6ff2a92e37278274617df93267024eceae7bee36ef3e"
+        }
+      },
+      "family": "sidecar",
+      "index": 117,
+      "input": {
+        "kind": "skill",
+        "sidecar": {
+          "display_name": "quote\"back\\slash",
+          "id": "fb20aa19-fe63-4132-b532-2ce5d7406e98",
+          "kind": "skill",
+          "version": "1.2.3+build.5"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"description\":\"record vector Z\u00fcrich\",\"display_name\":\"caf\u00e9 \u2615 tool\",\"id\":\"2a1d2bec-bd3a-4f13-92a4-925336d8ff2f\",\"kind\":\"command\",\"version\":\"1.2.3+build.5\"}",
+          "metadata_hash": "12e5e0cef9af217062cf7b003b1648278dd60be72bf3fe5d8f6df9b84bb61e8a"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"description\":\"record vector Z\u00fcrich\",\"display_name\":\"caf\u00e9 \u2615 tool\",\"id\":\"2a1d2bec-bd3a-4f13-92a4-925336d8ff2f\",\"kind\":\"command\",\"version\":\"1.2.3+build.5\"}",
+          "metadata_hash": "12e5e0cef9af217062cf7b003b1648278dd60be72bf3fe5d8f6df9b84bb61e8a"
+        }
+      },
+      "family": "sidecar",
+      "index": 118,
+      "input": {
+        "kind": "command",
+        "sidecar": {
+          "description": "record vector Z\u00fcrich",
+          "display_name": "caf\u00e9 \u2615 tool",
+          "id": "2a1d2bec-bd3a-4f13-92a4-925336d8ff2f",
+          "kind": "command",
+          "version": "1.2.3+build.5"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "conformant": false,
+          "params.field": "pack_inherited_version",
+          "reason": "acif.envelope.forbidden_field"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "conformant": false,
+          "params.field": "pack_inherited_version",
+          "reason": "acif.envelope.forbidden_field"
+        }
+      },
+      "family": "envelope",
+      "index": 119,
+      "input": {
+        "kind": "command",
+        "sidecar": {
+          "display_name": "\u00dcn\u00efcod\u00e9 N\u00e0me",
+          "id": "a993a6c9-3444-4104-af53-70daf13b9240",
+          "kind": "command",
+          "pack_inherited_version": "10.20.30"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "858dc9e018841113e548e3d36c490d878eb8f4fc10d0acdc3ca478d03c4cd849",
+          "classification": "multi-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "858dc9e018841113e548e3d36c490d878eb8f4fc10d0acdc3ca478d03c4cd849",
+          "classification": "multi-file"
+        }
+      },
+      "family": "body",
+      "index": 120,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "SKILL.md": "record publisher adapter\nsidecar quote \"inner\"\nrecord tab\tstop\nna\u00efve\n",
+          "data/values.json": "canonical tab\tstop\nenvelope emoji \u2615\nregistry scope publisher\nrecord\n",
+          "docs/deep/ref.md": "adapter caf\u00e9\nregistry tab\tstop publisher\n",
+          "docs/guide.md": "\n"
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "conformant": false,
+          "params.field": "<absent>",
+          "reason": "acif.envelope.version_invalid"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "conformant": false,
+          "params.field": "<absent>",
+          "reason": "acif.envelope.version_invalid"
+        }
+      },
+      "family": "envelope",
+      "index": 121,
+      "input": {
+        "kind": "agent",
+        "sidecar": {
+          "display_name": "tab\tname",
+          "id": "9cef5b65-c5b8-4993-b71e-f086b9d583d1",
+          "kind": "agent",
+          "version": "1.0"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "inferred_pack_id": "faf6addf-9b9d-59f2-aad4-2ae4cf3b045f"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "inferred_pack_id": "faf6addf-9b9d-59f2-aad4-2ae4cf3b045f"
+        }
+      },
+      "family": "pack_id",
+      "index": 122,
+      "input": {
+        "display_name": "0",
+        "namespace": "93516344-00e5-419b-a230-6e8b1d02f87d",
+        "repository_url": "https://github.com/plqvm/tools-pack"
+      },
+      "request_op": "derive_pack_id",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "inferred_pack_id": "dc4768b7-ed37-51a6-a7f8-f220e9f188b5"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "inferred_pack_id": "dc4768b7-ed37-51a6-a7f8-f220e9f188b5"
+        }
+      },
+      "family": "pack_id",
+      "index": 123,
+      "input": {
+        "display_name": "Review PR",
+        "namespace": "93516344-00e5-419b-a230-6e8b1d02f87d",
+        "repository_url": "https://github.com/rsjbcykre/demo"
+      },
+      "request_op": "derive_pack_id",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "conformant": false,
+          "params.field": "<absent>",
+          "reason": "acif.envelope.license_spdx_invalid"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "conformant": false,
+          "params.field": "<absent>",
+          "reason": "acif.envelope.license_spdx_invalid"
+        }
+      },
+      "family": "envelope",
+      "index": 124,
+      "input": {
+        "kind": "agent",
+        "sidecar": {
+          "display_name": "\u00dcn\u00efcod\u00e9 N\u00e0me",
+          "id": "47601fc7-1bad-4aa0-a5e8-534b52ce083e",
+          "kind": "agent",
+          "license": {
+            "spdx": "Apache 2.0"
+          }
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"description\":\"fixture\",\"display_name\":\"\u65e5\u672c\u8a9e\u30c4\u30fc\u30eb\",\"id\":\"b86e51ea-4727-4e0e-8298-429083f4e993\",\"kind\":\"skill\",\"license\":{\"spdx\":\"ISC\"}}",
+          "metadata_hash": "4f66d1923d0b858c736f51aa4c5a2cfb3c5821d4dd55b0f141b6bdd82cc089c6"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"description\":\"fixture\",\"display_name\":\"\u65e5\u672c\u8a9e\u30c4\u30fc\u30eb\",\"id\":\"b86e51ea-4727-4e0e-8298-429083f4e993\",\"kind\":\"skill\",\"license\":{\"spdx\":\"ISC\"}}",
+          "metadata_hash": "4f66d1923d0b858c736f51aa4c5a2cfb3c5821d4dd55b0f141b6bdd82cc089c6"
+        }
+      },
+      "family": "sidecar",
+      "index": 125,
+      "input": {
+        "kind": "skill",
+        "sidecar": {
+          "description": "fixture",
+          "display_name": "\u65e5\u672c\u8a9e\u30c4\u30fc\u30eb",
+          "id": "b86e51ea-4727-4e0e-8298-429083f4e993",
+          "kind": "skill",
+          "license": {
+            "spdx": "ISC"
+          }
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "source_uri": "https://example.com/Skills/Demo"
+        }
+      },
+      "b": {
+        "class": "unsupported"
+      },
+      "family": "normalize_uri",
+      "index": 126,
+      "input": {
+        "uri": "HTTPS://Example.COM/Skills/Demo"
+      },
+      "request_op": "normalize_uri",
+      "status": "uncomparable"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "54787ec0f9e69a3b038050b3ef9d71ca31a8b6815ad2b563142f026e63baccf3",
+          "classification": "multi-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "54787ec0f9e69a3b038050b3ef9d71ca31a8b6815ad2b563142f026e63baccf3",
+          "classification": "multi-file"
+        }
+      },
+      "family": "body",
+      "index": 127,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "README.md": "scope back\\slash\nadapter fixture canonical\n\u65e5\u672c\u8a9e Z\u00fcrich\n",
+          "SKILL.md": "na\u00efve tab\tstop\nenvelope\ncanonical Z\u00fcrich\nZ\u00fcrich\n",
+          "acif-sidecar.yaml": "kind: skill\nid: 4bcb08da-bd10-4296-9490-884d6482842f\n",
+          "sub/acif-sidecar.yaml": "caf\u00e9 canonical\ntab\tstop back\\slash\nenvelope sidecar\ncaf\u00e9 envelope\n"
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"\u65e5\u672c\u8a9e\u30c4\u30fc\u30eb\",\"id\":\"0a1d135f-ca3e-4c1e-a018-c37a1aee9149\",\"kind\":\"rule\"}",
+          "metadata_hash": "39a21bdad8a29b422f24e286757bd974239c9d7d8725dd304a9abc8d900000c4"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"\u65e5\u672c\u8a9e\u30c4\u30fc\u30eb\",\"id\":\"0a1d135f-ca3e-4c1e-a018-c37a1aee9149\",\"kind\":\"rule\"}",
+          "metadata_hash": "39a21bdad8a29b422f24e286757bd974239c9d7d8725dd304a9abc8d900000c4"
+        }
+      },
+      "family": "sidecar",
+      "index": 128,
+      "input": {
+        "kind": "rule",
+        "sidecar": {
+          "display_name": "\u65e5\u672c\u8a9e\u30c4\u30fc\u30eb",
+          "id": "0a1d135f-ca3e-4c1e-a018-c37a1aee9149",
+          "kind": "rule"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "conformant": false,
+          "params.field": "<absent>",
+          "reason": "acif.envelope.version_invalid"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "conformant": false,
+          "params.field": "<absent>",
+          "reason": "acif.envelope.version_invalid"
+        }
+      },
+      "family": "envelope",
+      "index": 129,
+      "input": {
+        "kind": "command",
+        "sidecar": {
+          "display_name": "Demo Skill",
+          "id": "23db1814-0070-4dac-a6f1-798287bce454",
+          "kind": "command",
+          "version": "1.0"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "conformant": false,
+          "params.field": "<absent>",
+          "reason": "acif.envelope.license_spdx_invalid"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "conformant": false,
+          "params.field": "<absent>",
+          "reason": "acif.envelope.license_spdx_invalid"
+        }
+      },
+      "family": "envelope",
+      "index": 130,
+      "input": {
+        "kind": "agent",
+        "sidecar": {
+          "display_name": "Review PR",
+          "id": "05c75971-fbd6-4d60-a549-75217461ccfc",
+          "kind": "agent",
+          "license": {
+            "spdx": "GPL v3"
+          }
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "aac10771910b4953d170a24fe428c30de435fb2557017163740bbb9396b24b3a",
+          "classification": "single-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "aac10771910b4953d170a24fe428c30de435fb2557017163740bbb9396b24b3a",
+          "classification": "single-file"
+        }
+      },
+      "family": "body",
+      "index": 131,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "SKILL.md": "---\ndescription: conformance\n---\nemoji \u2615\ncanonical hash tab\tstop\n"
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "source_uri": "https://example.com/a%2Fb/c%20d"
+        }
+      },
+      "b": {
+        "class": "unsupported"
+      },
+      "family": "normalize_uri",
+      "index": 132,
+      "input": {
+        "uri": "https://example.com/a%2Fb/c%20d"
+      },
+      "request_op": "normalize_uri",
+      "status": "uncomparable"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"0\",\"id\":\"a3479687-a6f7-4b4f-97bc-8d6ed9da2836\",\"kind\":\"command\"}",
+          "metadata_hash": "9071bb2bf900fbf171c92e2ad7b7e647107db103b1f9c42f8ed765bae86be76a"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"0\",\"id\":\"a3479687-a6f7-4b4f-97bc-8d6ed9da2836\",\"kind\":\"command\"}",
+          "metadata_hash": "9071bb2bf900fbf171c92e2ad7b7e647107db103b1f9c42f8ed765bae86be76a"
+        }
+      },
+      "family": "sidecar",
+      "index": 133,
+      "input": {
+        "kind": "command",
+        "sidecar": {
+          "display_name": "0",
+          "id": "a3479687-a6f7-4b4f-97bc-8d6ed9da2836",
+          "kind": "command"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "conformant": false,
+          "params.field": "<absent>",
+          "reason": "acif.envelope.kind_invalid"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "conformant": false,
+          "params.field": "<absent>",
+          "reason": "acif.envelope.kind_invalid"
+        }
+      },
+      "family": "envelope",
+      "index": 134,
+      "input": {
+        "kind": "Rule",
+        "sidecar": {
+          "display_name": "Demo Skill",
+          "id": "2164370e-99f9-4b51-a655-2115702e216b",
+          "kind": "Rule"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "source_uri": "https://xn--caf-dma.example/menu"
+        }
+      },
+      "b": {
+        "class": "unsupported"
+      },
+      "family": "normalize_uri",
+      "index": 135,
+      "input": {
+        "uri": "https://xn--caf-dma.example/menu"
+      },
+      "request_op": "normalize_uri",
+      "status": "uncomparable"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "conformant": false,
+          "params.field": "<absent>",
+          "reason": "acif.envelope.kind_invalid"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "conformant": false,
+          "params.field": "<absent>",
+          "reason": "acif.envelope.kind_invalid"
+        }
+      },
+      "family": "envelope",
+      "index": 136,
+      "input": {
+        "kind": "Rule",
+        "sidecar": {
+          "display_name": "line\nbreak name",
+          "id": "649df21b-8337-476d-a87f-d751afc94592",
+          "kind": "Rule"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "conformant": false,
+          "params.field": "<absent>",
+          "reason": "acif.envelope.version_invalid"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "conformant": false,
+          "params.field": "<absent>",
+          "reason": "acif.envelope.version_invalid"
+        }
+      },
+      "family": "envelope",
+      "index": 137,
+      "input": {
+        "kind": "command",
+        "sidecar": {
+          "display_name": "Review PR",
+          "id": "71e2bd61-aaa9-4082-a3aa-ffe47172b6e5",
+          "kind": "command",
+          "version": "1.2"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "94444931cd0aca18937b868d3896bf024b9c9351669dc3331df64f7dff41d123",
+          "classification": "multi-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "94444931cd0aca18937b868d3896bf024b9c9351669dc3331df64f7dff41d123",
+          "classification": "multi-file"
+        }
+      },
+      "family": "body",
+      "index": 138,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "README.md": "trailing space  hash sidecar\nback\\slash\ntrailing space  registry\n\u65e5\u672c\u8a9e quote \"inner\" envelope\n",
+          "SKILL.md": "",
+          "notes.md": "caf\u00e9 quote \"inner\" trailing space "
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"quote\\\"back\\\\slash\",\"id\":\"3e8d15cb-5ef0-4804-a1e2-584e2026db16\",\"kind\":\"agent\",\"version\":\"1.2.3+build.5\"}",
+          "metadata_hash": "25275e80440891fb62311f7c528f93a409423af1bb2c7473b2f4bc98b1cd9cc0"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"quote\\\"back\\\\slash\",\"id\":\"3e8d15cb-5ef0-4804-a1e2-584e2026db16\",\"kind\":\"agent\",\"version\":\"1.2.3+build.5\"}",
+          "metadata_hash": "25275e80440891fb62311f7c528f93a409423af1bb2c7473b2f4bc98b1cd9cc0"
+        }
+      },
+      "family": "sidecar",
+      "index": 139,
+      "input": {
+        "kind": "agent",
+        "sidecar": {
+          "display_name": "quote\"back\\slash",
+          "id": "3e8d15cb-5ef0-4804-a1e2-584e2026db16",
+          "kind": "agent",
+          "version": "1.2.3+build.5"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "conformant": false,
+          "params.field": "<absent>",
+          "reason": "acif.envelope.version_invalid"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "conformant": false,
+          "params.field": "<absent>",
+          "reason": "acif.envelope.version_invalid"
+        }
+      },
+      "family": "envelope",
+      "index": 140,
+      "input": {
+        "kind": "agent",
+        "sidecar": {
+          "display_name": "\u00dcn\u00efcod\u00e9 N\u00e0me",
+          "id": "6447255d-a645-4e8c-a0c5-8087baf83fd2",
+          "kind": "agent",
+          "version": "1.0"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "inferred_pack_id": "72d02254-dcf6-5654-a002-df30dcb48d6f"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "inferred_pack_id": "72d02254-dcf6-5654-a002-df30dcb48d6f"
+        }
+      },
+      "family": "pack_id",
+      "index": 141,
+      "input": {
+        "display_name": "0",
+        "namespace": "93516344-00e5-419b-a230-6e8b1d02f87d",
+        "repository_url": "https://github.com/mlumrqaz/agent-acif"
+      },
+      "request_op": "derive_pack_id",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "conformant": false,
+          "params.field": "<absent>",
+          "reason": "acif.envelope.kind_invalid"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "conformant": false,
+          "params.field": "<absent>",
+          "reason": "acif.envelope.kind_invalid"
+        }
+      },
+      "family": "envelope",
+      "index": 142,
+      "input": {
+        "kind": "SKILL",
+        "sidecar": {
+          "display_name": "0",
+          "id": "204b5c0a-b2ff-436c-901f-b94e1dadd8f8",
+          "kind": "SKILL"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "source_uri": "https://xn--caf-dma.example/menu"
+        }
+      },
+      "b": {
+        "class": "unsupported"
+      },
+      "family": "normalize_uri",
+      "index": 143,
+      "input": {
+        "uri": "https://xn--caf-dma.example/menu"
+      },
+      "request_op": "normalize_uri",
+      "status": "uncomparable"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "8c4fee6df9c4dd222cae1e37f9171c45034cb225b3c6ae047cb2bb8253b6fb42",
+          "classification": "multi-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "8c4fee6df9c4dd222cae1e37f9171c45034cb225b3c6ae047cb2bb8253b6fb42",
+          "classification": "multi-file"
+        }
+      },
+      "family": "body",
+      "index": 144,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "README.md": "",
+          "SKILL.md": "trailing space  emoji \u2615 Z\u00fcrich\ntrailing space  scope Z\u00fcrich\n",
+          "data/values.json": "",
+          "notes.md": "trailing space \nenvelope adapter\nadapter quote \"inner\"\n\u65e5\u672c\u8a9e envelope hash\n",
+          "sub/acif-sidecar.yaml": "\n"
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"tab\\tname\",\"id\":\"36e91d32-dda5-4769-a0d8-b936825346d7\",\"kind\":\"command\",\"version\":\"0.1.0\"}",
+          "metadata_hash": "e01046ffbe3d3c45cba3b0b131d1bf90f9cdd9cf354d59a9702f7f3414c58502"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"tab\\tname\",\"id\":\"36e91d32-dda5-4769-a0d8-b936825346d7\",\"kind\":\"command\",\"version\":\"0.1.0\"}",
+          "metadata_hash": "e01046ffbe3d3c45cba3b0b131d1bf90f9cdd9cf354d59a9702f7f3414c58502"
+        }
+      },
+      "family": "sidecar",
+      "index": 145,
+      "input": {
+        "kind": "command",
+        "sidecar": {
+          "display_name": "tab\tname",
+          "id": "36e91d32-dda5-4769-a0d8-b936825346d7",
+          "kind": "command",
+          "version": "0.1.0"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "d2c62f3984bedfd4dd57a0a56076990cea6bdfd1c8ecc0fbd92a4b0a4c2c7d70",
+          "classification": "multi-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "d2c62f3984bedfd4dd57a0a56076990cea6bdfd1c8ecc0fbd92a4b0a4c2c7d70",
+          "classification": "multi-file"
+        }
+      },
+      "family": "body",
+      "index": 146,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "SKILL.md": "canonical quote \"inner\"\n",
+          "data/values.json": "hash\n\u65e5\u672c\u8a9e vector canonical\nZ\u00fcrich scope",
+          "scripts/run.sh": "canonical\nregistry tab\tstop na\u00efve\nrecord \u65e5\u672c\u8a9e back\\slash\nscope\n"
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "062e27ad0543bc65752ca4f24be7c236d683f7abfb0766132a48e8bb5ccb0a22",
+          "classification": "multi-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "062e27ad0543bc65752ca4f24be7c236d683f7abfb0766132a48e8bb5ccb0a22",
+          "classification": "multi-file"
+        }
+      },
+      "family": "body",
+      "index": 147,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "SKILL.md": "---\ndescription: publisher\n---\nfixture vector record\nback\\slash\nquote \"inner\" conformance back\\slash\n",
+          "data/values.json": "\n",
+          "notes.md": "vector sidecar back\\slash\ntab\tstop canonical scope\n"
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"line\\nbreak name\",\"id\":\"448063c8-44bf-4b29-9011-72635451d9f5\",\"kind\":\"skill\",\"version\":\"1.0.0-rc.1\"}",
+          "metadata_hash": "4309743bd2b7447c26b696b50d0ea95b79fe5dfe11619a1d13cd46be4b531887"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"line\\nbreak name\",\"id\":\"448063c8-44bf-4b29-9011-72635451d9f5\",\"kind\":\"skill\",\"version\":\"1.0.0-rc.1\"}",
+          "metadata_hash": "4309743bd2b7447c26b696b50d0ea95b79fe5dfe11619a1d13cd46be4b531887"
+        }
+      },
+      "family": "sidecar",
+      "index": 148,
+      "input": {
+        "kind": "skill",
+        "sidecar": {
+          "display_name": "line\nbreak name",
+          "id": "448063c8-44bf-4b29-9011-72635451d9f5",
+          "kind": "skill",
+          "version": "1.0.0-rc.1"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"\u00dcn\u00efcod\u00e9 N\u00e0me\",\"id\":\"6f0954b7-31d5-4f8a-a090-97ea1d6a16c8\",\"kind\":\"skill\"}",
+          "metadata_hash": "b5b680318eebd9abe8ffe006c5bf512c4ddc459d07719701f318ac7f4e4b1426"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"\u00dcn\u00efcod\u00e9 N\u00e0me\",\"id\":\"6f0954b7-31d5-4f8a-a090-97ea1d6a16c8\",\"kind\":\"skill\"}",
+          "metadata_hash": "b5b680318eebd9abe8ffe006c5bf512c4ddc459d07719701f318ac7f4e4b1426"
+        }
+      },
+      "family": "sidecar",
+      "index": 149,
+      "input": {
+        "kind": "skill",
+        "sidecar": {
+          "display_name": "\u00dcn\u00efcod\u00e9 N\u00e0me",
+          "id": "6f0954b7-31d5-4f8a-a090-97ea1d6a16c8",
+          "kind": "skill"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "7b9d8fd195bf01aefa7d570d2a301f0470709adf9baf4173ce9b587c07784e53",
+          "classification": "multi-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "7b9d8fd195bf01aefa7d570d2a301f0470709adf9baf4173ce9b587c07784e53",
+          "classification": "multi-file"
+        }
+      },
+      "family": "body",
+      "index": 150,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "SKILL.md": "caf\u00e9 hash\nenvelope record\nemoji \u2615\n",
+          "sub/acif-sidecar.yaml": "registry sidecar\nenvelope sidecar\n"
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "3e4263b866c0e4cd89628c1a9911465f72aff1b8d025cb05fd91b3813e5b6461",
+          "classification": "multi-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "3e4263b866c0e4cd89628c1a9911465f72aff1b8d025cb05fd91b3813e5b6461",
+          "classification": "multi-file"
+        }
+      },
+      "family": "body",
+      "index": 151,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "SKILL.md": "registry\ncaf\u00e9 back\\slash\n",
+          "data/values.json": "\n"
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "inferred_pack_id": "486dcdac-2f21-5146-a439-ad3931b02390"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "inferred_pack_id": "486dcdac-2f21-5146-a439-ad3931b02390"
+        }
+      },
+      "family": "pack_id",
+      "index": 152,
+      "input": {
+        "display_name": "caf\u00e9 \u2615 tool",
+        "namespace": "93516344-00e5-419b-a230-6e8b1d02f87d",
+        "repository_url": "https://github.com/keas/demo"
+      },
+      "request_op": "derive_pack_id",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "6405abe197a8a14e5f2a7f5aec5f1ad3036c3133e52bc7658ce88e603c2d8dbb",
+          "classification": "multi-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "6405abe197a8a14e5f2a7f5aec5f1ad3036c3133e52bc7658ce88e603c2d8dbb",
+          "classification": "multi-file"
+        }
+      },
+      "family": "body",
+      "index": 153,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "SKILL.md": "Z\u00fcrich\npublisher\n",
+          "acif-sidecar.yaml": "kind: skill\nid: a035af94-e076-4817-b4a1-e8b85291c9e5\n",
+          "sub/acif-sidecar.yaml": "\n"
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "5f31f6432238bc8915dfba6b642e0b2856487885a48e7119d6119727e4384d40",
+          "classification": "multi-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "5f31f6432238bc8915dfba6b642e0b2856487885a48e7119d6119727e4384d40",
+          "classification": "multi-file"
+        }
+      },
+      "family": "body",
+      "index": 154,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "SKILL.md": "tab\tstop Z\u00fcrich canonical\nfixture emoji \u2615\n",
+          "acif-sidecar.yaml": "kind: skill\nid: 6c83907c-72b0-485f-9c2d-4380326fb460\n",
+          "notes.md": "back\\slash canonical conformance\n"
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "inferred_pack_id": "cfcfd51a-9d47-5139-b327-d01fa5050d2e"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "inferred_pack_id": "cfcfd51a-9d47-5139-b327-d01fa5050d2e"
+        }
+      },
+      "family": "pack_id",
+      "index": 155,
+      "input": {
+        "display_name": "line\nbreak name",
+        "namespace": "93516344-00e5-419b-a230-6e8b1d02f87d",
+        "repository_url": "https://github.com/oylvfsg/demo"
+      },
+      "request_op": "derive_pack_id",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "inferred_pack_id": "838af745-ee2a-5711-a178-8dc05e9f7f35"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "inferred_pack_id": "838af745-ee2a-5711-a178-8dc05e9f7f35"
+        }
+      },
+      "family": "pack_id",
+      "index": 156,
+      "input": {
+        "display_name": "caf\u00e9 \u2615 tool",
+        "namespace": "93516344-00e5-419b-a230-6e8b1d02f87d",
+        "repository_url": "https://github.com/plsrdg/tools"
+      },
+      "request_op": "derive_pack_id",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"line\\nbreak name\",\"id\":\"4c5c7bce-59dc-4e2a-b08f-5bdf95b3a44b\",\"kind\":\"skill\",\"license\":{\"spdx\":\"MIT\"}}",
+          "metadata_hash": "481eae9c07a2114c6f9fd551016c3d3315ef96683293034d580b55c4b7a7642e"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"line\\nbreak name\",\"id\":\"4c5c7bce-59dc-4e2a-b08f-5bdf95b3a44b\",\"kind\":\"skill\",\"license\":{\"spdx\":\"MIT\"}}",
+          "metadata_hash": "481eae9c07a2114c6f9fd551016c3d3315ef96683293034d580b55c4b7a7642e"
+        }
+      },
+      "family": "sidecar",
+      "index": 157,
+      "input": {
+        "kind": "skill",
+        "sidecar": {
+          "display_name": "line\nbreak name",
+          "id": "4c5c7bce-59dc-4e2a-b08f-5bdf95b3a44b",
+          "kind": "skill",
+          "license": {
+            "spdx": "MIT"
+          }
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"quote\\\"back\\\\slash\",\"id\":\"cde88d24-da2b-4f22-83af-ad2deb4cc0d6\",\"kind\":\"rule\"}",
+          "metadata_hash": "5175cb3d509cb01d0cbb38d7077f5776c47631184dfa9484824f887d49b5e894"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"quote\\\"back\\\\slash\",\"id\":\"cde88d24-da2b-4f22-83af-ad2deb4cc0d6\",\"kind\":\"rule\"}",
+          "metadata_hash": "5175cb3d509cb01d0cbb38d7077f5776c47631184dfa9484824f887d49b5e894"
+        }
+      },
+      "family": "sidecar",
+      "index": 158,
+      "input": {
+        "kind": "rule",
+        "sidecar": {
+          "display_name": "quote\"back\\slash",
+          "id": "cde88d24-da2b-4f22-83af-ad2deb4cc0d6",
+          "kind": "rule"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "inferred_pack_id": "cfe3c09a-aeea-5a54-be33-952a55450203"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "inferred_pack_id": "cfe3c09a-aeea-5a54-be33-952a55450203"
+        }
+      },
+      "family": "pack_id",
+      "index": 159,
+      "input": {
+        "display_name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "namespace": "93516344-00e5-419b-a230-6e8b1d02f87d",
+        "repository_url": "https://github.com/nkdjvjva/agent"
+      },
+      "request_op": "derive_pack_id",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"caf\u00e9 \u2615 tool\",\"id\":\"28d11bf4-3d44-494c-8946-b8cfceec3fe5\",\"kind\":\"agent\",\"license\":{\"spdx\":\"ISC\"},\"pack_id\":\"275c7a4e-1c1f-4dae-8788-b8b7a7bc823a\",\"version\":\"1.0.0-rc.1\"}",
+          "metadata_hash": "201250d5b7160b72149c152746bba8b759aaa57bb4b4faf6f15b0f3838102e79"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"caf\u00e9 \u2615 tool\",\"id\":\"28d11bf4-3d44-494c-8946-b8cfceec3fe5\",\"kind\":\"agent\",\"license\":{\"spdx\":\"ISC\"},\"pack_id\":\"275c7a4e-1c1f-4dae-8788-b8b7a7bc823a\",\"version\":\"1.0.0-rc.1\"}",
+          "metadata_hash": "201250d5b7160b72149c152746bba8b759aaa57bb4b4faf6f15b0f3838102e79"
+        }
+      },
+      "family": "sidecar",
+      "index": 160,
+      "input": {
+        "kind": "agent",
+        "sidecar": {
+          "display_name": "caf\u00e9 \u2615 tool",
+          "id": "28d11bf4-3d44-494c-8946-b8cfceec3fe5",
+          "kind": "agent",
+          "license": {
+            "spdx": "ISC"
+          },
+          "pack_id": "275c7a4e-1c1f-4dae-8788-b8b7a7bc823a",
+          "version": "1.0.0-rc.1"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "inferred_pack_id": "1f91aae9-b0f3-5b1a-b188-b486ba55872d"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "inferred_pack_id": "1f91aae9-b0f3-5b1a-b188-b486ba55872d"
+        }
+      },
+      "family": "pack_id",
+      "index": 161,
+      "input": {
+        "display_name": "tab\tname",
+        "namespace": "93516344-00e5-419b-a230-6e8b1d02f87d",
+        "repository_url": "https://github.com/velmah/agent"
+      },
+      "request_op": "derive_pack_id",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "inferred_pack_id": "519b271d-8f74-5f7c-bcaf-eefad18db8a1"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "inferred_pack_id": "519b271d-8f74-5f7c-bcaf-eefad18db8a1"
+        }
+      },
+      "family": "pack_id",
+      "index": 162,
+      "input": {
+        "display_name": "\u65e5\u672c\u8a9e\u30c4\u30fc\u30eb",
+        "namespace": "93516344-00e5-419b-a230-6e8b1d02f87d",
+        "repository_url": "https://github.com/yvawvhpz/pack"
+      },
+      "request_op": "derive_pack_id",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "987b955031b2d47195020d119da8e493a6e1d66060d976d08b5e7f12a4cf7798",
+          "classification": "multi-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "987b955031b2d47195020d119da8e493a6e1d66060d976d08b5e7f12a4cf7798",
+          "classification": "multi-file"
+        }
+      },
+      "family": "body",
+      "index": 163,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "SKILL.md": "\n",
+          "data/values.json": "caf\u00e9 scope adapter\n",
+          "notes.md": "sidecar",
+          "scripts/run.sh": "sidecar\nemoji \u2615 scope",
+          "sub/acif-sidecar.yaml": "adapter trailing space  hash\n"
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"tab\\tname\",\"id\":\"fc1ddba2-234d-49ad-815c-2a2e25618508\",\"kind\":\"rule\",\"version\":\"1.0.0-rc.1\"}",
+          "metadata_hash": "437b62408e4d64cfb38e91ad8b7f083797d6c05fc43176f0992f021dc7e33509"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"tab\\tname\",\"id\":\"fc1ddba2-234d-49ad-815c-2a2e25618508\",\"kind\":\"rule\",\"version\":\"1.0.0-rc.1\"}",
+          "metadata_hash": "437b62408e4d64cfb38e91ad8b7f083797d6c05fc43176f0992f021dc7e33509"
+        }
+      },
+      "family": "sidecar",
+      "index": 164,
+      "input": {
+        "kind": "rule",
+        "sidecar": {
+          "display_name": "tab\tname",
+          "id": "fc1ddba2-234d-49ad-815c-2a2e25618508",
+          "kind": "rule",
+          "version": "1.0.0-rc.1"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+          "classification": "single-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+          "classification": "single-file"
+        }
+      },
+      "family": "body",
+      "index": 165,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "SKILL.md": "\n"
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "source_uri": "https://example.com/Skills/Demo"
+        }
+      },
+      "b": {
+        "class": "unsupported"
+      },
+      "family": "normalize_uri",
+      "index": 166,
+      "input": {
+        "uri": "HTTPS://Example.COM/Skills/Demo"
+      },
+      "request_op": "normalize_uri",
+      "status": "uncomparable"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "0be66f4787f9743bf291ffe6ae5386a02b6592b1b6712c7343f6635e59396ee2",
+          "classification": "multi-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "0be66f4787f9743bf291ffe6ae5386a02b6592b1b6712c7343f6635e59396ee2",
+          "classification": "multi-file"
+        }
+      },
+      "family": "body",
+      "index": 167,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "LICENSE": "",
+          "SKILL.md": "adapter hash registry\n\u65e5\u672c\u8a9e registry\n",
+          "sub/acif-sidecar.yaml": "vector\ncanonical\nquote \"inner\"\n\u65e5\u672c\u8a9e record na\u00efve\n"
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"0\",\"id\":\"5f095234-f255-45dc-9473-00a2f7c6d5e3\",\"kind\":\"command\",\"version\":\"1.2.3\"}",
+          "metadata_hash": "9f348b1b3f5aa222fa72641bb27e02e5e7a6951309f6cd81657694b367863083"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"0\",\"id\":\"5f095234-f255-45dc-9473-00a2f7c6d5e3\",\"kind\":\"command\",\"version\":\"1.2.3\"}",
+          "metadata_hash": "9f348b1b3f5aa222fa72641bb27e02e5e7a6951309f6cd81657694b367863083"
+        }
+      },
+      "family": "sidecar",
+      "index": 168,
+      "input": {
+        "kind": "command",
+        "sidecar": {
+          "display_name": "0",
+          "id": "5f095234-f255-45dc-9473-00a2f7c6d5e3",
+          "kind": "command",
+          "version": "1.2.3"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"description\":\"canonical fixture Z\u00fcrich back\\\\slash\",\"display_name\":\"Review PR\",\"id\":\"7a6bfc68-afa5-487f-85a6-518eef8d12fb\",\"kind\":\"agent\",\"license\":{\"spdx\":\"MIT\"},\"version\":\"2.3.4-alpha.7\"}",
+          "metadata_hash": "c5906d4a9794321ea7394f645016eab940f55f7577ac61d50cfb31ce3ea42cf6"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"description\":\"canonical fixture Z\u00fcrich back\\\\slash\",\"display_name\":\"Review PR\",\"id\":\"7a6bfc68-afa5-487f-85a6-518eef8d12fb\",\"kind\":\"agent\",\"license\":{\"spdx\":\"MIT\"},\"version\":\"2.3.4-alpha.7\"}",
+          "metadata_hash": "c5906d4a9794321ea7394f645016eab940f55f7577ac61d50cfb31ce3ea42cf6"
+        }
+      },
+      "family": "sidecar",
+      "index": 169,
+      "input": {
+        "kind": "agent",
+        "sidecar": {
+          "description": "canonical fixture Z\u00fcrich back\\slash",
+          "display_name": "Review PR",
+          "id": "7a6bfc68-afa5-487f-85a6-518eef8d12fb",
+          "kind": "agent",
+          "license": {
+            "spdx": "MIT"
+          },
+          "version": "2.3.4-alpha.7"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "inferred_pack_id": "90f43495-73e9-5799-8da1-28de42344373"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "inferred_pack_id": "90f43495-73e9-5799-8da1-28de42344373"
+        }
+      },
+      "family": "pack_id",
+      "index": 170,
+      "input": {
+        "display_name": "\u00dcn\u00efcod\u00e9 N\u00e0me",
+        "namespace": "93516344-00e5-419b-a230-6e8b1d02f87d",
+        "repository_url": "https://github.com/tnypfx/demo"
+      },
+      "request_op": "derive_pack_id",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"id\":\"d7652f47-72c7-48eb-adc7-b3e0e408d56d\",\"kind\":\"skill\",\"pack_id\":\"b6937464-89a8-40f9-ad73-2541acc44995\",\"version\":\"1.0.0-rc.1\"}",
+          "metadata_hash": "46ef0742b940983bb72125383e20bf8f693aac445f9674dd20dc952ea2f982a9"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\",\"id\":\"d7652f47-72c7-48eb-adc7-b3e0e408d56d\",\"kind\":\"skill\",\"pack_id\":\"b6937464-89a8-40f9-ad73-2541acc44995\",\"version\":\"1.0.0-rc.1\"}",
+          "metadata_hash": "46ef0742b940983bb72125383e20bf8f693aac445f9674dd20dc952ea2f982a9"
+        }
+      },
+      "family": "sidecar",
+      "index": 171,
+      "input": {
+        "kind": "skill",
+        "sidecar": {
+          "display_name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "id": "d7652f47-72c7-48eb-adc7-b3e0e408d56d",
+          "kind": "skill",
+          "pack_id": "b6937464-89a8-40f9-ad73-2541acc44995",
+          "version": "1.0.0-rc.1"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "f2123eae911fc8186a4b78b45a2fd872f4d01c19074984112b6f5299bf65cb4f",
+          "classification": "multi-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "f2123eae911fc8186a4b78b45a2fd872f4d01c19074984112b6f5299bf65cb4f",
+          "classification": "multi-file"
+        }
+      },
+      "family": "body",
+      "index": 172,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "SKILL.md": "---\ndescription: scope\n---\nvector\nback\\slash record\nsidecar envelope fixture\nback\\slash scope hash\n",
+          "acif-sidecar.yaml": "kind: skill\nid: 879097ad-2934-4331-ade5-17f45abd90f9\n",
+          "scripts/run.sh": "publisher na\u00efve sidecar\n"
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "source_uri": "https://example.com/skills/demo"
+        }
+      },
+      "b": {
+        "class": "unsupported"
+      },
+      "family": "normalize_uri",
+      "index": 173,
+      "input": {
+        "uri": "https://example.com:443/skills/demo"
+      },
+      "request_op": "normalize_uri",
+      "status": "uncomparable"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "inferred_pack_id": "84970c78-d85f-5087-aa3a-0a215606e5ac"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "inferred_pack_id": "84970c78-d85f-5087-aa3a-0a215606e5ac"
+        }
+      },
+      "family": "pack_id",
+      "index": 174,
+      "input": {
+        "display_name": "quote\"back\\slash",
+        "namespace": "93516344-00e5-419b-a230-6e8b1d02f87d",
+        "repository_url": "https://github.com/hdowl/demo"
+      },
+      "request_op": "derive_pack_id",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "error",
+        "error": "acif.source_uri.query_present"
+      },
+      "b": {
+        "class": "unsupported"
+      },
+      "family": "normalize_uri",
+      "index": 175,
+      "input": {
+        "uri": "https://example.com/skills/demo?tag=v1#frag"
+      },
+      "request_op": "normalize_uri",
+      "status": "uncomparable"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "18f08b9e263891376d585a2891144205fc69fe0b42bfc31788c82e8cb877fc19",
+          "classification": "multi-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "18f08b9e263891376d585a2891144205fc69fe0b42bfc31788c82e8cb877fc19",
+          "classification": "multi-file"
+        }
+      },
+      "family": "body",
+      "index": 176,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "README.md": "quote \"inner\" \u65e5\u672c\u8a9e\n",
+          "SKILL.md": "\u65e5\u672c\u8a9e\n",
+          "notes.md": "fixture\nconformance registry adapter\n"
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "error",
+        "error": "acif.source_uri.userinfo_present"
+      },
+      "b": {
+        "class": "unsupported"
+      },
+      "family": "normalize_uri",
+      "index": 177,
+      "input": {
+        "uri": "https://user@example.com/skills/demo"
+      },
+      "request_op": "normalize_uri",
+      "status": "uncomparable"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"caf\u00e9 \u2615 tool\",\"id\":\"2c4b786f-e5cf-459e-b7b1-7097ade9e0e0\",\"kind\":\"agent\",\"version\":\"2.3.4-alpha.7\"}",
+          "metadata_hash": "b5178195f99ad522035336862c9fdec22c4160ec832071d38fb24fa1777d0fe8"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"caf\u00e9 \u2615 tool\",\"id\":\"2c4b786f-e5cf-459e-b7b1-7097ade9e0e0\",\"kind\":\"agent\",\"version\":\"2.3.4-alpha.7\"}",
+          "metadata_hash": "b5178195f99ad522035336862c9fdec22c4160ec832071d38fb24fa1777d0fe8"
+        }
+      },
+      "family": "sidecar",
+      "index": 178,
+      "input": {
+        "kind": "agent",
+        "sidecar": {
+          "display_name": "caf\u00e9 \u2615 tool",
+          "id": "2c4b786f-e5cf-459e-b7b1-7097ade9e0e0",
+          "kind": "agent",
+          "version": "2.3.4-alpha.7"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"description\":\"tab\\tstop emoji \u2615 vector canonical\",\"display_name\":\"quote\\\"back\\\\slash\",\"id\":\"fc85c262-2c5a-4591-9e88-4715477b8c0d\",\"kind\":\"rule\"}",
+          "metadata_hash": "4538354c9ee707b1dfc1166a0fb471bde23783add2b188678611be2244424a54"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"description\":\"tab\\tstop emoji \u2615 vector canonical\",\"display_name\":\"quote\\\"back\\\\slash\",\"id\":\"fc85c262-2c5a-4591-9e88-4715477b8c0d\",\"kind\":\"rule\"}",
+          "metadata_hash": "4538354c9ee707b1dfc1166a0fb471bde23783add2b188678611be2244424a54"
+        }
+      },
+      "family": "sidecar",
+      "index": 179,
+      "input": {
+        "kind": "rule",
+        "sidecar": {
+          "description": "tab\tstop emoji \u2615 vector canonical",
+          "display_name": "quote\"back\\slash",
+          "id": "fc85c262-2c5a-4591-9e88-4715477b8c0d",
+          "kind": "rule"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "33a854c779bf99f66391ead1699d48c3be4701ae8b01aac9aa8b2774d259a9bf",
+          "classification": "multi-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "33a854c779bf99f66391ead1699d48c3be4701ae8b01aac9aa8b2774d259a9bf",
+          "classification": "multi-file"
+        }
+      },
+      "family": "body",
+      "index": 180,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "SKILL.md": "envelope\n",
+          "acif-sidecar.yaml": "kind: skill\nid: 7838e7d1-805a-479e-8e85-5ba0edffb045\n",
+          "assets/caf\u00e9.txt": "trailing space  emoji \u2615\nregistry sidecar\npublisher\n",
+          "data/values.json": "sidecar envelope \u65e5\u672c\u8a9e\nregistry back\\slash\nquote \"inner\" conformance\n",
+          "docs/deep/ref.md": "record\nadapter registry\n",
+          "docs/guide.md": "\n"
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"0\",\"id\":\"ef34bb6b-6752-4b25-8a27-1a1d20acecd9\",\"kind\":\"agent\",\"license\":{\"spdx\":\"BSD-3-Clause\"},\"version\":\"1.2.3\"}",
+          "metadata_hash": "4224c20ab33ceb0a8b417aef02160b82787c382a46281766b5328c7849beacb8"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"0\",\"id\":\"ef34bb6b-6752-4b25-8a27-1a1d20acecd9\",\"kind\":\"agent\",\"license\":{\"spdx\":\"BSD-3-Clause\"},\"version\":\"1.2.3\"}",
+          "metadata_hash": "4224c20ab33ceb0a8b417aef02160b82787c382a46281766b5328c7849beacb8"
+        }
+      },
+      "family": "sidecar",
+      "index": 181,
+      "input": {
+        "kind": "agent",
+        "sidecar": {
+          "display_name": "0",
+          "id": "ef34bb6b-6752-4b25-8a27-1a1d20acecd9",
+          "kind": "agent",
+          "license": {
+            "spdx": "BSD-3-Clause"
+          },
+          "version": "1.2.3"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "source_uri": "https://example.com/skills/demo"
+        }
+      },
+      "b": {
+        "class": "unsupported"
+      },
+      "family": "normalize_uri",
+      "index": 182,
+      "input": {
+        "uri": "https://example.com/skills/demo"
+      },
+      "request_op": "normalize_uri",
+      "status": "uncomparable"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "inferred_pack_id": "fb3f122c-0a26-56ad-bae4-6545fc917d73"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "inferred_pack_id": "fb3f122c-0a26-56ad-bae4-6545fc917d73"
+        }
+      },
+      "family": "pack_id",
+      "index": 183,
+      "input": {
+        "display_name": "Review PR",
+        "namespace": "93516344-00e5-419b-a230-6e8b1d02f87d",
+        "repository_url": "https://github.com/agvp/skills"
+      },
+      "request_op": "derive_pack_id",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"description\":\"vector record\",\"display_name\":\"\u00dcn\u00efcod\u00e9 N\u00e0me\",\"id\":\"4441a5e5-b7f4-4146-82af-3d9137c7dab5\",\"kind\":\"rule\",\"license\":{\"spdx\":\"MIT\"}}",
+          "metadata_hash": "5200ded2d3a0fe0e42a3b3a6ec9d3aa95101ed1b30775731b4a8e807976539bd"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"description\":\"vector record\",\"display_name\":\"\u00dcn\u00efcod\u00e9 N\u00e0me\",\"id\":\"4441a5e5-b7f4-4146-82af-3d9137c7dab5\",\"kind\":\"rule\",\"license\":{\"spdx\":\"MIT\"}}",
+          "metadata_hash": "5200ded2d3a0fe0e42a3b3a6ec9d3aa95101ed1b30775731b4a8e807976539bd"
+        }
+      },
+      "family": "sidecar",
+      "index": 184,
+      "input": {
+        "kind": "rule",
+        "sidecar": {
+          "description": "vector record",
+          "display_name": "\u00dcn\u00efcod\u00e9 N\u00e0me",
+          "id": "4441a5e5-b7f4-4146-82af-3d9137c7dab5",
+          "kind": "rule",
+          "license": {
+            "spdx": "MIT"
+          }
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "inferred_pack_id": "9af695e9-d36e-5c55-9d85-62c95b4289b6"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "inferred_pack_id": "9af695e9-d36e-5c55-9d85-62c95b4289b6"
+        }
+      },
+      "family": "pack_id",
+      "index": 185,
+      "input": {
+        "display_name": "\u00dcn\u00efcod\u00e9 N\u00e0me",
+        "namespace": "93516344-00e5-419b-a230-6e8b1d02f87d",
+        "repository_url": "https://github.com/mmmjyyvzk/skills-tools"
+      },
+      "request_op": "derive_pack_id",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"description\":\"hash \u65e5\u672c\u8a9e na\u00efve\",\"display_name\":\"caf\u00e9 \u2615 tool\",\"id\":\"f70f299a-c447-443e-8467-6cdfe3e1c925\",\"kind\":\"rule\"}",
+          "metadata_hash": "2c419d870e572b7aac91b945c2274b8e74395c5d0b4de6571681ef596f5a20c2"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"description\":\"hash \u65e5\u672c\u8a9e na\u00efve\",\"display_name\":\"caf\u00e9 \u2615 tool\",\"id\":\"f70f299a-c447-443e-8467-6cdfe3e1c925\",\"kind\":\"rule\"}",
+          "metadata_hash": "2c419d870e572b7aac91b945c2274b8e74395c5d0b4de6571681ef596f5a20c2"
+        }
+      },
+      "family": "sidecar",
+      "index": 186,
+      "input": {
+        "kind": "rule",
+        "sidecar": {
+          "description": "hash \u65e5\u672c\u8a9e na\u00efve",
+          "display_name": "caf\u00e9 \u2615 tool",
+          "id": "f70f299a-c447-443e-8467-6cdfe3e1c925",
+          "kind": "rule"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"line\\nbreak name\",\"id\":\"422380a4-66cb-408a-bc1f-625a798fe2b0\",\"kind\":\"agent\",\"license\":{\"spdx\":\"ISC\"},\"version\":\"0.1.0\"}",
+          "metadata_hash": "9e2acb8deafd40da3507fe6b99607171728c27618259815c52efeb0844a8f04b"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"line\\nbreak name\",\"id\":\"422380a4-66cb-408a-bc1f-625a798fe2b0\",\"kind\":\"agent\",\"license\":{\"spdx\":\"ISC\"},\"version\":\"0.1.0\"}",
+          "metadata_hash": "9e2acb8deafd40da3507fe6b99607171728c27618259815c52efeb0844a8f04b"
+        }
+      },
+      "family": "sidecar",
+      "index": 187,
+      "input": {
+        "kind": "agent",
+        "sidecar": {
+          "display_name": "line\nbreak name",
+          "id": "422380a4-66cb-408a-bc1f-625a798fe2b0",
+          "kind": "agent",
+          "license": {
+            "spdx": "ISC"
+          },
+          "version": "0.1.0"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"\u65e5\u672c\u8a9e\u30c4\u30fc\u30eb\",\"id\":\"5364cccf-279a-4857-b0df-38774b12caf1\",\"kind\":\"skill\",\"pack_id\":\"81e4ed61-02a8-47a0-8232-dee77bf2ff0b\"}",
+          "metadata_hash": "adb398d5460c61e04cf2b22f3156799e26551d40720072e87d716a6cc3abf7e0"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"\u65e5\u672c\u8a9e\u30c4\u30fc\u30eb\",\"id\":\"5364cccf-279a-4857-b0df-38774b12caf1\",\"kind\":\"skill\",\"pack_id\":\"81e4ed61-02a8-47a0-8232-dee77bf2ff0b\"}",
+          "metadata_hash": "adb398d5460c61e04cf2b22f3156799e26551d40720072e87d716a6cc3abf7e0"
+        }
+      },
+      "family": "sidecar",
+      "index": 188,
+      "input": {
+        "kind": "skill",
+        "sidecar": {
+          "display_name": "\u65e5\u672c\u8a9e\u30c4\u30fc\u30eb",
+          "id": "5364cccf-279a-4857-b0df-38774b12caf1",
+          "kind": "skill",
+          "pack_id": "81e4ed61-02a8-47a0-8232-dee77bf2ff0b"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "c91e2bb84b7f340c6767e5631a1d22ee4fcd6e5906e8310cc342c900f008f17d",
+          "classification": "single-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "c91e2bb84b7f340c6767e5631a1d22ee4fcd6e5906e8310cc342c900f008f17d",
+          "classification": "single-file"
+        }
+      },
+      "family": "body",
+      "index": 189,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "SKILL.md": "---\ndescription: \u65e5\u672c\u8a9e\n---\nsidecar back\\slash scope\nadapter fixture hash\nenvelope record\nback\\slash record Z\u00fcrich"
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"description\":\"trailing space  quote \\\"inner\\\" caf\u00e9\",\"display_name\":\"\u00dcn\u00efcod\u00e9 N\u00e0me\",\"id\":\"0a1ccfbd-1589-4de0-ae2b-33c0c8658ce2\",\"kind\":\"rule\",\"license\":{\"spdx\":\"BSD-3-Clause\"}}",
+          "metadata_hash": "eaf5368fb90d59e27638a40eb467a5ff45ac0924cacba62f79675af4b3e6a3e5"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"description\":\"trailing space  quote \\\"inner\\\" caf\u00e9\",\"display_name\":\"\u00dcn\u00efcod\u00e9 N\u00e0me\",\"id\":\"0a1ccfbd-1589-4de0-ae2b-33c0c8658ce2\",\"kind\":\"rule\",\"license\":{\"spdx\":\"BSD-3-Clause\"}}",
+          "metadata_hash": "eaf5368fb90d59e27638a40eb467a5ff45ac0924cacba62f79675af4b3e6a3e5"
+        }
+      },
+      "family": "sidecar",
+      "index": 190,
+      "input": {
+        "kind": "rule",
+        "sidecar": {
+          "description": "trailing space  quote \"inner\" caf\u00e9",
+          "display_name": "\u00dcn\u00efcod\u00e9 N\u00e0me",
+          "id": "0a1ccfbd-1589-4de0-ae2b-33c0c8658ce2",
+          "kind": "rule",
+          "license": {
+            "spdx": "BSD-3-Clause"
+          }
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"Demo Skill\",\"id\":\"b85eaee6-a2bf-48dd-81c3-3a0e308ed32c\",\"kind\":\"agent\",\"pack_id\":\"1def6321-778a-403d-9122-0bfcad43e0b5\",\"version\":\"10.20.30\"}",
+          "metadata_hash": "707d2017c3ce00272ff8565ab7a7dacbcb07b736d49ab6112ea141318c3038db"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"Demo Skill\",\"id\":\"b85eaee6-a2bf-48dd-81c3-3a0e308ed32c\",\"kind\":\"agent\",\"pack_id\":\"1def6321-778a-403d-9122-0bfcad43e0b5\",\"version\":\"10.20.30\"}",
+          "metadata_hash": "707d2017c3ce00272ff8565ab7a7dacbcb07b736d49ab6112ea141318c3038db"
+        }
+      },
+      "family": "sidecar",
+      "index": 191,
+      "input": {
+        "kind": "agent",
+        "sidecar": {
+          "display_name": "Demo Skill",
+          "id": "b85eaee6-a2bf-48dd-81c3-3a0e308ed32c",
+          "kind": "agent",
+          "pack_id": "1def6321-778a-403d-9122-0bfcad43e0b5",
+          "version": "10.20.30"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "error",
+        "error": "acif.source_uri.userinfo_present"
+      },
+      "b": {
+        "class": "unsupported"
+      },
+      "family": "normalize_uri",
+      "index": 192,
+      "input": {
+        "uri": "https://user@example.com/skills/demo"
+      },
+      "request_op": "normalize_uri",
+      "status": "uncomparable"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "59d34eaf038d5ba7f354f6d202050f9095e04685c443d76ad3f0d0775b2ca197",
+          "classification": "single-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "59d34eaf038d5ba7f354f6d202050f9095e04685c443d76ad3f0d0775b2ca197",
+          "classification": "single-file"
+        }
+      },
+      "family": "body",
+      "index": 193,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "SKILL.md": "---\ndescription: quote \"inner\"\n---\n\u65e5\u672c\u8a9e quote \"inner\" conformance\n",
+          "acif-sidecar.yaml": "kind: skill\nid: 62869c1e-3388-446f-afb2-db6946a10b9f\n"
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "07741c86039c3841cce559f3fab78ed8c8a6db29acd2e6823b2e8e196e5bd53f",
+          "classification": "multi-file"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "body_hash": "07741c86039c3841cce559f3fab78ed8c8a6db29acd2e6823b2e8e196e5bd53f",
+          "classification": "multi-file"
+        }
+      },
+      "family": "body",
+      "index": 194,
+      "input": {
+        "entry_file": "SKILL.md",
+        "files": {
+          "README.md": "publisher\n",
+          "SKILL.md": "---\ndescription: registry\n---\nhash\n",
+          "acif-sidecar.yaml": "kind: skill\nid: dac6ee4c-1232-4389-8149-0678c436c1cc\n",
+          "notes.md": "na\u00efve Z\u00fcrich\nfixture na\u00efve",
+          "scripts/run.sh": "\n",
+          "sub/acif-sidecar.yaml": "\n"
+        },
+        "kind": "skill"
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"0\",\"id\":\"b56ab6fd-77bf-41c7-a1ee-e7d1bd5e60ec\",\"kind\":\"command\",\"pack_id\":\"f844bfc5-0bdb-4693-953a-4afc2cdc08c9\"}",
+          "metadata_hash": "332c37601968abc0a18418be1dcf3394ee7330c31cdeda6ebb13176b5fd0f3e9"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"0\",\"id\":\"b56ab6fd-77bf-41c7-a1ee-e7d1bd5e60ec\",\"kind\":\"command\",\"pack_id\":\"f844bfc5-0bdb-4693-953a-4afc2cdc08c9\"}",
+          "metadata_hash": "332c37601968abc0a18418be1dcf3394ee7330c31cdeda6ebb13176b5fd0f3e9"
+        }
+      },
+      "family": "sidecar",
+      "index": 195,
+      "input": {
+        "kind": "command",
+        "sidecar": {
+          "display_name": "0",
+          "id": "b56ab6fd-77bf-41c7-a1ee-e7d1bd5e60ec",
+          "kind": "command",
+          "pack_id": "f844bfc5-0bdb-4693-953a-4afc2cdc08c9"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "conformant": false,
+          "params.field": "<absent>",
+          "reason": "acif.envelope.kind_invalid"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "conformant": false,
+          "params.field": "<absent>",
+          "reason": "acif.envelope.kind_invalid"
+        }
+      },
+      "family": "envelope",
+      "index": 196,
+      "input": {
+        "kind": "Rule",
+        "sidecar": {
+          "display_name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "id": "4a2d0936-11fc-453b-8ec4-9eb57ce1b9f6",
+          "kind": "Rule"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "inferred_pack_id": "11ce4630-07e8-5030-a78c-3362bd7c43e2"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "inferred_pack_id": "11ce4630-07e8-5030-a78c-3362bd7c43e2"
+        }
+      },
+      "family": "pack_id",
+      "index": 197,
+      "input": {
+        "display_name": "  padded  ",
+        "namespace": "93516344-00e5-419b-a230-6e8b1d02f87d",
+        "repository_url": "https://github.com/tsleavnr/demo-agent"
+      },
+      "request_op": "derive_pack_id",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"description\":\"caf\u00e9\",\"display_name\":\"\u00dcn\u00efcod\u00e9 N\u00e0me\",\"id\":\"2de3954f-5a7b-4510-bb88-79a1c33fe752\",\"kind\":\"agent\",\"license\":{\"spdx\":\"MIT\"}}",
+          "metadata_hash": "f17b4cf6565d3b22d782210419dfabfaa71c7eac3d805abab1fb949853cfd156"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"description\":\"caf\u00e9\",\"display_name\":\"\u00dcn\u00efcod\u00e9 N\u00e0me\",\"id\":\"2de3954f-5a7b-4510-bb88-79a1c33fe752\",\"kind\":\"agent\",\"license\":{\"spdx\":\"MIT\"}}",
+          "metadata_hash": "f17b4cf6565d3b22d782210419dfabfaa71c7eac3d805abab1fb949853cfd156"
+        }
+      },
+      "family": "sidecar",
+      "index": 198,
+      "input": {
+        "kind": "agent",
+        "sidecar": {
+          "description": "caf\u00e9",
+          "display_name": "\u00dcn\u00efcod\u00e9 N\u00e0me",
+          "id": "2de3954f-5a7b-4510-bb88-79a1c33fe752",
+          "kind": "agent",
+          "license": {
+            "spdx": "MIT"
+          }
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    },
+    {
+      "a": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"\u00dcn\u00efcod\u00e9 N\u00e0me\",\"id\":\"012f92fb-b8fa-48c1-ba2c-794e0b394f65\",\"kind\":\"command\",\"version\":\"2.3.4-alpha.7\"}",
+          "metadata_hash": "0d67c8517b120011d7c046a927189d6c793d72359fc38b5fbecc1183a3c43d25"
+        }
+      },
+      "b": {
+        "class": "ok",
+        "fields": {
+          "canonical_bytes": "{\"display_name\":\"\u00dcn\u00efcod\u00e9 N\u00e0me\",\"id\":\"012f92fb-b8fa-48c1-ba2c-794e0b394f65\",\"kind\":\"command\",\"version\":\"2.3.4-alpha.7\"}",
+          "metadata_hash": "0d67c8517b120011d7c046a927189d6c793d72359fc38b5fbecc1183a3c43d25"
+        }
+      },
+      "family": "sidecar",
+      "index": 199,
+      "input": {
+        "kind": "command",
+        "sidecar": {
+          "display_name": "\u00dcn\u00efcod\u00e9 N\u00e0me",
+          "id": "012f92fb-b8fa-48c1-ba2c-794e0b394f65",
+          "kind": "command",
+          "version": "2.3.4-alpha.7"
+        }
+      },
+      "request_op": "ingest",
+      "status": "agree"
+    }
+  ]
+}
